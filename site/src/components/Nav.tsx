@@ -1,0 +1,161 @@
+import { useEffect, useRef, useState } from "react";
+import { profile } from "../data";
+import { useActiveSection } from "../hooks";
+
+const LINKS = [
+  { id: "about", label: "About" },
+  { id: "projects", label: "Projects" },
+  { id: "skills", label: "Skills" },
+  { id: "experience", label: "Experience" },
+  { id: "contact", label: "Contact" },
+];
+const IDS = ["top", ...LINKS.map((l) => l.id)];
+
+export default function Nav() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const active = useActiveSection(IDS);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 12);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+
+  // Escape closes, focus returns to the toggle; lock body scroll while open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        btnRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    menuRef.current?.querySelector<HTMLElement>("a")?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
+        scrolled || open ? "hairline" : "border-transparent"
+      }`}
+      style={{ paddingTop: "var(--safe-top)" }}
+    >
+      {/* Blur lives on its own layer: backdrop-filter on the header itself would
+          become the containing block for the fixed mobile menu and collapse it. */}
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 -z-10 transition-opacity duration-300 ${
+          scrolled || open ? "bg-ink/85 opacity-100 backdrop-blur-md" : "opacity-0"
+        }`}
+      />
+      <nav className="wrap flex h-14 items-center justify-between" aria-label="Primary">
+        <a href="#top" className="tap font-serif text-xl leading-none" aria-label={`${profile.name}, back to top`}>
+          Piyush<span className="text-signal">.</span>
+        </a>
+
+        <ul className="hidden items-center gap-1 md:flex">
+          {LINKS.map((l) => (
+            <li key={l.id}>
+              <a
+                href={`#${l.id}`}
+                aria-current={active === l.id ? "true" : undefined}
+                className={`tap px-3 font-mono text-[0.72rem] uppercase tracking-[0.14em] transition-colors hover:text-paper ${
+                  active === l.id ? "text-signal" : "text-paper-dim"
+                }`}
+              >
+                {l.label}
+              </a>
+            </li>
+          ))}
+          <li className="ml-2">
+            <a
+              href={profile.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap border hairline px-3 font-mono text-[0.72rem] uppercase tracking-[0.14em] transition-colors hover:border-signal hover:text-signal"
+            >
+              GitHub<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          </li>
+        </ul>
+
+        <button
+          ref={btnRef}
+          type="button"
+          className="tap -mr-2 min-w-[44px] justify-center md:hidden"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <span className="relative block h-3 w-6" aria-hidden="true">
+            <span
+              className={`absolute left-0 top-0 block h-px w-6 bg-paper transition-transform duration-300 ${
+                open ? "translate-y-[6px] rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`absolute bottom-0 left-0 block h-px w-6 bg-paper transition-transform duration-300 ${
+                open ? "-translate-y-[5px] -rotate-45" : ""
+              }`}
+            />
+          </span>
+        </button>
+      </nav>
+
+      <div
+        id="mobile-menu"
+        ref={menuRef}
+        hidden={!open}
+        className="fixed inset-x-0 bottom-0 top-14 bg-ink md:hidden"
+        style={{ top: "calc(3.5rem + var(--safe-top))", paddingBottom: "var(--safe-bottom)" }}
+      >
+        <ul className="wrap flex h-full flex-col justify-center gap-1 pb-16">
+          {LINKS.map((l, i) => (
+            <li key={l.id}>
+              <a
+                href={`#${l.id}`}
+                onClick={() => setOpen(false)}
+                className="tap flex w-full items-baseline gap-4 border-b hairline py-4 font-serif text-4xl"
+              >
+                <span className="marker w-6">{String(i + 1).padStart(2, "0")}</span>
+                {l.label}
+              </a>
+            </li>
+          ))}
+          <li className="mt-6 flex gap-3">
+            <a
+              href={profile.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap border hairline px-4 font-mono text-xs uppercase tracking-[0.14em]"
+            >
+              GitHub<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+            {profile.links.linkedin && (
+              <a
+                href={profile.links.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tap border hairline px-4 font-mono text-xs uppercase tracking-[0.14em]"
+              >
+                LinkedIn<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            )}
+          </li>
+        </ul>
+      </div>
+    </header>
+  );
+}

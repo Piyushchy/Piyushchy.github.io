@@ -1,0 +1,187 @@
+@import "@fontsource/instrument-serif/latin-400.css";
+@import "@fontsource/instrument-serif/latin-400-italic.css";
+@import "@fontsource/ibm-plex-sans/latin-400.css";
+@import "@fontsource/ibm-plex-sans/latin-500.css";
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-500.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+    background: #0c0d10;
+  }
+  body {
+    @apply bg-ink font-sans text-paper antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: #ff6a3d;
+    color: #0c0d10;
+  }
+  :focus-visible {
+    outline: 2px solid #ff6a3d;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-serif font-normal;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Mono "document marker" label used across the site */
+  .marker {
+    @apply font-mono text-[0.72rem] uppercase text-paper-dim;
+    letter-spacing: 0.14em;
+  }
+  .wrap {
+    @apply mx-auto w-full max-w-page;
+    padding-inline: max(1.25rem, env(safe-area-inset-left, 0px));
+  }
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2.5rem;
+    }
+  }
+  .hairline {
+    border-color: rgba(236, 231, 220, 0.14);
+  }
+  .tap {
+    @apply inline-flex min-h-[44px] items-center;
+  }
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s;
+  }
+  .link-underline:hover {
+    @apply text-signal;
+  }
+}
+
+/* Page-wide paper grain + faint ruled grid: the "scanned page" signature */
+.page-grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 38rem at 85% -10%, rgba(255, 106, 61, 0.07), transparent 60%),
+    radial-gradient(48rem 30rem at -10% 40%, rgba(236, 231, 220, 0.035), transparent 60%);
+}
+.page-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    linear-gradient(to right, rgba(236, 231, 220, 0.045) 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero scan figure animation */
+@keyframes scan-sweep {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(var(--sweep, 440px));
+    opacity: 0;
+  }
+}
+@keyframes cell-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.scan-line {
+  animation: scan-sweep 2.6s cubic-bezier(0.45, 0, 0.2, 1) 0.4s both;
+}
+.cell-box {
+  animation: cell-in 0.45s ease-out both;
+  animation-delay: var(--cd, 0ms);
+}
+
+/* Case study expand: height animates between 0fr and 1fr */
+.expander {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.expander[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.expander > div {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .scan-line {
+    display: none;
+  }
+  .cell-box {
+    animation: none;
+  }
+  .expander {
+    transition: none;
+  }
+  .link-underline {
+    transition: none;
+  }
+}
