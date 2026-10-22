@@ -7,15 +7,15 @@ import { reveal } from "../presets";
  * Real GitHub contribution data only. `src/contributions.json` holds
  * [{ "date": "YYYY-MM-DD", "count": 3 }, ...] and is produced by
  * `pnpm contributions` (see scripts/fetch-contributions.mjs).
- * While it is empty this whole section renders nothing, and the heavy
- * canvas component is never even downloaded.
+ * While it is empty, the component's built-in generated sample year is shown
+ * and labelled "Sample data" so it is never mistaken for real activity.
  */
 const data = raw as { date: string; count: number }[];
 
 const ContributionSkyline = lazy(() => import("./ui/contribution-skyline"));
 
 export default function Activity() {
-  if (!data.length) return null;
+  const real = data.length > 0;
   return (
     <section id="activity" className="py-16 md:py-24" aria-labelledby="activity-title">
       <div className="wrap">
@@ -25,15 +25,16 @@ export default function Activity() {
         <m.h2 id="activity-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           A year on GitHub
         </m.h2>
+        {!real && (
+          <m.p className="mt-3 font-mono text-xs text-signal" {...reveal(0.08)}>
+            Sample data. Run `pnpm contributions` to show my real activity.
+          </m.p>
+        )}
         <m.div className="mt-10" {...reveal(0.1)}>
           <Suspense fallback={<div className="h-[260px]" aria-hidden="true" />}>
-            <ContributionSkyline
-              data={data}
-              palette="ember"
-              title={null}
-              footer={undefined}
-              orbit
-            />
+            <div className="mx-auto w-full max-w-[980px]">
+              <ContributionSkyline data={real ? data : undefined} />
+            </div>
           </Suspense>
         </m.div>
       </div>
