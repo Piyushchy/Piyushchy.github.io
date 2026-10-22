@@ -8,12 +8,14 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "publish:pages": "node scripts/publish-to-root.mjs"
+    "publish:pages": "node scripts/publish-to-root.mjs",
+    "contributions": "node scripts/fetch-contributions.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.2.5",
     "@fontsource/ibm-plex-sans": "^5.2.5",
     "@fontsource/instrument-serif": "^5.2.5",
+    "motion": "^14.5.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

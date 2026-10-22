@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         ink: { DEFAULT: "#0c0d10", 2: "#111317", 3: "#171a1f" },
-        paper: { DEFAULT: "#ece7dc", dim: "#a9a597", faint: "#6f6c63" },
+        paper: { DEFAULT: "#ece7dc", dim: "#a9a597", faint: "#8d897d" },
         signal: { DEFAULT: "#ff6a3d", deep: "#d94e24" },
         rule: "rgba(236, 231, 220, 0.14)",
       },

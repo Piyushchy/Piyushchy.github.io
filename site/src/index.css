@@ -12,6 +12,11 @@
 :root {
   color-scheme: dark;
   --safe-top: env(safe-area-inset-top, 0px);
+  /* Semantic tokens used by the Contribution Skyline component */
+  --color-background: #0c0d10;
+  --color-foreground: #ece7dc;
+  --color-border: rgba(236, 231, 220, 0.14);
+  --color-muted-foreground: #a9a597;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -105,20 +110,6 @@
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
 }
 
-/* Reveal on scroll */
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--d, 0ms);
-}
-.reveal.is-in {
-  opacity: 1;
-  transform: none;
-}
-
 /* Hero scan figure animation */
 @keyframes scan-sweep {
   from {
@@ -166,11 +157,6 @@
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
   }
   .scan-line {
     display: none;

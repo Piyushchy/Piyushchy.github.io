@@ -1,6 +1,8 @@
+import { AnimatePresence, m } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "../data";
 import { useActiveSection } from "../hooks";
+import { EASE } from "../presets";
 
 const LINKS = [
   { id: "about", label: "About" },
@@ -114,48 +116,62 @@ export default function Nav() {
         </button>
       </nav>
 
-      <div
-        id="mobile-menu"
-        ref={menuRef}
-        hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-14 bg-ink md:hidden"
-        style={{ top: "calc(3.5rem + var(--safe-top))", paddingBottom: "var(--safe-bottom)" }}
-      >
-        <ul className="wrap flex h-full flex-col justify-center gap-1 pb-16">
-          {LINKS.map((l, i) => (
-            <li key={l.id}>
-              <a
-                href={`#${l.id}`}
-                onClick={() => setOpen(false)}
-                className="tap flex w-full items-baseline gap-4 border-b hairline py-4 font-serif text-4xl"
+      <AnimatePresence>
+        {open && (
+          <m.div
+            id="mobile-menu"
+            ref={menuRef}
+            className="fixed inset-x-0 bottom-0 bg-ink md:hidden"
+            style={{ top: "calc(3.5rem + var(--safe-top))", paddingBottom: "var(--safe-bottom)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.25, ease: EASE } }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+          >
+            <ul className="wrap flex h-full flex-col justify-center gap-1 pb-16">
+              {LINKS.map((l, i) => (
+                <m.li
+                  key={l.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE, delay: 0.05 + i * 0.045 } }}
+                >
+                  <a
+                    href={`#${l.id}`}
+                    onClick={() => setOpen(false)}
+                    className="tap flex w-full items-baseline gap-4 border-b hairline py-4 font-serif text-4xl"
+                  >
+                    <span className="marker w-6">{String(i + 1).padStart(2, "0")}</span>
+                    {l.label}
+                  </a>
+                </m.li>
+              ))}
+              <m.li
+                className="mt-6 flex gap-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: 0.35, delay: 0.3 } }}
               >
-                <span className="marker w-6">{String(i + 1).padStart(2, "0")}</span>
-                {l.label}
-              </a>
-            </li>
-          ))}
-          <li className="mt-6 flex gap-3">
-            <a
-              href={profile.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tap border hairline px-4 font-mono text-xs uppercase tracking-[0.14em]"
-            >
-              GitHub<span className="sr-only"> (opens in a new tab)</span>
-            </a>
-            {profile.links.linkedin && (
-              <a
-                href={profile.links.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tap border hairline px-4 font-mono text-xs uppercase tracking-[0.14em]"
-              >
-                LinkedIn<span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            )}
-          </li>
-        </ul>
-      </div>
+                <a
+                  href={profile.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tap border hairline px-4 font-mono text-xs uppercase tracking-[0.14em]"
+                >
+                  GitHub<span className="sr-only"> (opens in a new tab)</span>
+                </a>
+                {profile.links.linkedin && (
+                  <a
+                    href={profile.links.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tap border hairline px-4 font-mono text-xs uppercase tracking-[0.14em]"
+                  >
+                    LinkedIn<span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                )}
+              </m.li>
+            </ul>
+          </m.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

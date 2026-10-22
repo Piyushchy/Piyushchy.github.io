@@ -1,13 +1,13 @@
+import Activity from "./components/Activity";
 import Hero from "./components/Hero";
 import Nav from "./components/Nav";
 import Projects from "./components/Projects";
 import { About, Contact, Experience, Footer, Skills } from "./components/Sections";
-import { useReveal } from "./hooks";
+import { MotionRoot } from "./motion";
 
 export default function App() {
-  useReveal();
   return (
-    <>
+    <MotionRoot>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-signal focus:px-4 focus:py-2 focus:text-ink"
@@ -21,11 +21,12 @@ export default function App() {
         <Hero />
         <About />
         <Projects />
+        <Activity />
         <Skills />
         <Experience />
         <Contact />
       </main>
       <Footer />
-    </>
+    </MotionRoot>
   );
 }

@@ -1,20 +1,24 @@
+import { m } from "motion/react";
 import { about, learning, profile, skillGroups, timeline } from "../data";
+import { reveal } from "../presets";
 
 export function About() {
   return (
     <section id="about" className="py-16 md:py-24" aria-labelledby="about-title">
       <div className="wrap grid gap-8 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-5">
-          <p className="marker reveal">01 / About</p>
-          <h2 id="about-title" className="reveal mt-3 text-5xl sm:text-6xl md:text-7xl" style={{ ["--d" as string]: "60ms" }}>
+          <m.p className="marker" {...reveal(0)}>
+            01 / About
+          </m.p>
+          <m.h2 id="about-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
             Where things <em>break</em>, I look.
-          </h2>
+          </m.h2>
         </div>
         <div className="space-y-6 text-paper-dim sm:text-lg md:col-span-6 md:col-start-7">
           {about.map((para, i) => (
-            <p key={i} className="reveal" style={{ ["--d" as string]: `${i * 80}ms` }}>
+            <m.p key={i} {...reveal(i * 0.08)}>
               {para}
-            </p>
+            </m.p>
           ))}
         </div>
       </div>
@@ -26,20 +30,22 @@ export function Skills() {
   return (
     <section id="skills" className="py-16 md:py-24" aria-labelledby="skills-title">
       <div className="wrap">
-        <p className="marker reveal">03 / Toolbox</p>
-        <h2 id="skills-title" className="reveal mt-3 text-5xl sm:text-6xl md:text-7xl" style={{ ["--d" as string]: "60ms" }}>
+        <m.p className="marker" {...reveal(0)}>
+          03 / Toolbox
+        </m.p>
+        <m.h2 id="skills-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           Skills
-        </h2>
-        <p className="reveal mt-4 max-w-xl text-paper-dim" style={{ ["--d" as string]: "100ms" }}>
+        </m.h2>
+        <m.p className="mt-4 max-w-xl text-paper-dim" {...reveal(0.1)}>
           Only things I've actually used in the projects above.
-        </p>
+        </m.p>
 
         <dl className="mt-10 border-t hairline md:mt-14">
-          {skillGroups.map((g, i) => (
-            <div
+          {skillGroups.map((g) => (
+            <m.div
               key={g.label}
-              className="reveal grid gap-3 border-b hairline py-6 md:grid-cols-12 md:gap-8"
-              style={{ ["--d" as string]: `${i * 50}ms` }}
+              className="grid gap-3 border-b hairline py-6 md:grid-cols-12 md:gap-8"
+              {...reveal(0.03)}
             >
               <dt className="marker md:col-span-4 md:pt-1">{g.label}</dt>
               <dd className="md:col-span-8">
@@ -49,14 +55,14 @@ export function Skills() {
                   ))}
                 </ul>
               </dd>
-            </div>
+            </m.div>
           ))}
         </dl>
 
-        <p className="reveal mt-8 max-w-2xl text-paper-dim">
+        <m.p className="mt-8 max-w-2xl text-paper-dim" {...reveal(0)}>
           <span className="marker mr-3 text-signal">{learning.label}</span>
           {learning.text}
-        </p>
+        </m.p>
       </div>
     </section>
   );
@@ -66,16 +72,18 @@ export function Experience() {
   return (
     <section id="experience" className="py-16 md:py-24" aria-labelledby="exp-title">
       <div className="wrap">
-        <p className="marker reveal">04 / Path</p>
-        <h2 id="exp-title" className="reveal mt-3 text-5xl sm:text-6xl md:text-7xl" style={{ ["--d" as string]: "60ms" }}>
+        <m.p className="marker" {...reveal(0)}>
+          04 / Path
+        </m.p>
+        <m.h2 id="exp-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           Experience &amp; education
-        </h2>
+        </m.h2>
         <ol className="mt-10 border-t hairline md:mt-14">
           {timeline.map((t, i) => (
-            <li
+            <m.li
               key={t.title}
-              className="reveal grid gap-2 border-b hairline py-8 md:grid-cols-12 md:gap-8"
-              style={{ ["--d" as string]: `${i * 80}ms` }}
+              className="grid gap-2 border-b hairline py-8 md:grid-cols-12 md:gap-8"
+              {...reveal(i * 0.08)}
             >
               <p className="marker md:col-span-3 md:pt-2">{t.when}</p>
               <div className="md:col-span-9">
@@ -83,7 +91,7 @@ export function Experience() {
                 <p className="mt-1 text-signal">{t.org}</p>
                 <p className="mt-3 max-w-xl text-paper-dim">{t.note}</p>
               </div>
-            </li>
+            </m.li>
           ))}
         </ol>
       </div>
@@ -101,19 +109,21 @@ export function Contact() {
   return (
     <section id="contact" className="py-16 md:py-28" aria-labelledby="contact-title">
       <div className="wrap">
-        <p className="marker reveal">05 / Contact</p>
-        <h2
+        <m.p className="marker" {...reveal(0)}>
+          05 / Contact
+        </m.p>
+        <m.h2
           id="contact-title"
-          className="reveal mt-3 text-[clamp(2.8rem,10vw,7.5rem)] leading-[0.98]"
-          style={{ ["--d" as string]: "60ms" }}
+          className="mt-3 text-[clamp(2.8rem,10vw,7.5rem)] leading-[0.98]"
+          {...reveal(0.06, 18)}
         >
           Got a document that <em className="text-signal">won't behave</em>?
-        </h2>
-        <p className="reveal mt-6 max-w-xl text-paper-dim sm:text-lg" style={{ ["--d" as string]: "120ms" }}>
+        </m.h2>
+        <m.p className="mt-6 max-w-xl text-paper-dim sm:text-lg" {...reveal(0.12)}>
           I'm open to internships, collaborations and interesting problems. The quickest way to reach me is below.
-        </p>
+        </m.p>
 
-        <ul className="reveal mt-10 border-t hairline" style={{ ["--d" as string]: "160ms" }}>
+        <m.ul className="mt-10 border-t hairline" {...reveal(0.16)}>
           {rows.map((r) => (
             <li key={r.label} className="border-b hairline">
               <a
@@ -130,7 +140,7 @@ export function Contact() {
               </a>
             </li>
           ))}
-        </ul>
+        </m.ul>
       </div>
     </section>
   );

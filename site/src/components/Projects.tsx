@@ -1,5 +1,7 @@
+import { m } from "motion/react";
 import { useId, useState } from "react";
 import { projects, type Project } from "../data";
+import { reveal } from "../presets";
 
 function ExtLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -33,7 +35,7 @@ function ProjectRow({ p, defaultOpen = false }: { p: Project; defaultOpen?: bool
   const hasDetail = p.built.length > 0 || p.decisions.length > 0;
 
   return (
-    <article className="reveal border-t hairline py-8 md:py-12" aria-labelledby={`${panelId}-t`}>
+    <m.article className="border-t hairline py-8 md:py-12" aria-labelledby={`${panelId}-t`} {...reveal(0.02)}>
       <div className="grid gap-5 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-2">
           <span className="font-serif text-5xl leading-none text-signal md:text-6xl" aria-hidden="true">
@@ -113,7 +115,7 @@ function ProjectRow({ p, defaultOpen = false }: { p: Project; defaultOpen?: bool
           )}
         </div>
       </div>
-    </article>
+    </m.article>
   );
 }
 
@@ -123,10 +125,12 @@ export default function Projects() {
       <div className="wrap">
         <div className="mb-10 flex items-end justify-between gap-6 md:mb-14">
           <div>
-            <p className="marker reveal">02 / Selected work</p>
-            <h2 id="projects-title" className="reveal mt-3 text-5xl sm:text-6xl md:text-7xl" style={{ ["--d" as string]: "60ms" }}>
+            <m.p className="marker" {...reveal(0)}>
+              02 / Selected work
+            </m.p>
+            <m.h2 id="projects-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
               Projects
-            </h2>
+            </m.h2>
           </div>
         </div>
         <div>
