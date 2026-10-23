@@ -1,4 +1,5 @@
-import { m } from "motion/react";
+import { m, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 import { about, learning, profile, skillGroups, timeline } from "../data";
 import { reveal } from "../presets";
 import ExtractFigure from "./ExtractFigure";
@@ -35,7 +36,7 @@ export function Skills() {
     <section id="skills" className="py-16 md:py-24" aria-labelledby="skills-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          03 / Toolbox
+          05 / Toolbox
         </m.p>
         <m.h2 id="skills-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           Skills
@@ -72,32 +73,49 @@ export function Skills() {
   );
 }
 
+function Timeline() {
+  const ref = useRef<HTMLOListElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.7", "end 0.6"] });
+  const fill = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  return (
+    <ol ref={ref} className="relative mt-10 md:mt-14">
+      <span className="absolute bottom-0 left-[7px] top-2 w-px bg-rule" aria-hidden="true" />
+      <m.span
+        className="absolute bottom-0 left-[7px] top-2 w-px origin-top bg-signal"
+        style={{ scaleY: reduced ? 1 : fill }}
+        aria-hidden="true"
+      />
+      {timeline.map((t, i) => (
+        <m.li
+          key={t.title}
+          className="relative grid gap-2 py-8 pl-9 md:grid-cols-12 md:gap-8 md:pl-12"
+          {...reveal(i * 0.05)}
+        >
+          <span className="absolute left-0 top-10 h-[15px] w-[15px] rounded-full border border-signal bg-ink" aria-hidden="true" />
+          <p className="marker md:col-span-3 md:pt-2">{t.when}</p>
+          <div className="md:col-span-9">
+            <h3 className="text-3xl sm:text-4xl">{t.title}</h3>
+            <p className="mt-1 text-signal">{t.org}</p>
+            <p className="mt-3 max-w-xl text-paper-dim">{t.note}</p>
+          </div>
+        </m.li>
+      ))}
+    </ol>
+  );
+}
+
 export function Experience() {
   return (
     <section id="experience" className="py-16 md:py-24" aria-labelledby="exp-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          04 / Path
+          06 / Path
         </m.p>
         <m.h2 id="exp-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           Experience &amp; education
         </m.h2>
-        <ol className="mt-10 border-t hairline md:mt-14">
-          {timeline.map((t, i) => (
-            <m.li
-              key={t.title}
-              className="grid gap-2 border-b hairline py-8 md:grid-cols-12 md:gap-8"
-              {...reveal(i * 0.08)}
-            >
-              <p className="marker md:col-span-3 md:pt-2">{t.when}</p>
-              <div className="md:col-span-9">
-                <h3 className="text-3xl sm:text-4xl">{t.title}</h3>
-                <p className="mt-1 text-signal">{t.org}</p>
-                <p className="mt-3 max-w-xl text-paper-dim">{t.note}</p>
-              </div>
-            </m.li>
-          ))}
-        </ol>
+        <Timeline />
       </div>
     </section>
   );
@@ -114,7 +132,7 @@ export function Contact() {
     <section id="contact" className="py-16 md:py-28" aria-labelledby="contact-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          05 / Contact
+          07 / Contact
         </m.p>
         <m.h2
           id="contact-title"

@@ -1,5 +1,6 @@
-import { m } from "motion/react";
-import { useId, useState } from "react";
+import { m, useReducedMotion, useScroll, useTransform } from "motion/react";
+import type { MotionValue } from "motion/react";
+import { useId, useRef, useState } from "react";
 import { projects, type Project } from "../data";
 import { reveal } from "../presets";
 
@@ -29,13 +30,39 @@ function Stack({ items }: { items: string[] }) {
   );
 }
 
-function ProjectRow({ p, defaultOpen = false }: { p: Project; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
+function ProjectCard({
+  p,
+  i,
+  n,
+  progress,
+  stack,
+}: {
+  p: Project;
+  i: number;
+  n: number;
+  progress: MotionValue<number>;
+  stack: boolean;
+}) {
+  const [open, setOpen] = useState(false);
   const panelId = useId();
   const hasDetail = p.built.length > 0 || p.decisions.length > 0;
+  // As the next card slides over this one, this one settles back and dims.
+  const last = i === n - 1;
+  const scale = useTransform(progress, [i / n, 1], [1, last ? 1 : 1 - (n - 1 - i) * 0.035]);
+  const shade = useTransform(progress, [i / n, 1], [1, last ? 1 : 1 - (n - 1 - i) * 0.12]);
+  const filter = useTransform(shade, (v) => `brightness(${v})`);
 
   return (
-    <m.article className="border-t hairline py-8 md:py-12" aria-labelledby={`${panelId}-t`} {...reveal(0.02)}>
+    <div
+      className={stack ? "sticky" : undefined}
+      style={stack ? { top: `calc(5rem + ${i} * 0.9rem)`, zIndex: i + 1 } : undefined}
+    >
+      <m.article
+        className="stack-card origin-top rounded-2xl border hairline bg-ink-2 p-6 sm:p-8 md:p-12"
+        style={stack ? { scale, filter } : undefined}
+        aria-labelledby={`${panelId}-t`}
+        data-open={open}
+      >
       <div className="grid gap-5 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-2">
           <span className="font-display text-5xl leading-none text-signal md:text-6xl" aria-hidden="true">
@@ -115,29 +142,33 @@ function ProjectRow({ p, defaultOpen = false }: { p: Project; defaultOpen?: bool
           )}
         </div>
       </div>
-    </m.article>
+      </m.article>
+    </div>
   );
 }
 
 export default function Projects() {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const stack = !reduced;
   return (
     <section id="projects" className="py-16 md:py-24" aria-labelledby="projects-title">
       <div className="wrap">
         <div className="mb-10 flex items-end justify-between gap-6 md:mb-14">
           <div>
             <m.p className="marker" {...reveal(0)}>
-              02 / Selected work
+              03 / Selected work
             </m.p>
             <m.h2 id="projects-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
               Projects
             </m.h2>
           </div>
         </div>
-        <div>
+        <div ref={ref} className="space-y-6 md:space-y-10">
           {projects.map((p, i) => (
-            <ProjectRow key={p.id} p={p} defaultOpen={i === 0} />
+            <ProjectCard key={p.id} p={p} i={i} n={projects.length} progress={scrollYProgress} stack={stack} />
           ))}
-          <div className="border-t hairline" />
         </div>
       </div>
     </section>

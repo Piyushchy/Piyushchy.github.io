@@ -1,8 +1,8 @@
-import { m } from "motion/react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import type { CSSProperties } from "react";
 import { profile } from "../data";
-import { EASE } from "../presets";
+import { PrismaHero, WordsPullUp } from "./ui/prisma-hero";
 
 /**
  * Scroll-scrubbed hero. Engineering follows the 10k-websites scrub standard:
@@ -106,24 +106,13 @@ function Split({ text, fx, seed }: { text: string; fx: Fx; seed: number }) {
 }
 
 function Wordmark() {
-  const letters = [..."Piyush"];
   return (
-    <p className="wordmark" data-wordmark>
+    <div className="wordmark" data-wordmark>
       <span className="sr-only">Piyush Chaudhary</span>
-      <span aria-hidden="true" className="wm-clip">
-        {letters.map((l, i) => (
-          <m.span
-            key={i}
-            className="inline-block"
-            initial={{ y: "70%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.1 + i * 0.07, ease: EASE }}
-          >
-            {l}
-          </m.span>
-        ))}
+      <span aria-hidden="true">
+        <WordsPullUp text="Piyush" />
       </span>
-    </p>
+    </div>
   );
 }
 
@@ -131,14 +120,20 @@ function HeroLinks() {
   const { links } = profile;
   return (
     <>
-      <a href="#projects" className="tap bg-signal px-6 font-medium text-ink transition-colors hover:bg-paper">
+      <a
+        href="#projects"
+        className="group inline-flex items-center gap-2 self-start rounded-full bg-primary py-1 pl-5 pr-1 text-base font-medium text-black transition-all hover:gap-3"
+      >
         See the work
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-110">
+          <ArrowRight className="h-4 w-4 text-primary" aria-hidden="true" />
+        </span>
       </a>
       <a
         href={links.github}
         target="_blank"
         rel="noopener noreferrer"
-        className="tap border hairline-strong px-6 transition-colors hover:border-signal hover:text-signal"
+        className="inline-flex min-h-[44px] items-center rounded-full border border-primary/40 px-5 text-base text-primary transition-colors hover:border-primary"
       >
         GitHub<span className="sr-only"> (opens in a new tab)</span>
       </a>
@@ -468,16 +463,17 @@ export default function ScrubHero() {
 
       {/* Static hero: phones, portrait tablets, reduced motion */}
       <div className="hero-static">
-        <div ref={staticBgRef} className="hero-static-bg" aria-hidden="true" />
-        <div className="hero-static-scrim" aria-hidden="true" />
-        <div className="hero-static-body">
-          <h1 className="band-h1 static-h1">{HEADLINE}</h1>
-          <p className="band-sub static-sub">{profile.heroSub}</p>
-          <div className="band-cta">
-            <HeroLinks />
-          </div>
-          <Wordmark />
-        </div>
+        <PrismaHero
+          title="Piyush"
+          titleLabel="Piyush Chaudhary"
+          headline={HEADLINE}
+          description={profile.heroSub}
+          ctaLabel="See the work"
+          ctaHref="#projects"
+          secondaryLabel="GitHub"
+          secondaryHref={profile.links.github}
+          bgRef={staticBgRef}
+        />
       </div>
     </section>
   );

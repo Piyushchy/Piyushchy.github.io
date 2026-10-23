@@ -322,12 +322,6 @@
   pointer-events: none;
   user-select: none;
 }
-.wm-clip {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.2em;
-  padding-right: 0.06em;
-}
 
 /* 4. chips for small text over footage */
 .chip {
@@ -369,54 +363,6 @@
 }
 .video-loading .scroll-cue {
   opacity: 0;
-}
-
-/* static hero */
-.hero-static-bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: 60% center;
-}
-.hero-static {
-  background:
-    radial-gradient(60rem 36rem at 70% 20%, rgba(127, 214, 230, 0.1), transparent 60%),
-    var(--canvas);
-}
-.hero-static-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(5, 10, 12, 0.85) 0%, rgba(5, 10, 12, 0.55) 55%, rgba(5, 10, 12, 0.25) 100%);
-}
-.hero-static-body {
-  position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 6.5rem clamp(1.25rem, 5vw, 2.5rem) 0;
-  color: var(--text-primary);
-  text-shadow: var(--tshadow);
-}
-.hero-static-body a {
-  text-shadow: none;
-}
-.static-h1 {
-  font-size: clamp(2.1rem, 9.4vw, 3.6rem);
-  max-width: 18ch;
-}
-.static-sub {
-  max-width: 34rem;
-}
-.hero-static .wordmark {
-  position: relative;
-  left: auto;
-  bottom: auto;
-  margin-top: 1.5rem;
-  margin-left: -0.04em;
-  font-size: min(25vw, 22vh, 14rem);
-  text-shadow: none;
 }
 
 /* The five static-hero gates. Must match GATES in ScrubHero.tsx exactly. */
@@ -517,3 +463,78 @@ body.paused *::after {
 .band-1 .band-line {
   font-size: clamp(2rem, min(4.6vw, 7.4vh), 4.6rem);
 }
+
+/* Film grain for the Prisma hero overlay */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+/* ===================== Laptop showcase ===================== */
+.mac-wrap {
+  --mw: min(92vw, calc((100svh - 19rem) * 1.5), 1000px);
+  position: relative;
+  width: var(--mw);
+  perspective: 1800px;
+}
+.mac-lid {
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.mac-bezel {
+  position: relative;
+  border-radius: 14px 14px 4px 4px;
+  background: #060d10;
+  padding: 2.2% 2.2% 2.6%;
+  border: 1px solid rgba(230, 238, 238, 0.18);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+.mac-cam {
+  position: absolute;
+  top: 0.9%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: #1c2b32;
+}
+.mac-screen {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #0b161b;
+}
+.mac-base {
+  position: relative;
+  height: clamp(10px, 1.6vw, 16px);
+  width: 108%;
+  margin-left: -4%;
+  border-radius: 2px 2px 16px 16px;
+  background: linear-gradient(to bottom, #25363d, #121e24);
+  border: 1px solid rgba(230, 238, 238, 0.14);
+}
+.mac-notch {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 14%;
+  height: 55%;
+  transform: translateX(-50%);
+  border-radius: 0 0 8px 8px;
+  background: #0a1317;
+}
+.mac-glow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -24px;
+  height: 48px;
+  z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(127, 214, 230, 0.28), transparent 70%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+/* project cards: expanded card never outgrows the screen, so sticky stacking still works */
+.stack-card[data-open="true"] { max-height: calc(100svh - 7rem); overflow-y: auto; }

@@ -7,6 +7,7 @@ export default {
         ink: { DEFAULT: "#0a1317", 2: "#101c22", 3: "#16262d" },
         paper: { DEFAULT: "#e6eeee", dim: "#a3b3b8", faint: "#8a9ca1" },
         signal: { DEFAULT: "#7fd6e6", deep: "#5bbccf" },
+        primary: "rgb(230 238 238 / <alpha-value>)",
         rule: "rgba(230, 238, 238, 0.14)",
       },
       fontFamily: {

@@ -1,6 +1,8 @@
 import Activity from "./components/Activity";
 import Nav from "./components/Nav";
 import ScrubHero from "./components/ScrubHero";
+import Statement from "./components/Statement";
+import MacShowcase from "./components/MacShowcase";
 import Projects from "./components/Projects";
 import { About, Contact, Experience, Footer, Skills } from "./components/Sections";
 import { useEffect } from "react";
@@ -25,7 +27,9 @@ export default function App() {
       <Nav />
       <main id="main">
         <ScrubHero />
+        <Statement />
         <About />
+        <MacShowcase />
         <Projects />
         <Activity />
         <Skills />

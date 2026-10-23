@@ -1,5 +1,5 @@
-import { lazy, Suspense } from "react";
-import { m } from "motion/react";
+import { lazy, Suspense, useRef } from "react";
+import { m, useReducedMotion, useScroll, useTransform } from "motion/react";
 import raw from "../contributions.json";
 import { reveal } from "../presets";
 
@@ -16,11 +16,17 @@ const ContributionSkyline = lazy(() => import("./ui/contribution-skyline"));
 
 export default function Activity() {
   const real = data.length > 0;
+  const boxRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: boxRef, offset: ["start 0.95", "start 0.45"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1]);
+  const radius = useTransform(scrollYProgress, [0, 1], [32, 16]);
   return (
     <section id="activity" className="py-16 md:py-24" aria-labelledby="activity-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          Activity
+          04 / Activity
         </m.p>
         <m.h2 id="activity-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           A year on GitHub
@@ -30,7 +36,11 @@ export default function Activity() {
             Sample data for now. My real activity replaces it once my GitHub numbers are connected.
           </m.p>
         )}
-        <m.div className="mt-10" {...reveal(0.1)}>
+        <m.div
+          ref={boxRef}
+          className="mt-10 overflow-hidden border hairline bg-ink-2/60 p-3 sm:p-6"
+          style={reduced ? { borderRadius: 16 } : { scale, opacity, borderRadius: radius }}
+        >
           <Suspense fallback={<div className="h-[260px]" aria-hidden="true" />}>
             <div className="mx-auto w-full max-w-[980px]">
               <ContributionSkyline data={real ? data : undefined} />
