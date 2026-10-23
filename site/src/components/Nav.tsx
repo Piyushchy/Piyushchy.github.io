@@ -6,7 +6,7 @@ import { EASE } from "../presets";
 
 const LINKS = [
   { id: "about", label: "About" },
-  { id: "pipeline", label: "Pipeline" },
+  { id: "pipeline", label: "Up close" },
   { id: "projects", label: "Projects" },
   { id: "activity", label: "Activity" },
   { id: "skills", label: "Skills" },

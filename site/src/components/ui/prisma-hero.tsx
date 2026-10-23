@@ -112,6 +112,8 @@ export interface PrismaHeroProps {
   navItems?: { label: string; href: string }[];
   /** Optional background video, like the original. */
   videoSrc?: string;
+  /** Poster shown until the video can play. */
+  videoPoster?: string;
   /** Ref to the background layer so the caller can paint its image lazily. */
   bgRef?: Ref<HTMLDivElement>;
   showAsterisk?: boolean;
@@ -128,6 +130,7 @@ const PrismaHero = ({
   secondaryHref,
   navItems,
   videoSrc,
+  videoPoster,
   bgRef,
   showAsterisk = false,
 }: PrismaHeroProps) => {
@@ -138,11 +141,12 @@ const PrismaHero = ({
         {videoSrc && (
           <video
             autoPlay
-            loop
             muted
             playsInline
+            preload="auto"
+            poster={videoPoster}
             aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover object-[60%_center]"
             src={videoSrc}
           />
         )}

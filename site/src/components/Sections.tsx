@@ -2,7 +2,12 @@ import { m, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { about, learning, profile, skillGroups, timeline } from "../data";
 import { reveal } from "../presets";
-import ExtractFigure from "./ExtractFigure";
+
+const FACTS = [
+  ["Studying", "B.Tech Computer Engineering, K.J. Somaiya"],
+  ["Interning", "SBI Global IT Centre"],
+  ["Learning", "Cloud, NLP, and 3D for an anime project"],
+];
 
 export function About() {
   return (
@@ -13,11 +18,16 @@ export function About() {
             01 / About
           </m.p>
           <m.h2 id="about-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
-            Where things <span className="text-signal">break</span>, I look.
+            Hi, I'm <span className="text-signal">Piyush</span>.
           </m.h2>
-          <m.div className="mt-10 max-w-[22rem]" {...reveal(0.12, 20)}>
-            <ExtractFigure />
-          </m.div>
+          <m.dl className="mt-10 max-w-[22rem] border-t hairline" {...reveal(0.12, 20)}>
+            {FACTS.map(([k, v]) => (
+              <div key={k} className="grid grid-cols-[6rem_1fr] gap-3 border-b hairline py-3">
+                <dt className="marker pt-0.5">{k}</dt>
+                <dd className="text-paper-dim">{v}</dd>
+              </div>
+            ))}
+          </m.dl>
         </div>
         <div className="space-y-6 text-paper-dim sm:text-lg md:col-span-6 md:col-start-7">
           {about.map((para, i) => (

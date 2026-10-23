@@ -10,9 +10,9 @@ export const profile = {
   name: "Piyush Chaudhary",
   shortName: "Piyush",
   role: "Computer Engineering student & software developer",
-  headline: "I turn messy documents into structured data.",
+  headline: "I build things, then write down what broke.",
   heroSub:
-    "Computer engineering student at K.J. Somaiya. Intern at SBI Global IT Centre, building a pipeline that pulls tables out of scanned telecom audit PDFs.",
+    "Computer engineering student at K.J. Somaiya, interning at SBI Global IT Centre. Document processing, cloud apps, and a few things that talk to real hardware.",
   intro:
     "B.Tech Computer Engineering student at K.J. Somaiya College of Engineering. I'm currently an intern at SBI Global IT Centre, building a production pipeline that pulls tables out of scanned telecom audit PDFs.",
   location: "", // e.g. "Mumbai, India" (optional)
@@ -24,7 +24,7 @@ export const profile = {
   },
   siteUrl: "https://piyushchy.github.io",
   description:
-    "Portfolio of Piyush Chaudhary, a Computer Engineering student and software developer working on document AI, computer vision and cloud-native apps.",
+    "Portfolio of Piyush Chaudhary, a Computer Engineering student and software developer building document-processing, cloud and mobile projects.",
 };
 
 export type Project = {
@@ -164,7 +164,7 @@ export const learning = {
 };
 
 export const about = [
-  "I like problems where the input is awkward: scans with skew and speckle, tables with merged cells, models that confidently make things up. Most of my time goes into finding where a system breaks and putting a guard there.",
-  "My internship project went through more than a dozen notebook versions, three different architectures and a 16-page report. Each version exists because the previous one failed on a real page, and I keep the bugs I haven't fixed written down.",
-  "Outside that, I build things that touch real hardware and real networks (a PC-to-phone input bridge, a containerized app on AWS) and I'm learning 3D to make an anime project.",
+  "I'm a computer engineering student at K.J. Somaiya College of Engineering. I like building a thing all the way through, from a rough first version to one that holds up on real input.",
+  "Lately that has meant a document-extraction pipeline at SBI Global IT Centre, a tool that shares a PC's mouse and keyboard with an Android phone, an RNN vs LSTM comparison, and a containerized app on AWS.",
+  "I keep notes on what went wrong in each project, because that's where most of what I've learned came from. Outside code, I'm learning 3D to make an anime project.",
 ];

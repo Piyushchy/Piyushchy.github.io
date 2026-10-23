@@ -259,9 +259,9 @@ export default function MacShowcase() {
     return (
       <section id="pipeline" className="py-16 md:py-24" aria-labelledby="pipeline-title">
         <div className="wrap">
-          <p className="marker">02 / Pipeline</p>
+          <p className="marker">02 / One project up close</p>
           <h2 id="pipeline-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl">
-            How a scan becomes a table
+            Up close: the table extractor
           </h2>
           <div className="mt-10 flex justify-center">
             <Laptop p={p} />
@@ -281,12 +281,12 @@ export default function MacShowcase() {
   }
 
   return (
-    <section ref={ref} id="pipeline" className="relative h-[480vh]" aria-labelledby="pipeline-title">
+    <section ref={ref} id="pipeline" className="relative h-[300vh]" aria-labelledby="pipeline-title">
       <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center gap-5 overflow-hidden px-4 pt-14 sm:gap-7">
         <div className="text-center">
-          <p className="marker">02 / Pipeline</p>
+          <p className="marker">02 / One project up close</p>
           <h2 id="pipeline-title" className="sr-only">
-            How a scan becomes a table
+            Up close: the table extractor
           </h2>
         </div>
         <div className="relative h-[clamp(5.5rem,15svh,8rem)] w-full max-w-4xl">
