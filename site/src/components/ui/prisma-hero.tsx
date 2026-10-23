@@ -1,7 +1,7 @@
 import { m as motion, useInView } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
-import type { CSSProperties, Ref } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
 
 /*
  * PrismaHero, integrated from the supplied component.
@@ -110,6 +110,8 @@ export interface PrismaHeroProps {
   secondaryHref?: string;
   /** Optional pill nav like the original. The site already has a header, so it is off by default. */
   navItems?: { label: string; href: string }[];
+  /** Optional element drawn behind the copy (a canvas, an image). */
+  backdrop?: ReactNode;
   /** Optional background video, like the original. */
   videoSrc?: string;
   /** Poster shown until the video can play. */
@@ -131,6 +133,7 @@ const PrismaHero = ({
   navItems,
   videoSrc,
   videoPoster,
+  backdrop,
   bgRef,
   showAsterisk = false,
 }: PrismaHeroProps) => {
@@ -150,6 +153,7 @@ const PrismaHero = ({
             src={videoSrc}
           />
         )}
+        {backdrop}
         {/* Background image, painted by the caller */}
         <div ref={bgRef} aria-hidden="true" className="absolute inset-0 bg-cover bg-[60%_center]" />
 

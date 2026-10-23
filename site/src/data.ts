@@ -9,12 +9,12 @@
 export const profile = {
   name: "Piyush Chaudhary",
   shortName: "Piyush",
-  role: "Computer Engineering student & software developer",
+  role: "Final-year Computer Engineering student & software developer",
   headline: "I build things, then write down what broke.",
   heroSub:
-    "Computer engineering student at K.J. Somaiya, interning at SBI Global IT Centre. Document processing, cloud apps, and a few things that talk to real hardware.",
+    "Final-year computer engineering student at K.J. Somaiya. Internships at Mazagon Dock and SBI Global IT Centre. Document processing, cloud apps, and a few things that talk to real hardware.",
   intro:
-    "B.Tech Computer Engineering student at K.J. Somaiya College of Engineering. I'm currently an intern at SBI Global IT Centre, building a production pipeline that pulls tables out of scanned telecom audit PDFs.",
+    "Final-year B.Tech Computer Engineering student at K.J. Somaiya College of Engineering. I've interned at Mazagon Dock and I'm currently an intern at SBI Global IT Centre, building a production pipeline that pulls tables out of scanned telecom audit PDFs.",
   location: "", // e.g. "Mumbai, India" (optional)
   links: {
     github: "https://github.com/Piyushchy",
@@ -151,7 +151,13 @@ export const timeline: { when: string; title: string; org: string; note: string 
     note: "Building a production pipeline to extract structured tables from scanned telecom audit PDFs.",
   },
   {
-    when: "Ongoing",
+    when: "Internship",
+    title: "Intern",
+    org: "Mazagon Dock Shipbuilders Limited",
+    note: "",
+  },
+  {
+    when: "4th year",
     title: "B.Tech, Computer Engineering",
     org: "K.J. Somaiya College of Engineering",
     note: "Coursework across NLP, cloud computing, AR/VR, and network and information security.",
@@ -164,7 +170,7 @@ export const learning = {
 };
 
 export const about = [
-  "I'm a computer engineering student at K.J. Somaiya College of Engineering. I like building a thing all the way through, from a rough first version to one that holds up on real input.",
-  "Lately that has meant a document-extraction pipeline at SBI Global IT Centre, a tool that shares a PC's mouse and keyboard with an Android phone, an RNN vs LSTM comparison, and a containerized app on AWS.",
+  "I'm a final-year computer engineering student at K.J. Somaiya College of Engineering. I like building a thing all the way through, from a rough first version to one that holds up on real input.",
+  "Lately that has meant two internships, Mazagon Dock and SBI Global IT Centre (where I'm building a document-extraction pipeline), plus a tool that shares a PC's mouse and keyboard with an Android phone, an RNN vs LSTM comparison, and a containerized app on AWS.",
   "I keep notes on what went wrong in each project, because that's where most of what I've learned came from. Outside code, I'm learning 3D to make an anime project.",
 ];

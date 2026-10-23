@@ -4,8 +4,8 @@ import { about, learning, profile, skillGroups, timeline } from "../data";
 import { reveal } from "../presets";
 
 const FACTS = [
-  ["Studying", "B.Tech Computer Engineering, K.J. Somaiya"],
-  ["Interning", "SBI Global IT Centre"],
+  ["Studying", "B.Tech Computer Engineering, 4th year, K.J. Somaiya"],
+  ["Internships", "Mazagon Dock, SBI Global IT Centre"],
   ["Learning", "Cloud, NLP, and 3D for an anime project"],
 ];
 
@@ -107,7 +107,7 @@ function Timeline() {
           <div className="md:col-span-9">
             <h3 className="text-3xl sm:text-4xl">{t.title}</h3>
             <p className="mt-1 text-signal">{t.org}</p>
-            <p className="mt-3 max-w-xl text-paper-dim">{t.note}</p>
+            {t.note && <p className="mt-3 max-w-xl text-paper-dim">{t.note}</p>}
           </div>
         </m.li>
       ))}
