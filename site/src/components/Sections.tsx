@@ -1,5 +1,6 @@
 import { m, useInView, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
+import LensAvatar from "./ui/lens-avatar";
 import OrderField from "./ui/order-field";
 import { about, profile, timeline } from "../data";
 import { reveal } from "../presets";
@@ -21,14 +22,10 @@ export function About() {
           <m.h2 id="about-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
             Hi, I'm <span className="text-signal">Piyush</span>.
           </m.h2>
-          <m.dl className="mt-10 max-w-[22rem] border-t hairline" {...reveal(0.12, 20)}>
-            {FACTS.map(([k, v]) => (
-              <div key={k} className="grid grid-cols-[6rem_1fr] gap-3 border-b hairline py-3">
-                <dt className="marker pt-0.5">{k}</dt>
-                <dd className="text-paper-dim">{v}</dd>
-              </div>
-            ))}
-          </m.dl>
+          <m.div className="mt-10" {...reveal(0.12, 20)}>
+            <LensAvatar />
+            <p className="marker mt-4 max-w-[24rem]">Move your cursor. It's looking.</p>
+          </m.div>
         </div>
         <div className="space-y-6 text-paper-dim sm:text-lg md:col-span-6 md:col-start-7">
           {about.map((para, i) => (
@@ -36,6 +33,14 @@ export function About() {
               {para}
             </m.p>
           ))}
+          <m.dl className="max-w-md border-t hairline pt-2 text-base" {...reveal(0.1)}>
+            {FACTS.map(([k, v]) => (
+              <div key={k} className="grid grid-cols-[6.5rem_1fr] gap-3 border-b hairline py-3">
+                <dt className="marker pt-0.5">{k}</dt>
+                <dd className="text-paper-dim">{v}</dd>
+              </div>
+            ))}
+          </m.dl>
         </div>
       </div>
     </section>

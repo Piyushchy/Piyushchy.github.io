@@ -62,6 +62,11 @@ function ProjectCard({
         style={stack ? { scale, filter } : undefined}
         aria-labelledby={`${panelId}-t`}
         data-open={open}
+        onPointerMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          e.currentTarget.style.setProperty("--sx", `${e.clientX - r.left}px`);
+          e.currentTarget.style.setProperty("--sy", `${e.clientY - r.top}px`);
+        }}
       >
       <div className="grid gap-5 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-2">

@@ -629,3 +629,29 @@ body.paused *::after {
   .sc-laptop { width: 100%; top: 0; transform: none; }
   .sc-phone { left: 35%; top: 62%; width: 30%; translate: 0 0; }
 }
+
+/* ===================== Lens avatar + card spotlight ===================== */
+.lens-wrap { width: 100%; max-width: 24rem; aspect-ratio: 1; perspective: 900px; }
+.lens-tilt { width: 100%; height: 100%; transform-style: preserve-3d; will-change: transform; }
+.lens-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 24px 40px rgba(0, 0, 0, .55)); }
+.lens-spin { transform-origin: 200px 200px; animation: lens-spin 80s linear infinite; }
+@keyframes lens-spin { to { transform: rotate(360deg); } }
+body.paused .lens-spin { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .lens-spin { animation: none; } }
+
+.stack-card { position: relative; isolation: isolate; }
+.stack-card > * { position: relative; z-index: 1; }
+.stack-card::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(460px circle at var(--sx, 50%) var(--sy, 0%), rgba(127, 214, 230, .13), transparent 60%);
+  opacity: 0; transition: opacity .35s;
+}
+.stack-card:hover::before { opacity: 1; }
+.stack-card::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; padding: 1px;
+  background: radial-gradient(260px circle at var(--sx, 50%) var(--sy, 0%), rgba(127, 214, 230, .75), transparent 65%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0; transition: opacity .35s;
+}
+.stack-card:hover::after { opacity: 1; }
