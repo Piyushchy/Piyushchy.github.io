@@ -1,10 +1,11 @@
 import Activity from "./components/Activity";
 import Nav from "./components/Nav";
 import Story from "./components/Story";
-import MacShowcase from "./components/MacShowcase";
+import Showcase from "./components/Showcase";
 import MouseShareDemo from "./components/MouseShareDemo";
 import Projects from "./components/Projects";
-import { About, Contact, Experience, Footer, Skills } from "./components/Sections";
+import Skills from "./components/Skills";
+import { About, Contact, Experience, Footer } from "./components/Sections";
 import { useEffect } from "react";
 import { MotionRoot } from "./motion";
 
@@ -28,7 +29,7 @@ export default function App() {
       <main id="main">
         <Story />
         <About />
-        <MacShowcase />
+        <Showcase />
         <MouseShareDemo />
         <Projects />
         <Activity />

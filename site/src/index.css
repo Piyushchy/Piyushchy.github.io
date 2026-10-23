@@ -604,3 +604,28 @@ body.paused *::after {
 .ms-note-title { font-size: 7cqw; line-height: 1.15; color: #e6e1e5; padding-bottom: 3cqw; border-bottom: 1px solid rgba(255,255,255,.1); }
 .ms-note-text { margin-top: 3.4cqw; font-size: 6cqw; line-height: 1.4; color: #cac4d0; white-space: pre-wrap; word-break: break-word; }
 .ms-nav { display: flex; justify-content: space-around; align-items: center; padding: 3.4cqw 12cqw 4.6cqw; font-size: 6cqw; }
+
+/* ===================== Projects film ===================== */
+.mac-screen { position: relative; }
+.sc-win { position: absolute; inset: 0; container-type: inline-size; }
+.sc-stage { position: relative; flex: 1; width: 100%; max-width: 72rem; min-height: 0; }
+.sc-exit { position: absolute; inset: 0; display: grid; place-items: center; }
+.sc-rig { position: relative; width: min(100%, calc((100svh - 17rem) * 2.1)); aspect-ratio: 2 / 1; transform-origin: 31% 50%; perspective: 1800px; }
+.sc-laptop { position: absolute; left: 0; top: 50%; width: 62%; transform: translateY(-50%); }
+.sc-laptop .mac-wrap { --mw: 100%; }
+.sc-phone { position: absolute; left: 73%; top: 50%; width: 20%; translate: 0 -50%; transform-origin: 0% 50%; }
+.sc-cursor { position: absolute; z-index: 5; margin: -3px 0 0 -3px; pointer-events: none; }
+.sc-cursor-ph { margin: -15px 0 0 -15px; }
+.sc-caret-pc, .sc-caret-ph { display: none; }
+.sc-orb { position: absolute; z-index: 6; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #7fd6e6; box-shadow: 0 0 0 6px rgba(127,214,230,.25), 0 0 26px 8px rgba(127,214,230,.6); }
+.sc-panel { position: absolute; inset: 0; margin: auto; width: min(94%, calc((100svh - 17rem) * 1.6)); aspect-ratio: 16 / 10; display: flex; flex-direction: column; background: #0b161b; border: 1px solid rgba(230,238,238,.2); border-radius: 14px; box-shadow: 0 40px 100px -40px rgba(0,0,0,.9), 0 0 0 1px rgba(127,214,230,.06); overflow: hidden; height: min(100%, 36rem); }
+.sc-panel-bar { position: relative; display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 34px; background: #0f1d23; border-bottom: 1px solid rgba(230,238,238,.1); }
+.sc-panel-bar > span { width: 9px; height: 9px; border-radius: 50%; background: rgba(230,238,238,.2); }
+.sc-panel-title { position: absolute; inset: 0; display: grid; place-items: center; font: 400 .7rem/1 "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--text-secondary); pointer-events: none; }
+.sc-panel-title b { grid-area: 1 / 1; font-weight: 400; }
+.sc-panel-body { position: relative; flex: 1; min-height: 0; }
+@media (max-width: 767px) {
+  .sc-rig { width: 100%; aspect-ratio: 1 / 1.1; transform-origin: 50% 25%; }
+  .sc-laptop { width: 100%; top: 0; transform: none; }
+  .sc-phone { left: 35%; top: 62%; width: 30%; translate: 0 0; }
+}

@@ -1,6 +1,7 @@
 import { m, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
 import type { MotionValue } from "motion/react";
 import { useRef } from "react";
+import type { ReactNode } from "react";
 
 /**
  * Scroll-driven product showcase. The section pins to the viewport, a laptop
@@ -226,7 +227,7 @@ function Screen({ p }: { p: MotionValue<number> }) {
   );
 }
 
-function Laptop({ p }: { p: MotionValue<number> }) {
+export function Laptop({ p, extra }: { p: MotionValue<number>; extra?: ReactNode }) {
   const rotateX = useTransform(p, [0, 0.16], [86, 0]);
   const scale = useTransform(p, [0, 0.16], [0.86, 1]);
   const glow = useTransform(p, [0.1, 0.22], [0, 1]);
@@ -237,6 +238,7 @@ function Laptop({ p }: { p: MotionValue<number> }) {
           <span className="mac-cam" />
           <div className="mac-screen">
             <Screen p={p} />
+            {extra}
           </div>
         </div>
       </m.div>
