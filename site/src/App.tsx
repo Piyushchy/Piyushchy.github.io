@@ -2,6 +2,7 @@ import Activity from "./components/Activity";
 import Nav from "./components/Nav";
 import Story from "./components/Story";
 import MacShowcase from "./components/MacShowcase";
+import MouseShareDemo from "./components/MouseShareDemo";
 import Projects from "./components/Projects";
 import { About, Contact, Experience, Footer, Skills } from "./components/Sections";
 import { useEffect } from "react";
@@ -28,6 +29,7 @@ export default function App() {
         <Story />
         <About />
         <MacShowcase />
+        <MouseShareDemo />
         <Projects />
         <Activity />
         <Skills />

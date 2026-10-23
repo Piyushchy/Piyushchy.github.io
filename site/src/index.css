@@ -538,3 +538,69 @@ body.paused *::after {
 
 /* project cards: expanded card never outgrows the screen, so sticky stacking still works */
 .stack-card[data-open="true"] { max-height: calc(100svh - 7rem); overflow-y: auto; }
+
+/* ===================== MouseShare demo ===================== */
+.ms-stage { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; max-width: 62rem; }
+@media (min-width: 768px) { .ms-stage { flex-direction: row; justify-content: center; gap: 0; } }
+.ms-pc-wrap { width: 100%; }
+.ms-phone-wrap { width: 46%; max-width: 15rem; }
+@media (min-width: 768px) { .ms-pc-wrap { width: 58%; } .ms-phone-wrap { width: 24%; max-width: none; } }
+.ms-link { position: relative; display: none; flex: 1; height: 2px; align-self: center; margin-bottom: 2rem; min-width: 2rem; }
+@media (min-width: 768px) { .ms-link { display: block; } }
+.ms-link-line { position: absolute; inset: 0; border-top: 2px dashed rgba(127, 214, 230, 0.28); transition: border-color .25s; }
+.ms-link[data-live="true"] .ms-link-line { border-color: rgba(127, 214, 230, 0.9); }
+.ms-link-dot { position: absolute; top: -3px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: #7fd6e6; opacity: 0; }
+.ms-link[data-live="true"] .ms-link-dot { opacity: 1; animation: ms-travel 0.9s linear infinite; }
+@keyframes ms-travel { from { left: 0; } to { left: calc(100% - 8px); } }
+
+.ms-tag { display: flex; flex-wrap: wrap; justify-content: center; text-align: center; white-space: nowrap; gap: .3rem .6rem; margin-top: .9rem; font: 400 .72rem/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--text-secondary); }
+.ms-tag b { font-weight: 400; color: #7fd6e6; }
+
+.ms-cursor { position: absolute; left: 0; top: 0; z-index: 20; pointer-events: none; opacity: 0; will-change: transform; }
+.ms-cursor[data-shown="true"] { opacity: 1; }
+.ms-cursor[data-glide="true"] { transition: transform 0.95s cubic-bezier(.6,.05,.25,1), opacity .2s; }
+.ms-cursor[data-region="pc"] svg { transform: translate(-3px, -2px); }
+.ms-cursor[data-region="phone"] svg { transform: translate(-15px, -15px); }
+.ms-orb { display: block; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #7fd6e6; box-shadow: 0 0 0 5px rgba(127,214,230,.25), 0 0 22px 6px rgba(127,214,230,.55); }
+@media (hover: hover) and (pointer: fine) { .ms-stage { cursor: none; } .ms-stage button { cursor: pointer; } }
+.ms-input { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; font-size: 16px; pointer-events: none; }
+
+.ms-caret { display: inline-block; width: .09em; height: 1.05em; margin-left: 1px; vertical-align: text-bottom; background: currentColor; animation: ms-blink 1s steps(1) infinite; }
+@keyframes ms-blink { 50% { opacity: 0; } }
+
+/* Windows PC */
+.ms-pc { container-type: inline-size; transition: filter .3s; }
+.ms-pc-bezel { background: #0b0f12; border: 1px solid rgba(230,238,238,.2); border-radius: 1.6cqw; padding: 1.2cqw; transition: box-shadow .3s, border-color .3s; }
+.ms-pc[data-active="true"] .ms-pc-bezel { border-color: rgba(127,214,230,.7); box-shadow: 0 0 0 1px rgba(127,214,230,.35), 0 20px 60px -20px rgba(127,214,230,.35); }
+.ms-pc-screen { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: .8cqw; background: radial-gradient(120% 90% at 18% 8%, #2a74c5, #0c2f5d 52%, #06142a); font-family: "Segoe UI", system-ui, sans-serif; touch-action: manipulation; }
+.ms-win-bloom { position: absolute; left: 24%; top: 6%; width: 52%; height: 70%; border-radius: 40%; background: conic-gradient(from 210deg, rgba(90,190,255,.55), rgba(40,90,200,.15), rgba(150,120,255,.35), rgba(90,190,255,.55)); filter: blur(5cqw); opacity: .8; transform: rotate(-18deg); }
+.ms-notepad { position: absolute; left: 14%; top: 10%; width: 72%; height: 66%; display: flex; flex-direction: column; background: #202020; border: 1px solid rgba(255,255,255,.14); border-radius: .9cqw; box-shadow: 0 1.4cqw 3cqw rgba(0,0,0,.5); overflow: hidden; color: #fff; }
+.ms-np-title { display: flex; justify-content: space-between; align-items: center; padding: .7cqw 1cqw .7cqw 1.4cqw; font-size: 1.55cqw; background: #2b2b2b; }
+.ms-np-ctl { display: flex; gap: 1.6cqw; color: #ddd; font-style: normal; }
+.ms-np-ctl i { font-style: normal; }
+.ms-np-menu { display: flex; gap: 1.8cqw; padding: .5cqw 1.4cqw; font-size: 1.45cqw; color: #ddd; border-bottom: 1px solid rgba(255,255,255,.08); }
+.ms-np-text { flex: 1; padding: 1.2cqw 1.6cqw; font: 400 2cqw/1.45 Consolas, "Cascadia Mono", monospace; white-space: pre-wrap; word-break: break-word; overflow: hidden; }
+.ms-taskbar { position: absolute; left: 0; right: 0; bottom: 0; height: 8.4%; display: flex; align-items: center; justify-content: space-between; padding: 0 1.4cqw; background: rgba(28,28,30,.88); backdrop-filter: blur(6px); border-top: 1px solid rgba(255,255,255,.08); font-size: 2.3cqw; color: #fff; }
+.ms-tb-center { display: flex; align-items: center; gap: 1.4cqw; }
+.ms-tb-search { width: 9cqw; height: 2.6cqw; border-radius: 1.4cqw; background: rgba(255,255,255,.14); }
+.ms-tb-dot { width: 2.2cqw; height: 2.2cqw; border-radius: .6cqw; }
+.ms-tb-right { display: flex; flex-direction: column; align-items: flex-end; font-size: 1.15cqw; line-height: 1.25; color: #ddd; }
+.ms-tb-left { width: 8cqw; }
+.ms-pc-neck { width: 9%; height: 3.2cqw; margin: 0 auto; background: linear-gradient(#1a2328, #0f171b); }
+.ms-pc-foot { width: 26%; height: 1cqw; margin: 0 auto; border-radius: 1cqw 1cqw .4cqw .4cqw; background: #1a2328; border: 1px solid rgba(230,238,238,.12); }
+
+/* Android phone */
+.ms-phone { position: relative; container-type: inline-size; }
+.ms-phone-btn { position: absolute; right: -1.2cqw; top: 22%; width: 1.2cqw; height: 14%; border-radius: 0 .8cqw .8cqw 0; background: #1c262b; }
+.ms-phone-body { background: #05080a; border: 1px solid rgba(230,238,238,.22); border-radius: 13cqw; padding: 3.4cqw; transition: box-shadow .3s, border-color .3s; }
+.ms-phone[data-active="true"] .ms-phone-body { border-color: rgba(127,214,230,.7); box-shadow: 0 0 0 1px rgba(127,214,230,.35), 0 20px 60px -20px rgba(127,214,230,.35); }
+.ms-phone-screen { position: relative; aspect-ratio: 9 / 19; overflow: hidden; border-radius: 10cqw; background: #1c1b1f; color: #e6e1e5; font-family: Roboto, system-ui, sans-serif; display: flex; flex-direction: column; touch-action: manipulation; }
+.ms-hole { position: absolute; left: 50%; top: 2.6cqw; width: 4.4cqw; height: 4.4cqw; margin-left: -2.2cqw; border-radius: 50%; background: #000; box-shadow: 0 0 0 .5cqw #111; z-index: 2; }
+.ms-status { display: flex; justify-content: space-between; align-items: center; padding: 3cqw 9cqw 0; font-size: 5.2cqw; }
+.ms-status-ic { display: flex; gap: 2cqw; align-items: center; }
+.ms-appbar { display: flex; align-items: center; gap: 4cqw; padding: 5cqw 6cqw 3cqw; font-size: 6cqw; }
+.ms-appbar-title { flex: 1; font-size: 5.6cqw; }
+.ms-note { flex: 1; padding: 3cqw 7cqw; overflow: hidden; }
+.ms-note-title { font-size: 7cqw; line-height: 1.15; color: #e6e1e5; padding-bottom: 3cqw; border-bottom: 1px solid rgba(255,255,255,.1); }
+.ms-note-text { margin-top: 3.4cqw; font-size: 6cqw; line-height: 1.4; color: #cac4d0; white-space: pre-wrap; word-break: break-word; }
+.ms-nav { display: flex; justify-content: space-around; align-items: center; padding: 3.4cqw 12cqw 4.6cqw; font-size: 6cqw; }

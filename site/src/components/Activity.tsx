@@ -26,7 +26,7 @@ export default function Activity() {
     <section id="activity" className="py-16 md:py-24" aria-labelledby="activity-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          04 / Activity
+          05 / Activity
         </m.p>
         <m.h2 id="activity-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           A year on GitHub

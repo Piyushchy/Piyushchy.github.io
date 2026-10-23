@@ -158,7 +158,7 @@ export default function Projects() {
         <div className="mb-10 flex items-end justify-between gap-6 md:mb-14">
           <div>
             <m.p className="marker" {...reveal(0)}>
-              03 / Selected work
+              04 / Selected work
             </m.p>
             <m.h2 id="projects-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
               Projects

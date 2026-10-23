@@ -46,7 +46,7 @@ export function Skills() {
     <section id="skills" className="py-16 md:py-24" aria-labelledby="skills-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          05 / Toolbox
+          06 / Toolbox
         </m.p>
         <m.h2 id="skills-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           Skills
@@ -120,7 +120,7 @@ export function Experience() {
     <section id="experience" className="py-16 md:py-24" aria-labelledby="exp-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          06 / Path
+          07 / Path
         </m.p>
         <m.h2 id="exp-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
           Experience &amp; education
@@ -142,7 +142,7 @@ export function Contact() {
     <section id="contact" className="py-16 md:py-28" aria-labelledby="contact-title">
       <div className="wrap">
         <m.p className="marker" {...reveal(0)}>
-          07 / Contact
+          08 / Contact
         </m.p>
         <m.h2
           id="contact-title"
