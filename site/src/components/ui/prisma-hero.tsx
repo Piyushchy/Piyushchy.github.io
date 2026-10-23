@@ -1,4 +1,5 @@
 import { m as motion, useInView } from "motion/react";
+import type { MotionStyle } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import type { CSSProperties, ReactNode, Ref } from "react";
@@ -112,6 +113,10 @@ export interface PrismaHeroProps {
   navItems?: { label: string; href: string }[];
   /** Optional element drawn behind the copy (a canvas, an image). */
   backdrop?: ReactNode;
+  /** Style (motion values allowed) for the copy block, so a caller can fade it out on scroll. */
+  contentStyle?: MotionStyle;
+  /** Style for the legibility scrim behind the copy. */
+  scrimStyle?: MotionStyle;
   /** Optional background video, like the original. */
   videoSrc?: string;
   /** Poster shown until the video can play. */
@@ -134,6 +139,8 @@ const PrismaHero = ({
   videoSrc,
   videoPoster,
   backdrop,
+  contentStyle,
+  scrimStyle,
   bgRef,
   showAsterisk = false,
 }: PrismaHeroProps) => {
@@ -163,7 +170,7 @@ const PrismaHero = ({
         {/* Gradient overlay */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
         {/* Legibility scrim for the copy */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
+        <motion.div style={scrimStyle} className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
 
         {/* Navbar */}
         {navItems && navItems.length > 0 && (
@@ -183,7 +190,7 @@ const PrismaHero = ({
         )}
 
         {/* Hero content */}
-        <div className="absolute bottom-0 left-0 right-0 px-4 pb-2 sm:px-6 md:px-10">
+        <motion.div style={contentStyle} className="absolute bottom-0 left-0 right-0 px-4 pb-2 sm:px-6 md:px-10">
           <div className="grid grid-cols-12 items-end gap-4">
             <div className="col-span-12 lg:col-span-8">
               {headline ? (
@@ -248,7 +255,7 @@ const PrismaHero = ({
               </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

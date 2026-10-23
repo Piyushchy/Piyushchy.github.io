@@ -1,6 +1,6 @@
 import Activity from "./components/Activity";
 import Nav from "./components/Nav";
-import Hero from "./components/Hero";
+import Story from "./components/Story";
 import MacShowcase from "./components/MacShowcase";
 import Projects from "./components/Projects";
 import { About, Contact, Experience, Footer, Skills } from "./components/Sections";
@@ -25,7 +25,7 @@ export default function App() {
       <div className="page-grid" aria-hidden="true" />
       <Nav />
       <main id="main">
-        <Hero />
+        <Story />
         <About />
         <MacShowcase />
         <Projects />
