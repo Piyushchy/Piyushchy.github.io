@@ -1,5 +1,5 @@
-@import "@fontsource/instrument-serif/latin-400.css";
-@import "@fontsource/instrument-serif/latin-400-italic.css";
+@import "@fontsource/bricolage-grotesque/latin-500.css";
+@import "@fontsource/bricolage-grotesque/latin-700.css";
 @import "@fontsource/ibm-plex-sans/latin-400.css";
 @import "@fontsource/ibm-plex-sans/latin-500.css";
 @import "@fontsource/ibm-plex-mono/latin-400.css";
@@ -13,10 +13,10 @@
   color-scheme: dark;
   --safe-top: env(safe-area-inset-top, 0px);
   /* Semantic tokens used by the Contribution Skyline component */
-  --color-background: #0c0d10;
-  --color-foreground: #ece7dc;
-  --color-border: rgba(236, 231, 220, 0.14);
-  --color-muted-foreground: #a9a597;
+  --color-background: #0a1317;
+  --color-foreground: #e6eeee;
+  --color-border: rgba(230, 238, 238, 0.14);
+  --color-muted-foreground: #a3b3b8;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -25,7 +25,7 @@
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
-    background: #0c0d10;
+    background: #0a1317;
   }
   body {
     @apply bg-ink font-sans text-paper antialiased;
@@ -34,19 +34,19 @@
     overflow-x: hidden;
   }
   ::selection {
-    background: #ff6a3d;
-    color: #0c0d10;
+    background: #7fd6e6;
+    color: #0a1317;
   }
   :focus-visible {
-    outline: 2px solid #ff6a3d;
+    outline: 2px solid #7fd6e6;
     outline-offset: 3px;
     border-radius: 2px;
   }
   h1,
   h2,
   h3 {
-    @apply font-serif font-normal;
-    letter-spacing: -0.015em;
+    @apply font-display font-medium;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
   p {
@@ -70,7 +70,7 @@
     }
   }
   .hairline {
-    border-color: rgba(236, 231, 220, 0.14);
+    border-color: rgba(230, 238, 238, 0.14);
   }
   .tap {
     @apply inline-flex min-h-[44px] items-center;
@@ -94,8 +94,8 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(60rem 38rem at 85% -10%, rgba(255, 106, 61, 0.07), transparent 60%),
-    radial-gradient(48rem 30rem at -10% 40%, rgba(236, 231, 220, 0.035), transparent 60%);
+    radial-gradient(60rem 38rem at 85% -10%, rgba(127, 214, 230, 0.07), transparent 60%),
+    radial-gradient(48rem 30rem at -10% 40%, rgba(230, 238, 238, 0.035), transparent 60%);
 }
 .page-grid {
   position: fixed;
@@ -104,40 +104,10 @@
   pointer-events: none;
   opacity: 0.55;
   background-image:
-    linear-gradient(to right, rgba(236, 231, 220, 0.045) 1px, transparent 1px);
+    linear-gradient(to right, rgba(230, 238, 238, 0.045) 1px, transparent 1px);
   background-size: calc(100% / 12) 100%;
   mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
-}
-
-/* Hero scan figure animation */
-@keyframes scan-sweep {
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  to {
-    transform: translateY(var(--sweep, 440px));
-    opacity: 0;
-  }
-}
-@keyframes cell-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-.scan-line {
-  animation: scan-sweep 2.6s cubic-bezier(0.45, 0, 0.2, 1) 0.4s both;
-}
-.cell-box {
-  animation: cell-in 0.45s ease-out both;
-  animation-delay: var(--cd, 0ms);
 }
 
 /* Case study expand: height animates between 0fr and 1fr */
@@ -158,16 +128,392 @@
   html {
     scroll-behavior: auto;
   }
-  .scan-line {
-    display: none;
-  }
-  .cell-box {
-    animation: none;
-  }
   .expander {
     transition: none;
   }
   .link-underline {
     transition: none;
   }
+}
+
+/* ===================== Scrub hero ===================== */
+:root {
+  --canvas: #0a1317;
+  --panel: #101c22;
+  --accent: #7fd6e6;
+  --text-primary: #e6eeee;
+  --text-secondary: #a3b3b8;
+  --tshadow: 0 1px 2px rgba(3, 8, 10, 0.95), 0 3px 12px rgba(3, 8, 10, 0.78), 0 10px 44px rgba(3, 8, 10, 0.8);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hairline-strong {
+  border-color: rgba(230, 238, 238, 0.42);
+}
+
+.hero-scrub,
+.hero-static {
+  position: relative;
+}
+.hero-static {
+  display: none;
+}
+.hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(70rem 40rem at 70% 30%, rgba(127, 214, 230, 0.08), transparent 60%),
+    var(--canvas);
+}
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out);
+  will-change: transform;
+  transform: translateZ(0);
+}
+.video-ready .hero-video {
+  opacity: 1;
+}
+.video-failed .hero-video {
+  display: none;
+}
+/* 1. global base scrim, always on */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(5, 10, 12, 0.62) 0%, rgba(5, 10, 12, 0) 42%),
+    radial-gradient(ellipse 120% 90% at 55% 45%, rgba(5, 10, 12, 0) 35%, rgba(5, 10, 12, 0.6) 100%);
+}
+.band-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.band {
+  position: absolute;
+  left: clamp(1.25rem, 5vw, 4.5rem);
+  top: clamp(5.5rem, 17vh, 11rem);
+  color: var(--text-primary);
+  text-shadow: var(--tshadow);
+  will-change: opacity;
+}
+/* 2. per-band scrim, rides the band's opacity and deepens with --k */
+.band::before {
+  content: "";
+  position: absolute;
+  inset: -22% -26%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: calc(0.25 + 0.75 * var(--k, 1));
+  background: radial-gradient(ellipse 74% 62% at 42% 50%, rgba(4, 9, 11, 0.7) 0%, rgba(4, 9, 11, 0.46) 46%, rgba(4, 9, 11, 0) 76%);
+}
+.band-1 {
+  top: clamp(9rem, 41vh, 26rem);
+}
+.band-2 {
+  top: clamp(6rem, 24vh, 13rem);
+}
+.band-2::before,
+.band-3::before {
+  background: radial-gradient(ellipse 74% 62% at 42% 50%, rgba(4, 9, 11, 0.8) 0%, rgba(4, 9, 11, 0.55) 46%, rgba(4, 9, 11, 0) 76%);
+}
+.band .btn,
+.band a,
+.band .chip {
+  text-shadow: none;
+}
+.band[data-live="1"] a {
+  pointer-events: auto;
+}
+.band-line,
+.band-h1 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.band-line {
+  font-size: clamp(2rem, min(5.2vw, 8.4vh), 5.2rem);
+  max-width: 14ch;
+}
+.band-h1 {
+  font-size: clamp(2rem, min(4.6vw, 7.6vh), 4.8rem);
+  max-width: 20ch;
+}
+.band-sub {
+  margin-top: 1.4rem;
+  max-width: 34rem;
+  font-size: clamp(0.95rem, min(1.25vw, 2.2vh), 1.2rem);
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+.band-cta {
+  margin-top: 1.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.w {
+  display: inline-block;
+  white-space: nowrap;
+  margin-right: 0.26em;
+}
+.c {
+  display: inline-block;
+  white-space: pre;
+}
+/* entrances, all transform + opacity, scrubbed off --k, reversible */
+.fx-scatter .c {
+  --kc: clamp(0, (var(--k, 0) - var(--th, 0)) * 2.6, 1);
+  opacity: var(--kc);
+  transform: translate(calc((1 - var(--kc)) * var(--jx, 0px)), calc((1 - var(--kc)) * var(--jy, 0px)))
+    rotate(calc((1 - var(--kc)) * var(--jr, 0deg)));
+}
+.fx-snap .c {
+  --kc: clamp(0, (var(--k, 0) - var(--th, 0)) * 2.6, 1);
+  opacity: var(--kc);
+  transform: translateX(calc((1 - var(--kc)) * var(--jx, 0px)));
+}
+.fx-rise .w {
+  --kc: clamp(0, (var(--k, 0) - var(--th, 0)) * 2.8, 1);
+  opacity: var(--kc);
+  transform: translateY(calc((1 - var(--kc)) * 22px));
+}
+.fx-rise .band-sub {
+  --ks: clamp(0, (var(--k, 0) - 0.66) * 4, 1);
+  opacity: var(--ks);
+  transform: translateY(calc((1 - var(--ks)) * 12px));
+}
+.fx-rise .band-cta {
+  --kb: clamp(0, (var(--k, 0) - 0.78) * 5, 1);
+  opacity: var(--kb);
+  transform: translateY(calc((1 - var(--kb)) * 12px));
+}
+
+/* wordmark */
+.wordmark {
+  position: absolute;
+  left: clamp(0.9rem, 3.6vw, 3.2rem);
+  bottom: 0;
+  margin: 0;
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: min(21vw, 31vh);
+  line-height: 0.84;
+  letter-spacing: -0.065em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.wm-clip {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.2em;
+  padding-right: 0.06em;
+}
+
+/* 4. chips for small text over footage */
+.chip {
+  background: rgba(8, 14, 17, 0.55);
+  border: 1px solid rgba(127, 214, 230, 0.3);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-shadow: 0 1px 3px rgba(3, 8, 10, 0.85);
+}
+.ring {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(1rem, 3vw, 2.5rem);
+  width: 2.75rem;
+  padding: 0.5rem;
+  color: var(--accent);
+  transform: rotate(-90deg);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+}
+.ring circle {
+  transition: stroke-dashoffset 0.25s linear;
+}
+.video-loading .ring {
+  opacity: 1;
+}
+.scroll-cue {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(1rem, 3vw, 2.5rem);
+  margin: 0;
+  padding: 0.45rem 0.8rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.video-loading .scroll-cue {
+  opacity: 0;
+}
+
+/* static hero */
+.hero-static-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: 60% center;
+}
+.hero-static {
+  background:
+    radial-gradient(60rem 36rem at 70% 20%, rgba(127, 214, 230, 0.1), transparent 60%),
+    var(--canvas);
+}
+.hero-static-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(5, 10, 12, 0.85) 0%, rgba(5, 10, 12, 0.55) 55%, rgba(5, 10, 12, 0.25) 100%);
+}
+.hero-static-body {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6.5rem clamp(1.25rem, 5vw, 2.5rem) 0;
+  color: var(--text-primary);
+  text-shadow: var(--tshadow);
+}
+.hero-static-body a {
+  text-shadow: none;
+}
+.static-h1 {
+  font-size: clamp(2.1rem, 9.4vw, 3.6rem);
+  max-width: 18ch;
+}
+.static-sub {
+  max-width: 34rem;
+}
+.hero-static .wordmark {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  margin-top: 1.5rem;
+  margin-left: -0.04em;
+  font-size: min(25vw, 22vh, 14rem);
+  text-shadow: none;
+}
+
+/* The five static-hero gates. Must match GATES in ScrubHero.tsx exactly. */
+@media (max-width: 720px),
+  (orientation: portrait) and (max-width: 1024px),
+  (orientation: portrait) and (pointer: coarse),
+  (orientation: landscape) and (pointer: coarse) and (max-height: 560px),
+  (prefers-reduced-motion: reduce) {
+  .hero-scrub {
+    display: none;
+  }
+  .hero-static {
+    display: block;
+  }
+}
+@media (pointer: coarse) {
+  .band-cta a,
+  .tap {
+    min-height: 44px;
+  }
+}
+/* shallow desktop windows: hide small overlays */
+@media (max-height: 560px) {
+  .scroll-cue,
+  .ring {
+    display: none;
+  }
+}
+
+/* page environment: slow drift of faint ruled lines, 90s cycle */
+.page-grid::before {
+  content: "";
+  position: absolute;
+  inset: -96px 0;
+  background-image: linear-gradient(to bottom, rgba(230, 238, 238, 0.05) 1px, transparent 1px);
+  background-size: 100% 96px;
+  animation: grid-drift 90s linear infinite;
+  will-change: transform;
+}
+@keyframes grid-drift {
+  to {
+    transform: translateY(96px);
+  }
+}
+body.paused *,
+body.paused *::before,
+body.paused *::after {
+  animation-play-state: paused !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-grid::before {
+    animation: none;
+  }
+  .fx-scatter .c,
+  .fx-snap .c,
+  .fx-rise .w,
+  .fx-rise .band-sub,
+  .fx-rise .band-cta {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Press-and-hold extraction figure, driven by --p (0 to 1) on the svg */
+.extract-btn {
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.extract-svg {
+  --rows: 7;
+}
+.extract-svg .ex-row {
+  --rp: clamp(0, var(--p, 0) * (var(--rows) + 1) - var(--r, 0), 1);
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: translateX(calc((1 - var(--rp)) * var(--sx, 0px))) rotate(calc((1 - var(--rp)) * var(--sr, 0deg)));
+}
+.extract-svg .ex-col {
+  --rp: clamp(0, var(--p, 0) * 2 - var(--c, 0) * 0.1, 1);
+  transform-box: fill-box;
+  transform-origin: center top;
+  transform: rotate(calc((1 - var(--rp)) * 0.9deg));
+}
+.extract-svg .ex-cell {
+  opacity: clamp(0, var(--p, 0) * (var(--rows) + 1) - var(--r, 0) - 0.4, 1);
+}
+.extract-svg .ex-scan-move {
+  transform: translateY(calc(var(--p, 0) * 304px));
+  opacity: 0;
+}
+.extract-svg[data-scan="1"] .ex-scan-move {
+  opacity: 1;
+}
+.extract-svg .ex-scan-move {
+  transition: opacity 0.3s var(--ease-out);
+}
+.band-1 .band-line {
+  font-size: clamp(2rem, min(4.6vw, 7.4vh), 4.6rem);
 }

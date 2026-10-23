@@ -1,11 +1,17 @@
 import Activity from "./components/Activity";
-import Hero from "./components/Hero";
 import Nav from "./components/Nav";
+import ScrubHero from "./components/ScrubHero";
 import Projects from "./components/Projects";
 import { About, Contact, Experience, Footer, Skills } from "./components/Sections";
+import { useEffect } from "react";
 import { MotionRoot } from "./motion";
 
 export default function App() {
+  useEffect(() => {
+    const onVis = () => document.body.classList.toggle("paused", document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
   return (
     <MotionRoot>
       <a
@@ -18,7 +24,7 @@ export default function App() {
       <div className="page-grid" aria-hidden="true" />
       <Nav />
       <main id="main">
-        <Hero />
+        <ScrubHero />
         <About />
         <Projects />
         <Activity />

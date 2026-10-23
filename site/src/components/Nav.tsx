@@ -7,6 +7,7 @@ import { EASE } from "../presets";
 const LINKS = [
   { id: "about", label: "About" },
   { id: "projects", label: "Projects" },
+  { id: "activity", label: "Activity" },
   { id: "skills", label: "Skills" },
   { id: "experience", label: "Experience" },
   { id: "contact", label: "Contact" },
@@ -49,7 +50,7 @@ export default function Nav() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
-        scrolled || open ? "hairline" : "border-transparent"
+        scrolled || open ? "hairline md:border-transparent" : "border-transparent"
       }`}
       style={{ paddingTop: "var(--safe-top)" }}
     >
@@ -57,16 +58,16 @@ export default function Nav() {
           become the containing block for the fixed mobile menu and collapse it. */}
       <div
         aria-hidden="true"
-        className={`absolute inset-0 -z-10 transition-opacity duration-300 ${
+        className={`absolute inset-0 -z-10 transition-opacity duration-300 md:hidden ${
           scrolled || open ? "bg-ink/85 opacity-100 backdrop-blur-md" : "opacity-0"
         }`}
       />
       <nav className="wrap flex h-14 items-center justify-between" aria-label="Primary">
-        <a href="#top" className="tap font-serif text-xl leading-none" aria-label={`${profile.name}, back to top`}>
+        <a href="#top" className="tap font-display text-xl leading-none md:hidden" aria-label={`${profile.name}, back to top`}>
           Piyush<span className="text-signal">.</span>
         </a>
 
-        <ul className="hidden items-center gap-1 md:flex">
+        <ul className="absolute left-1/2 top-0 hidden h-12 -translate-x-1/2 items-center gap-1 rounded-b-2xl border border-t-0 hairline bg-ink/80 px-4 backdrop-blur-md md:flex">
           {LINKS.map((l) => (
             <li key={l.id}>
               <a
@@ -80,17 +81,15 @@ export default function Nav() {
               </a>
             </li>
           ))}
-          <li className="ml-2">
-            <a
-              href={profile.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tap border hairline px-3 font-mono text-[0.72rem] uppercase tracking-[0.14em] transition-colors hover:border-signal hover:text-signal"
-            >
-              GitHub<span className="sr-only"> (opens in a new tab)</span>
-            </a>
-          </li>
         </ul>
+        <a
+          href={profile.links.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tap ml-auto hidden border hairline bg-ink/60 px-3 font-mono text-[0.72rem] uppercase tracking-[0.14em] backdrop-blur-md transition-colors hover:border-signal hover:text-signal md:inline-flex"
+        >
+          GitHub<span className="sr-only"> (opens in a new tab)</span>
+        </a>
 
         <button
           ref={btnRef}
@@ -137,7 +136,7 @@ export default function Nav() {
                   <a
                     href={`#${l.id}`}
                     onClick={() => setOpen(false)}
-                    className="tap flex w-full items-baseline gap-4 border-b hairline py-4 font-serif text-4xl"
+                    className="tap flex w-full items-baseline gap-4 border-b hairline py-4 font-display text-4xl"
                   >
                     <span className="marker w-6">{String(i + 1).padStart(2, "0")}</span>
                     {l.label}

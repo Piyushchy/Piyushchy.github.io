@@ -38,7 +38,7 @@ function ProjectRow({ p, defaultOpen = false }: { p: Project; defaultOpen?: bool
     <m.article className="border-t hairline py-8 md:py-12" aria-labelledby={`${panelId}-t`} {...reveal(0.02)}>
       <div className="grid gap-5 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-2">
-          <span className="font-serif text-5xl leading-none text-signal md:text-6xl" aria-hidden="true">
+          <span className="font-display text-5xl leading-none text-signal md:text-6xl" aria-hidden="true">
             {p.index}
           </span>
         </div>

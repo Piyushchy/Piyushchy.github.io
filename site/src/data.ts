@@ -11,13 +11,15 @@ export const profile = {
   shortName: "Piyush",
   role: "Computer Engineering student & software developer",
   headline: "I turn messy documents into structured data.",
+  heroSub:
+    "Computer engineering student at K.J. Somaiya. Intern at SBI Global IT Centre, building a pipeline that pulls tables out of scanned telecom audit PDFs.",
   intro:
     "B.Tech Computer Engineering student at K.J. Somaiya College of Engineering. I'm currently an intern at SBI Global IT Centre, building a production pipeline that pulls tables out of scanned telecom audit PDFs.",
   location: "", // e.g. "Mumbai, India" (optional)
   links: {
     github: "https://github.com/Piyushchy",
     linkedin: "", // paste your LinkedIn profile URL
-    email: "", // paste your public contact email
+    email: "piyush.chaudhary@somaiya.edu",
     resume: "", // e.g. "/resume.pdf" after adding the file to /public
   },
   siteUrl: "https://piyushchy.github.io",

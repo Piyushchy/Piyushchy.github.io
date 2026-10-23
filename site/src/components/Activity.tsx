@@ -27,7 +27,7 @@ export default function Activity() {
         </m.h2>
         {!real && (
           <m.p className="mt-3 font-mono text-xs text-signal" {...reveal(0.08)}>
-            Sample data. Run `pnpm contributions` to show my real activity.
+            Sample data for now. My real activity replaces it once my GitHub numbers are connected.
           </m.p>
         )}
         <m.div className="mt-10" {...reveal(0.1)}>

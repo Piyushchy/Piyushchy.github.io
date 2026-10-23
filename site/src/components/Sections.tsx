@@ -1,6 +1,7 @@
 import { m } from "motion/react";
 import { about, learning, profile, skillGroups, timeline } from "../data";
 import { reveal } from "../presets";
+import ExtractFigure from "./ExtractFigure";
 
 export function About() {
   return (
@@ -11,8 +12,11 @@ export function About() {
             01 / About
           </m.p>
           <m.h2 id="about-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
-            Where things <em>break</em>, I look.
+            Where things <span className="text-signal">break</span>, I look.
           </m.h2>
+          <m.div className="mt-10 max-w-[22rem]" {...reveal(0.12, 20)}>
+            <ExtractFigure />
+          </m.div>
         </div>
         <div className="space-y-6 text-paper-dim sm:text-lg md:col-span-6 md:col-start-7">
           {about.map((para, i) => (
@@ -49,7 +53,7 @@ export function Skills() {
             >
               <dt className="marker md:col-span-4 md:pt-1">{g.label}</dt>
               <dd className="md:col-span-8">
-                <ul className="flex flex-wrap gap-x-5 gap-y-2 font-serif text-2xl sm:text-[1.7rem]">
+                <ul className="flex flex-wrap gap-x-5 gap-y-2 font-display text-2xl sm:text-[1.7rem]">
                   {g.items.map((s) => (
                     <li key={s}>{s}</li>
                   ))}
@@ -117,7 +121,7 @@ export function Contact() {
           className="mt-3 text-[clamp(2.8rem,10vw,7.5rem)] leading-[0.98]"
           {...reveal(0.06, 18)}
         >
-          Got a document that <em className="text-signal">won't behave</em>?
+          Got a document that <span className="text-signal">won't behave</span>?
         </m.h2>
         <m.p className="mt-6 max-w-xl text-paper-dim sm:text-lg" {...reveal(0.12)}>
           I'm open to internships, collaborations and interesting problems. The quickest way to reach me is below.
@@ -132,7 +136,7 @@ export function Contact() {
                 className="group flex min-h-[64px] items-center justify-between gap-4 py-4 transition-colors hover:text-signal"
               >
                 <span className="marker w-24 shrink-0">{r.label}</span>
-                <span className="flex-1 truncate font-serif text-2xl sm:text-3xl">{r.text}</span>
+                <span className="flex-1 truncate font-display text-2xl sm:text-3xl">{r.text}</span>
                 <span aria-hidden="true" className="font-mono transition-transform duration-300 group-hover:translate-x-1">
                   →
                 </span>

@@ -4,13 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: { DEFAULT: "#0c0d10", 2: "#111317", 3: "#171a1f" },
-        paper: { DEFAULT: "#ece7dc", dim: "#a9a597", faint: "#8d897d" },
-        signal: { DEFAULT: "#ff6a3d", deep: "#d94e24" },
-        rule: "rgba(236, 231, 220, 0.14)",
+        ink: { DEFAULT: "#0a1317", 2: "#101c22", 3: "#16262d" },
+        paper: { DEFAULT: "#e6eeee", dim: "#a3b3b8", faint: "#8a9ca1" },
+        signal: { DEFAULT: "#7fd6e6", deep: "#5bbccf" },
+        rule: "rgba(230, 238, 238, 0.14)",
       },
       fontFamily: {
-        serif: ['"Instrument Serif"', "Georgia", "serif"],
+        display: ['"Bricolage Grotesque"', "system-ui", "sans-serif"],
         sans: ['"IBM Plex Sans"', "system-ui", "sans-serif"],
         mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
       },
