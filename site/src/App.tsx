@@ -1,5 +1,6 @@
 import Activity from "./components/Activity";
 import Nav from "./components/Nav";
+import Thread from "./components/Thread";
 import Story from "./components/Story";
 import Showcase from "./components/Showcase";
 import MouseShareDemo from "./components/MouseShareDemo";
@@ -26,7 +27,8 @@ export default function App() {
       <div className="page-grain" aria-hidden="true" />
       <div className="page-grid" aria-hidden="true" />
       <Nav />
-      <main id="main">
+      <main id="main" className="relative isolate">
+        <Thread />
         <Story />
         <About />
         <Showcase />

@@ -630,15 +630,7 @@ body.paused *::after {
   .sc-phone { left: 35%; top: 62%; width: 30%; translate: 0 0; }
 }
 
-/* ===================== Lens avatar + card spotlight ===================== */
-.lens-wrap { width: 100%; max-width: 24rem; aspect-ratio: 1; perspective: 900px; }
-.lens-tilt { width: 100%; height: 100%; transform-style: preserve-3d; will-change: transform; }
-.lens-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 24px 40px rgba(0, 0, 0, .55)); }
-.lens-spin { transform-origin: 200px 200px; animation: lens-spin 80s linear infinite; }
-@keyframes lens-spin { to { transform: rotate(360deg); } }
-body.paused .lens-spin { animation-play-state: paused; }
-@media (prefers-reduced-motion: reduce) { .lens-spin { animation: none; } }
-
+/* ===================== Card spotlight ===================== */
 .stack-card { position: relative; isolation: isolate; }
 .stack-card > * { position: relative; z-index: 1; }
 .stack-card::before {
@@ -655,3 +647,11 @@ body.paused .lens-spin { animation-play-state: paused; }
   opacity: 0; transition: opacity .35s;
 }
 .stack-card:hover::after { opacity: 1; }
+
+/* ===================== The thread ===================== */
+.thread { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; overflow: visible; }
+.thread-lit { filter: drop-shadow(0 0 5px rgba(127, 214, 230, .55)); }
+.thread-node { fill: #0a1317; stroke: rgba(230, 238, 238, .3); stroke-width: 1.5; transition: fill .3s, stroke .3s, r .3s; }
+.thread-node.on { fill: #7fd6e6; stroke: #bdf1f9; r: 7; filter: drop-shadow(0 0 8px rgba(127, 214, 230, .9)); }
+.thread-page .thread-grid { transition: opacity .3s; }
+.thread-page.ordered .thread-grid { opacity: 1; }
