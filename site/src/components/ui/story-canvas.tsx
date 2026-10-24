@@ -8,7 +8,7 @@ import type { MotionValue } from "motion/react";
  *   0.00  the page sits flat behind the name; a scan bar tidies it on load
  *   0.06  the page slips back into a crooked scan and tilts into space
  *   0.30  a scan bar sweeps it straight again and boxes the cells
- *   0.60  the cells lift off and gather into five clusters, one per project
+ *   0.60  the cells lift off and gather into clusters, a sample of the work below
  *   0.85  a path ties the clusters together
  * Because it is drawn, not seeked, it reverses instantly and never lags.
  */

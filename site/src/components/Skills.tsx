@@ -37,7 +37,9 @@ export default function Skills() {
   let status = "Pick a project or a skill to see how they connect.";
   if (sel?.kind === "project") {
     const p = projects.find((x) => x.id === sel.id)!;
-    status = `${p.title} used ${p.stack.length} of the skills below.`;
+    status = p.stack.length
+      ? `${p.title} used ${p.stack.length} of the skills below.`
+      : `${p.title} has no stack listed yet.`;
   } else if (sel?.kind === "skill") {
     const n = projectsUsing(sel.name).length;
     status = n
@@ -55,7 +57,7 @@ export default function Skills() {
           What I used, <span className="text-signal">where</span>
         </m.h2>
         <m.p className="mt-4 max-w-xl text-paper-dim" {...reveal(0.1)}>
-          Only things I've actually used. Tap a project or a skill and the board shows how they connect.
+          Everything here I've actually used. Tap a project or a skill and the board shows how they connect.
         </m.p>
 
         <div className="mt-10 grid gap-8 md:mt-14 md:grid-cols-12 md:gap-10">

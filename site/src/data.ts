@@ -126,6 +126,42 @@ export const projects: Project[] = [
     repo: "",
     demo: "",
   },
+  {
+    id: "tangled-path",
+    index: "05",
+    title: "The Tangled Path",
+    kind: "Hackathon · 1st runner up",
+    summary:
+      "A choice-based anti-drug game. You guide a character named Raj through childhood, his teens, adulthood and old age, and each decision changes who he becomes and how the story ends.",
+    problem:
+      "Anti-drug messaging is easy to ignore when it is only a lecture. The idea was to let people make the choices themselves and see the consequences play out over a whole life.",
+    built: [
+      "Four life stages (ages 6, 15, 25 and 70), with choices that carry forward into a good or a bad ending.",
+      "A built-in story teller and a full-screen mode that players can switch on and off.",
+      "A homepage with the game, an AI counseling page and an about page.",
+      "The repository also holds folders for a forum, mini-games, a VR game and a pledge certificate.",
+    ],
+    decisions: ["Team of four, with me as team leader and front-end developer."],
+    stack: ["HTML", "CSS", "JavaScript"],
+    status: "1st runner up. Live on Vercel.",
+    repo: "https://github.com/Piyushchy/Choices-an-Anti-Drug-Adventure",
+    demo: "https://sudo-choices.vercel.app/",
+    featured: true,
+  },
+  {
+    id: "gif-tool",
+    index: "06",
+    title: "GIF Crop & Overlay",
+    kind: "Personal project",
+    summary: "A tool for cropping GIFs and for laying one GIF over another.",
+    problem: "",
+    built: [],
+    decisions: [],
+    stack: [],
+    status: "",
+    repo: "",
+    demo: "",
+  },
 ];
 
 export const skillGroups: { label: string; items: string[] }[] = [
@@ -141,6 +177,7 @@ export const skillGroups: { label: string; items: string[] }[] = [
   },
   { label: "Data & output", items: ["openpyxl", "Excel automation"] },
   { label: "Mobile", items: ["Android (Kotlin)"] },
+  { label: "Web", items: ["HTML", "CSS", "JavaScript"] },
 ];
 
 export const timeline: { when: string; title: string; org: string; note: string }[] = [
@@ -171,6 +208,6 @@ export const learning = {
 
 export const about = [
   "I'm a final-year computer engineering student at K.J. Somaiya College of Engineering. I like building a thing all the way through, from a rough first version to one that holds up on real input.",
-  "Lately that has meant two internships, Mazagon Dock and SBI Global IT Centre (where I'm building a document-extraction pipeline), plus a tool that shares a PC's mouse and keyboard with an Android phone, an RNN vs LSTM comparison, and a containerized app on AWS.",
+  "Lately that has meant two internships, Mazagon Dock and SBI Global IT Centre (where I'm building a document-extraction pipeline), plus a tool that shares a PC's mouse and keyboard with an Android phone, a GIF crop and overlay tool, an RNN vs LSTM comparison, a containerized app on AWS, and an anti-drug game that placed 1st runner up at a hackathon.",
   "I keep notes on what went wrong in each project, because that's where most of what I've learned came from. Outside code, I'm learning 3D to make an anime project.",
 ];

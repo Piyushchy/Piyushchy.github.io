@@ -27,7 +27,7 @@ const CAPS: { a: number; b: number; t: string }[] = [
   { a: 0.1, b: 0.17, t: "OpenCV finds the boxes and grid lines." },
   { a: 0.17, b: 0.24, t: "A vision-language model reads each cell. Guards reject text that can't be right." },
   { a: 0.24, b: 0.32, t: "Out comes Excel, merged cells and all." },
-  { a: 0.33, b: 0.44, t: "Another project: one mouse and keyboard, shared between a PC and a phone." },
+  { a: 0.33, b: 0.44, t: "Next: one mouse and keyboard, shared between a PC and a phone." },
   { a: 0.44, b: 0.55, t: "The cursor leaves the PC at the screen edge." },
   { a: 0.55, b: 0.63, t: "And the keys follow it onto the phone." },
   { a: 0.65, b: 0.82, t: "A containerized app on AWS, from push to alarm." },
