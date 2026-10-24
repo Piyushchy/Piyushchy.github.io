@@ -41,6 +41,7 @@ export type Project = {
   repo: string; // GitHub URL (hidden when empty)
   demo: string; // live demo URL (hidden when empty)
   featured?: boolean;
+  embed?: string; // path of a self-contained demo that can run inside the card
 };
 
 export const projects: Project[] = [
@@ -153,14 +154,22 @@ export const projects: Project[] = [
     index: "06",
     title: "GIF Crop & Overlay",
     kind: "Personal project",
-    summary: "A tool for cropping GIFs and for laying one GIF over another.",
-    problem: "",
-    built: [],
+    summary:
+      "Cut a GIF out in any shape, or lay one GIF over another and control it frame by frame. It runs entirely in the browser, so nothing is uploaded.",
+    problem:
+      "Cropping a GIF is usually a rectangle, and stacking two GIFs rarely lets you line up their frames. I wanted a freehand cut-out and an overlay I could time by hand.",
+    built: [
+      "Freehand and polygon cropping, with an option to trim the canvas down to the shape.",
+      "Overlay mode: drag and scale one GIF over another, with two frame tracks you can slide against each other.",
+      "Per-frame controls: blank a frame, skip it, or hold the last frame until both GIFs end together.",
+      "My own GIF decoder and encoder (LZW and a median-cut palette) rather than a library.",
+    ],
     decisions: [],
-    stack: [],
-    status: "",
+    stack: ["JavaScript", "HTML", "Canvas"],
+    status: "Working. Try it below.",
     repo: "",
-    demo: "",
+    demo: "/gif-tool/",
+    embed: "/gif-tool/index.html?theme=dark",
   },
 ];
 
@@ -177,7 +186,7 @@ export const skillGroups: { label: string; items: string[] }[] = [
   },
   { label: "Data & output", items: ["openpyxl", "Excel automation"] },
   { label: "Mobile", items: ["Android (Kotlin)"] },
-  { label: "Web", items: ["HTML", "CSS", "JavaScript"] },
+  { label: "Web", items: ["HTML", "CSS", "JavaScript", "Canvas"] },
 ];
 
 export const timeline: { when: string; title: string; org: string; note: string }[] = [

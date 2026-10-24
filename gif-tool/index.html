@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>GIF Crop &amp; Overlay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f5f2;--fg:#1d1d1f;--mut:#6b6b70;--card:#fff;--bd:#d8d6d0;--ac:#6d4aff;--c1:#e9e9e9;--c2:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171a;--fg:#ececf0;--mut:#9a9aa2;--card:#222226;--bd:#3a3a40;--ac:#9a82ff;--c1:#2c2c30;--c2:#38383d}}
+:root[data-theme="dark"]{--bg:#17171a;--fg:#ececf0;--mut:#9a9aa2;--card:#222226;--bd:#3a3a40;--ac:#9a82ff;--c1:#2c2c30;--c2:#38383d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:24px;margin:0 0 4px}p.s{color:var(--mut);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+#drop{border:2px dashed var(--bd);border-radius:14px;padding:36px 16px;text-align:center;cursor:pointer;color:var(--mut)}
+#drop.on{border-color:var(--ac);color:var(--fg)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--fg);padding:7px 13px;border-radius:9px;cursor:pointer}
+button.on,button.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+button:disabled{opacity:.45;cursor:default}
+label{color:var(--mut);display:flex;gap:6px;align-items:center}
+.stage{overflow:auto;max-height:68vh;border-radius:6px;overscroll-behavior:contain}
+.wrap{position:relative;line-height:0;margin:0 auto;background:conic-gradient(var(--c1) 25%,var(--c2) 0 50%,var(--c1) 0 75%,var(--c2) 0) 0 0/16px 16px;border-radius:6px}
+.wrap canvas{width:100%;height:100%;display:block}
+.tr{margin-bottom:10px}#sl{flex:1;min-width:120px;accent-color:var(--ac)}#fl,#zl{color:var(--mut);font-variant-numeric:tabular-nums;min-width:3.4em;text-align:center}.sp{flex:1}
+#ov{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+#st{color:var(--mut);margin:10px 0 0;min-height:1.5em}
+#res{margin-top:14px;display:none;text-align:center}
+#res img{max-width:100%;border-radius:6px;background:conic-gradient(var(--c1) 25%,var(--c2) 0 50%,var(--c1) 0 75%,var(--c2) 0) 0 0/16px 16px}
+.hide{display:none}
+.mut{color:var(--mut)}
+.tl{overflow-x:auto;padding:6px 2px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}
+.row{display:flex;width:max-content}
+.rowb{border:2px solid var(--ac);border-radius:10px;overflow:hidden;margin-bottom:8px;background:#1d1d22}
+#ro{border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:#fff}
+.cell{position:relative;flex:none;border-right:1px solid #8884;cursor:pointer;overflow:hidden}
+.cell canvas{display:block}
+.cell.sel{outline:3px solid var(--ac);outline-offset:-3px}
+.cell.cur::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:#ff5a5f}
+.cell.blank{background:repeating-linear-gradient(45deg,#f1f1f1 0 6px,#e2e2e2 6px 12px)}
+.idx{position:absolute;left:2px;top:2px;font:10px system-ui;color:#fff;background:#0008;padding:0 4px;border-radius:3px}
+.tag{position:absolute;right:2px;bottom:6px;font:700 9px system-ui;padding:1px 4px;border-radius:4px;background:#000b;color:#fff}
+#ores img{max-width:100%;border-radius:6px;background:conic-gradient(var(--c1) 25%,var(--c2) 0 50%,var(--c1) 0 75%,var(--c2) 0) 0 0/16px 16px}
+input[type=number]{font:inherit;background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:5px 7px}
+.cell.empty{background:repeating-linear-gradient(45deg,#f1f1f1 0 6px,#e2e2e2 6px 12px)}
+.rowb .cell.empty{background:repeating-linear-gradient(45deg,#26262b 0 6px,#1d1d22 6px 12px)}
+.cell.dim canvas{opacity:.25}
+.cell.skipd canvas{opacity:.35;filter:grayscale(1)}
+.cell.skipd::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top right,transparent calc(50% - 1px),#e5484d calc(50% - 1px),#e5484d calc(50% + 1px),transparent calc(50% + 1px))}
+.cell.out{opacity:.4}
+.tag.b{background:#555}.tag.k{background:#e5484d}.tag.h{background:#2b7fff}
+.ck{display:none;position:absolute;right:3px;top:3px;width:17px;height:17px;margin:0;z-index:3;accent-color:var(--ac);cursor:pointer}
+.tl.paused .ck{display:block}
+#ro{touch-action:pan-y;cursor:grab}
+button:disabled{cursor:not-allowed}
+.panel{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 12px}
+.pc{flex:1;min-width:150px}
+.pbox{position:relative;min-height:100px;display:flex;align-items:center;justify-content:center;border:1px solid var(--bd);border-radius:8px;padding:6px;background:conic-gradient(var(--c1) 25%,var(--c2) 0 50%,var(--c1) 0 75%,var(--c2) 0) 0 0/16px 16px}
+.pbox canvas{max-width:100%;max-height:170px;width:auto;height:auto}
+.pe{position:absolute;color:var(--mut);font-size:13px;background:var(--card);padding:2px 8px;border-radius:6px}
+.pc p{margin:6px 0 0;font-size:13px;color:var(--mut)}
+</style><script>(function(){var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)document.documentElement.setAttribute('data-theme',m[1])})()</script></head><body><main>
+<h1>GIF Crop &amp; Overlay</h1>
+<p class="s">Cut a GIF out in any shape, or lay one GIF over another and control it frame by frame. Everything runs in your browser; nothing is uploaded.</p>
+<div class="bar"><button id="tabC" class="on">✂️ Crop</button><button id="tabO">🧩 Overlay</button></div>
+<div id="pgCrop">
+<div id="drop" class="card">Drop a GIF here or tap to choose one<input id="file" type="file" accept="image/gif" class="hide"></div>
+<div id="ed" class="card hide">
+ <div class="bar">
+  <button id="mf" class="on">Freehand</button><button id="mp">Polygon</button><button id="mh">✋ Pan</button>
+  <button id="fin" disabled>Finish shape</button><button id="clr">Clear</button>
+  <label><input type="checkbox" id="crop"> Trim to shape (smaller canvas)</label>
+  <button id="go" class="pri" disabled style="margin-left:auto">Export GIF</button>
+ </div>
+ <div class="bar tr"><button id="pp">⏸ Pause</button><button id="pv" title="Previous frame (←)">‹ Frame</button><button id="nx" title="Next frame (→)">Frame ›</button><input type="range" id="sl" min="0" max="0" value="0"><span id="fl">1 / 1</span></div>
+ <div class="bar tr"><span style="color:var(--mut)">Zoom</span><button id="zo">−</button><span id="zl">100%</span><button id="zi">+</button><button id="zf">Fit</button><button id="z1">100%</button><span style="color:var(--mut);font-size:13px">Space = play/pause · ←/→ = step · Ctrl+scroll = zoom</span></div>
+ <div class="stage"><div class="wrap"><canvas id="view"></canvas><canvas id="ov"></canvas></div></div>
+ <p id="st"></p>
+ <div id="res"><img id="out" alt="Cropped GIF"><p class="s" id="note"></p><button id="dl" class="pri">Download GIF</button></div>
+</div>
+</div>
+<div id="pgOv" class="hide"><div class="card">
+ <div class="bar"><button id="bB">① Choose base GIF</button><button id="bO">② Choose overlay GIF</button>
+  <input type="file" id="fB" accept="image/gif" class="hide"><input type="file" id="fO" accept="image/gif" class="hide"></div>
+ <p id="ovInfo" class="s" style="margin:0">Pick a base GIF (the background) and an overlay GIF (placed on top).</p>
+ <div id="ovMain" class="hide">
+  <div class="bar" style="margin-top:12px"><label>X <input type="number" id="ox" style="width:80px"></label><label>Y <input type="number" id="oy" style="width:80px"></label><label>Scale % <input type="number" id="os" min="1" max="1000" style="width:80px"></label><button id="ocen">Center</button><span class="mut">Drag the overlay on the preview to move it.</span></div>
+  <div class="stage" id="ovst"><div class="wrap" id="ovw"><canvas id="ovc" style="cursor:move;touch-action:none"></canvas></div></div>
+  <div class="bar" style="margin-top:12px"><button id="opp">⏸ Pause</button><button id="opv">‹ Frame</button><button id="onx">Frame ›</button><span id="ofl" class="mut"></span></div>
+  <p id="ptl" class="s" style="margin:6px 0 0;font-weight:600"></p>
+  <div class="panel">
+   <div class="pc"><div class="pbox"><canvas id="pb"></canvas><span class="pe" id="eb">No base frame here</span></div><p id="cb"></p></div>
+   <div class="pc"><div class="pbox"><canvas id="po"></canvas><span class="pe" id="eo">No overlay frame here</span></div><p id="co"></p></div>
+  </div>
+  <div class="tl" id="tl"><div class="row rowb" id="rb" data-k="b"></div><div class="row" id="ro" data-k="o"></div></div>
+  <p id="phint" class="s" style="font-size:13px;margin:8px 0 0">Pause to select frames and edit them. Drag either track left or right to shift it against the other. Top track: base GIF. Bottom track: overlay GIF.</p>
+  <div id="actions" class="hide">
+   <div class="bar" style="margin-top:10px"><span class="mut" id="osel"></span><button id="aAllB">Select all base</button><button id="aAllO">Select all overlay</button><button id="aNone">Select none</button><button id="aBlank">Blank</button><button id="aSkip">Skip</button><button id="aHold" class="hide">Hold last frame</button><button id="aUnhold" class="hide">Remove held copies</button><button id="orst">Reset all</button></div>
+   <p id="ohint" class="s" style="font-size:13px;margin:0 0 6px"></p>
+   <p class="s" style="font-size:13px;margin:0">Both tracks work the same way. Tick the boxes on either track (Shift+tick selects a range within a track); the last frame you tick or click is shown in the panel above. <b>Blank</b> hides that GIF’s frame (it looks faded); <b>Skip</b> removes that moment from the final GIF entirely (struck through in red on both tracks). Each button needs all ticked frames to be in the same state and flips to <b>Unblank</b> / <b>Unskip</b>. <b>Hold last frame</b> appears when only the last frame of a track is ticked and the other track runs longer: it repeats that frame until both end together. Empty gaps export as transparent (or just the other GIF).</p>
+  </div>
+  <div class="bar" style="margin-top:12px"><button id="oex" class="pri">Export GIF</button><span id="ost" class="mut"></span></div>
+  <div id="ores" style="display:none;text-align:center"><img id="oout" alt="Overlay result"><p class="s" id="onote"></p><button id="odl" class="pri">Download GIF</button></div>
+ </div>
+</div></div>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+let G=null,pts=[],closed=false,mode='free',drawing=false,fi=0,timer=0,hover=null,blob=null,playing=true,zoom=1,fitMode=true,panning=null,sm='free';
+const view=$('#view'),ov=$('#ov'),vx=view.getContext('2d'),ox=ov.getContext('2d');
+const st=t=>$('#st').textContent=t;
+
+/* ---------- GIF decode ---------- */
+function lzw(min,data,n){
+ const clr=1<<min,eoi=clr+1,pre=new Uint16Array(4096),suf=new Uint8Array(4096),stk=new Uint8Array(4097),out=new Uint8Array(n);
+ let size=min+1,next=eoi+1,mask=(1<<size)-1,bits=0,datum=0,old=-1,first=0,top=0,o=0,i=0;
+ for(let c=0;c<clr;c++)suf[c]=c;
+ while(o<n){
+  if(top===0){
+   while(bits<size){if(i>=data.length)return out;datum|=data[i++]<<bits;bits+=8}
+   let code=datum&mask;datum>>=size;bits-=size;
+   if(code===clr){size=min+1;next=eoi+1;mask=(1<<size)-1;old=-1;continue}
+   if(code===eoi)break;
+   if(old===-1){stk[top++]=suf[code];old=code;first=code;continue}
+   const inc=code;
+   if(code>=next){stk[top++]=first;code=old}
+   while(code>=clr){stk[top++]=suf[code];code=pre[code]}
+   first=suf[code];stk[top++]=first;
+   if(next<4096){pre[next]=old;suf[next]=first;next++;if((next&mask)===0&&next<4096){size++;mask=(1<<size)-1}}
+   old=inc;
+  }
+  out[o++]=stk[--top];
+ }
+ return out;
+}
+function parseGIF(buf){
+ const b=new Uint8Array(buf);
+ if(String.fromCharCode(b[0],b[1],b[2])!=='GIF')throw new Error('Not a GIF file');
+ let p=6;const W=b[p]|b[p+1]<<8,H=b[p+2]|b[p+3]<<8,f=b[p+4];p+=7;
+ let gct=null;if(f&128){const n=3<<((f&7)+1);gct=b.subarray(p,p+n);p+=n}
+ const frames=[];let cur=new Uint8ClampedArray(W*H*4),gce=null,prev=null,saved=null;
+ while(p<b.length){
+  const t=b[p++];if(t===0x3B)break;
+  if(t===0x21){const l=b[p++];
+   if(l===0xF9)gce={disp:(b[p+1]>>2)&7,tf:b[p+1]&1,delay:b[p+2]|b[p+3]<<8,ti:b[p+4]};
+   while(b[p])p+=b[p]+1;p++;
+  }else if(t===0x2C){
+   const x=b[p]|b[p+1]<<8,y=b[p+2]|b[p+3]<<8,w=b[p+4]|b[p+5]<<8,h=b[p+6]|b[p+7]<<8,fl=b[p+8];p+=9;
+   let ct=gct;if(fl&128){const n=3<<((fl&7)+1);ct=b.subarray(p,p+n);p+=n}
+   const min=b[p++],ch=[];let len=0;
+   while(b[p]){ch.push(b.subarray(p+1,p+1+b[p]));len+=b[p];p+=b[p]+1}p++;
+   const data=new Uint8Array(len);let q=0;for(const c of ch){data.set(c,q);q+=c.length}
+   let idx=lzw(min,data,w*h);
+   if(fl&64){const o=new Uint8Array(w*h);let r=0;for(const [s,stp] of [[0,8],[4,8],[2,4],[1,2]])for(let yy=s;yy<h;yy+=stp){o.set(idx.subarray(r*w,r*w+w),yy*w);r++}idx=o}
+   if(prev){if(prev.disp===2){for(let yy=prev.y;yy<Math.min(H,prev.y+prev.h);yy++)cur.fill(0,(yy*W+prev.x)*4,(yy*W+Math.min(W,prev.x+prev.w))*4)}else if(prev.disp===3&&saved)cur.set(saved)}
+   saved=gce&&gce.disp===3?cur.slice():null;
+   for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){
+    const v=idx[yy*w+xx];if(gce&&gce.tf&&v===gce.ti)continue;
+    const X=x+xx,Y=y+yy;if(X>=W||Y>=H||!ct)continue;
+    const o=(Y*W+X)*4;cur[o]=ct[v*3];cur[o+1]=ct[v*3+1];cur[o+2]=ct[v*3+2];cur[o+3]=255;
+   }
+   const d=gce?gce.delay:10;
+   frames.push({data:cur.slice(),delay:d<2?100:d*10});
+   prev={disp:gce?gce.disp:0,x,y,w,h};gce=null;
+  }else if(t!==0)break;
+ }
+ if(!frames.length)throw new Error('No frames found');
+ return{W,H,frames};
+}
+
+/* ---------- load / preview ---------- */
+async function load(file){
+ try{
+  st('');const r=parseGIF(await file.arrayBuffer());
+  clearTimeout(timer);
+  G={W:r.W,H:r.H,frames:r.frames.map(f=>{const c=document.createElement('canvas');c.width=r.W;c.height=r.H;c.getContext('2d').putImageData(new ImageData(f.data,r.W,r.H),0,0);return{c,d:f.delay}})};
+  view.width=ov.width=G.W;view.height=ov.height=G.H;
+  $('#drop').classList.add('hide');$('#ed').classList.remove('hide');
+  $('#sl').max=G.frames.length-1;reset();fi=0;playing=true;$('#pp').textContent='⏸ Pause';setZoom();tick();
+ }catch(e){alert('Could not read that file: '+e.message)}
+}
+function pathOn(c){c.beginPath();pts.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.closePath()}
+function draw(i){vx.clearRect(0,0,G.W,G.H);vx.save();if(closed){pathOn(vx);vx.clip()}vx.drawImage(G.frames[i].c,0,0);vx.restore()}
+const stage=$('.stage'),wrap=$('.wrap');
+function sync(){$('#sl').value=fi;$('#fl').textContent=(fi+1)+' / '+G.frames.length}
+function tick(){clearTimeout(timer);draw(fi);sync();if(playing)timer=setTimeout(()=>{fi=(fi+1)%G.frames.length;tick()},G.frames[fi].d)}
+function setPlay(v){playing=v;$('#pp').textContent=v?'⏸ Pause':'▶ Play';tick()}
+function step(d){playing=false;$('#pp').textContent='▶ Play';fi=(fi+d+G.frames.length)%G.frames.length;tick()}
+function setZoom(z,cx,cy){
+ if(z==null){fitMode=true;z=Math.min(8,Math.max(.05,Math.min(stage.clientWidth/G.W,(innerHeight*.68-4)/G.H)))}else fitMode=false;
+ z=Math.min(16,Math.max(.05,z));
+ if(cx==null){cx=stage.clientWidth/2;cy=stage.clientHeight/2}
+ const fx=(stage.scrollLeft+cx)/(wrap.offsetWidth||1),fy=(stage.scrollTop+cy)/(wrap.offsetHeight||1);
+ zoom=z;wrap.style.width=G.W*z+'px';wrap.style.height=G.H*z+'px';
+ stage.scrollLeft=fx*wrap.offsetWidth-cx;stage.scrollTop=fy*wrap.offsetHeight-cy;
+ $('#zl').textContent=Math.round(z*100)+'%';overlay();
+}
+$('#pp').onclick=()=>setPlay(!playing);$('#pv').onclick=()=>step(-1);$('#nx').onclick=()=>step(1);
+$('#sl').oninput=e=>{playing=false;$('#pp').textContent='▶ Play';fi=+e.target.value;tick()};
+$('#zi').onclick=()=>setZoom(zoom*1.25);$('#zo').onclick=()=>setZoom(zoom/1.25);$('#zf').onclick=()=>setZoom();$('#z1').onclick=()=>setZoom(1);
+stage.addEventListener('wheel',e=>{if(!G||!(e.ctrlKey||e.metaKey))return;e.preventDefault();const r=stage.getBoundingClientRect();setZoom(zoom*(e.deltaY<0?1.15:1/1.15),e.clientX-r.left,e.clientY-r.top)},{passive:false});
+addEventListener('resize',()=>{if(G&&fitMode)setZoom()});
+addEventListener('keydown',e=>{
+ if(!G||$('#pgCrop').classList.contains('hide')||['INPUT','BUTTON'].includes(e.target.tagName))return;
+ if(e.key===' '){e.preventDefault();setPlay(!playing)}
+ else if(e.key==='ArrowLeft'){e.preventDefault();step(-1)}
+ else if(e.key==='ArrowRight'){e.preventDefault();step(1)}
+});
+const k=()=>G.W/view.clientWidth;
+function overlay(){
+ ox.clearRect(0,0,G.W,G.H);if(!pts.length)return;
+ const u=k();ox.lineJoin='round';
+ const stroke=()=>{ox.strokeStyle='#000';ox.lineWidth=3.5*u;ox.setLineDash([]);ox.stroke();ox.strokeStyle='#fff';ox.lineWidth=1.8*u;ox.setLineDash([7*u,6*u]);ox.stroke()};
+ ox.beginPath();pts.forEach((p,i)=>i?ox.lineTo(p[0],p[1]):ox.moveTo(p[0],p[1]));
+ if(closed)ox.closePath();else if(sm==='poly'&&hover)ox.lineTo(hover[0],hover[1]);
+ stroke();
+ if(!closed&&sm==='free'){const p=pts[0];ox.beginPath();ox.arc(p[0],p[1],6*u,0,7);ox.fillStyle='#6d4aff';ox.fill();ox.strokeStyle='#000';ox.lineWidth=u;ox.setLineDash([]);ox.stroke()}
+ if(!closed&&sm==='poly'){pts.forEach((p,i)=>{ox.beginPath();ox.arc(p[0],p[1],(i?3.5:6)*u,0,7);ox.fillStyle=i?'#fff':'#6d4aff';ox.fill();ox.strokeStyle='#000';ox.lineWidth=u;ox.setLineDash([]);ox.stroke()})}
+}
+function reset(){pts=[];closed=false;drawing=false;hover=null;ui();overlay();if(G)draw(fi);$('#res').style.display='none'}
+function ui(){
+ $('#go').disabled=!closed;$('#fin').disabled=closed||pts.length<3;
+ st(closed?'Shape set. The preview shows the outside removed. Export when ready, or Clear to redraw.':mode==='pan'?'Drag to move around the frame. Use the zoom buttons or Ctrl+scroll to zoom.':mode==='free'?pts.length?'Shape in progress. Pause and step through frames as needed, then drag again to continue. Release near the start dot or press Finish shape to close. Right-click cancels.':'Press and drag around the part you want to keep. The line stays when you let go, so you can check other frames.':'Click to place points. You can step through frames between clicks. Click the first point or press Finish shape to close it. Backspace undoes the last point; right-click cancels.');
+}
+function finish(){if(pts.length>2){closed=true;drawing=false;ui();overlay();draw(fi)}else{pts=[];ui();overlay()}}
+function pos(e){const r=ov.getBoundingClientRect();return[(e.clientX-r.left)*G.W/r.width,(e.clientY-r.top)*G.H/r.height]}
+
+ov.addEventListener('pointerdown',e=>{
+ if(!G)return;const p=pos(e);
+ if(mode==='pan'){panning={x:e.clientX,y:e.clientY,l:stage.scrollLeft,t:stage.scrollTop};ov.setPointerCapture(e.pointerId);ov.style.cursor='grabbing';return}
+ if(e.button!==0)return;
+ if(closed)reset();const ps=sm;sm=mode;
+ if(mode==='free'){if(pts.length>2&&Math.hypot(p[0]-pts[0][0],p[1]-pts[0][1])<12*k())return finish();if(!pts.length||ps!=='free')pts=[p];else pts.push(p);drawing=true;ov.setPointerCapture(e.pointerId);overlay()}
+ else{
+  if(pts.length>2&&Math.hypot(p[0]-pts[0][0],p[1]-pts[0][1])<12*k())return finish();
+  pts.push(p);ui();overlay();
+ }
+});
+ov.addEventListener('pointermove',e=>{
+ if(!G)return;const p=pos(e);
+ if(panning){stage.scrollLeft=panning.l-(e.clientX-panning.x);stage.scrollTop=panning.t-(e.clientY-panning.y);return}
+ if(drawing){const l=pts[pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>2*k()){pts.push(p);overlay()}}
+ else if(mode==='poly'&&!closed&&pts.length){hover=p;overlay()}
+});
+ov.addEventListener('pointerup',()=>{if(panning){panning=null;ov.style.cursor='grab';return}if(drawing){drawing=false;const l=pts[pts.length-1];if(pts.length>2&&Math.hypot(l[0]-pts[0][0],l[1]-pts[0][1])<12*k())finish();else{ui();overlay()}}});
+ov.addEventListener('contextmenu',e=>{e.preventDefault();if(G)reset()});
+addEventListener('keydown',e=>{
+ if(!G||closed||$('#pgCrop').classList.contains('hide'))return;
+ if(e.key==='Enter')finish();
+ if((e.key==='Backspace'||e.key==='Escape')&&mode==='poly'){pts.pop();ui();overlay()}
+});
+function setMode(m){const was=mode;mode=m;$('#mf').classList.toggle('on',m==='free');$('#mp').classList.toggle('on',m==='poly');$('#mh').classList.toggle('on',m==='pan');ov.style.cursor=m==='pan'?'grab':'crosshair';if(m==='pan'||was==='pan'){ui();overlay()}else reset()}
+$('#mf').onclick=()=>setMode('free');$('#mp').onclick=()=>setMode('poly');$('#mh').onclick=()=>setMode('pan');
+$('#fin').onclick=finish;$('#clr').onclick=reset;
+const drop=$('#drop'),fin=$('#file');
+drop.onclick=()=>fin.click();fin.onchange=()=>fin.files[0]&&load(fin.files[0]);
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('on')};drop.ondragleave=()=>drop.classList.remove('on');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('on');e.dataTransfer.files[0]&&load(e.dataTransfer.files[0])};
+
+/* ---------- GIF encode ---------- */
+function medianCut(hist,n){
+ const all=[];for(let q=0;q<32768;q++)if(hist[q])all.push(q);
+ if(!all.length)return[[0,0,0]];
+ const ch=(q,a)=>a===0?q>>10:a===1?(q>>5)&31:q&31;
+ const stat=b=>{const mn=[31,31,31],mx=[0,0,0];for(const q of b)for(let a=0;a<3;a++){const v=ch(q,a);if(v<mn[a])mn[a]=v;if(v>mx[a])mx[a]=v}let ax=0,r=-1;for(let a=0;a<3;a++)if(mx[a]-mn[a]>r){r=mx[a]-mn[a];ax=a}return{b,ax,r}};
+ const boxes=[stat(all)];
+ while(boxes.length<n){
+  let bi=-1,br=0;boxes.forEach((s,i)=>{if(s.b.length>1&&s.r>br){br=s.r;bi=i}});
+  if(bi<0)break;
+  const s=boxes[bi],b=s.b.slice().sort((x,y)=>ch(x,s.ax)-ch(y,s.ax));
+  let tot=0;for(const q of b)tot+=hist[q];
+  let acc=0,m=0;for(;m<b.length-1;m++){acc+=hist[b[m]];if(acc>=tot/2)break}
+  m=Math.min(m,b.length-2);
+  boxes[bi]=stat(b.slice(0,m+1));boxes.push(stat(b.slice(m+1)));
+ }
+ return boxes.map(s=>{let r=0,g=0,b=0,t=0;for(const q of s.b){const c=hist[q];r+=(q>>10)*c;g+=((q>>5)&31)*c;b+=(q&31)*c;t+=c}return[Math.round(r/t*8+4),Math.round(g/t*8+4),Math.round(b/t*8+4)]});
+}
+function lzwEnc(idx,min){
+ const clr=1<<min,eoi=clr+1;let size=min+1,next=eoi+1,cur=0,nb=0;const buf=[];
+ const put=c=>{cur|=c<<nb;nb+=size;while(nb>=8){buf.push(cur&255);cur>>=8;nb-=8}};
+ let dict=new Map();put(clr);let p=idx[0];
+ for(let i=1;i<idx.length;i++){
+  const c=idx[i],key=(p<<8)|c,v=dict.get(key);
+  if(v!==undefined){p=v;continue}
+  put(p);
+  if(next<4096){dict.set(key,next++);if(next===(1<<size)+1&&size<12)size++}
+  else{put(clr);dict=new Map();size=min+1;next=eoi+1}
+  p=c;
+ }
+ put(p);put(eoi);if(nb>0)buf.push(cur&255);
+ return buf;
+}
+async function exportGif(){
+ $('#go').disabled=true;
+ let x0=1e9,y0=1e9,x1=-1,y1=-1;for(const p of pts){x0=Math.min(x0,p[0]);y0=Math.min(y0,p[1]);x1=Math.max(x1,p[0]);y1=Math.max(y1,p[1])}
+ const crop=$('#crop').checked;
+ const bx=crop?Math.max(0,Math.floor(x0)):0,by=crop?Math.max(0,Math.floor(y0)):0;
+ const bw=crop?Math.min(G.W,Math.ceil(x1))-bx:G.W,bh=crop?Math.min(G.H,Math.ceil(y1))-by:G.H;
+ if(bw<1||bh<1){st('That shape is too small.');$('#go').disabled=false;return}
+ const oc=document.createElement('canvas');oc.width=bw;oc.height=bh;const c=oc.getContext('2d',{willReadFrequently:true});
+ const grab=i=>{c.clearRect(0,0,bw,bh);c.save();c.translate(-bx,-by);pathOn(c);c.clip();c.drawImage(G.frames[i].c,0,0);c.restore();return c.getImageData(0,0,bw,bh).data};
+ const n=G.frames.length,hist=new Uint32Array(32768),wait=()=>new Promise(r=>setTimeout(r,0));
+ for(let i=0;i<n;i++){
+  st('Analysing colours… '+(i+1)+'/'+n);await wait();
+  const d=grab(i);for(let q=0;q<d.length;q+=12)if(d[q+3]>=128)hist[(d[q]>>3)<<10|(d[q+1]>>3)<<5|d[q+2]>>3]++;
+ }
+ const pal=medianCut(hist,255),lut=new Int16Array(32768).fill(-1);
+ const near=q=>{if(lut[q]>=0)return lut[q];const r=(q>>10)*8+4,g=((q>>5)&31)*8+4,b=(q&31)*8+4;let bi=0,bd=1e9;for(let j=0;j<pal.length;j++){const dr=pal[j][0]-r,dg=pal[j][1]-g,db=pal[j][2]-b,dd=dr*dr+dg*dg+db*db;if(dd<bd){bd=dd;bi=j}}return lut[q]=bi};
+ const out=[],w16=v=>out.push(v&255,v>>8&255);
+ for(const ch of 'GIF89a')out.push(ch.charCodeAt(0));
+ w16(bw);w16(bh);out.push(0xF7,0,0);
+ out.push(0,0,0);for(let j=0;j<255;j++){const e=pal[j]||[0,0,0];out.push(e[0],e[1],e[2])}
+ out.push(0x21,0xFF,11);for(const ch of 'NETSCAPE2.0')out.push(ch.charCodeAt(0));out.push(3,1,0,0,0);
+ for(let i=0;i<n;i++){
+  st('Encoding frames… '+(i+1)+'/'+n);await wait();
+  const d=grab(i),idx=new Uint8Array(bw*bh);
+  for(let q=0,o=0;o<idx.length;q+=4,o++){idx[o]=d[q+3]<128?0:1+near((d[q]>>3)<<10|(d[q+1]>>3)<<5|d[q+2]>>3)}
+  out.push(0x21,0xF9,4,0x09);w16(Math.max(2,Math.round(G.frames[i].d/10)));out.push(0,0);
+  out.push(0x2C);w16(0);w16(0);w16(bw);w16(bh);out.push(0,8);
+  const data=lzwEnc(idx,8);
+  for(let q=0;q<data.length;q+=255){const s=data.slice(q,q+255);out.push(s.length);for(const v of s)out.push(v)}
+  out.push(0);
+ }
+ out.push(0x3B);
+ blob=new Blob([new Uint8Array(out)],{type:'image/gif'});
+ const fr=new FileReader();fr.onload=()=>{$('#out').src=fr.result};fr.readAsDataURL(blob);
+ $('#res').style.display='block';
+ $('#note').textContent=bw+' × '+bh+' px'+(crop?' (trimmed; top-left sits at x '+bx+', y '+by+' of the original)':' (same size as the original, so it overlays exactly)')+' · '+n+' frames · '+(blob.size/1024).toFixed(0)+' KB';
+ st('Done.');$('#go').disabled=false;
+ $('#res').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('#go').onclick=exportGif;
+function saveBlob(bl,name){const u=URL.createObjectURL(bl),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+$('#dl').onclick=()=>{if(blob)saveBlob(blob,'cropped.gif')};
+
+/* ---------- Shared encoder ---------- */
+async function encodeGif(W,H,N,grab,delays,prog){
+ const wait=()=>new Promise(r=>setTimeout(r,0)),hist=new Uint32Array(32768);
+ for(let i=0;i<N;i++){prog('Analysing colours… '+(i+1)+'/'+N);await wait();const d=grab(i);for(let q=0;q<d.length;q+=12)if(d[q+3]>=128)hist[(d[q]>>3)<<10|(d[q+1]>>3)<<5|d[q+2]>>3]++}
+ const pal=medianCut(hist,255),lut=new Int16Array(32768).fill(-1);
+ const near=q=>{if(lut[q]>=0)return lut[q];const r=(q>>10)*8+4,g=((q>>5)&31)*8+4,b=(q&31)*8+4;let bi=0,bd=1e9;for(let j=0;j<pal.length;j++){const dr=pal[j][0]-r,dg=pal[j][1]-g,db=pal[j][2]-b,dd=dr*dr+dg*dg+db*db;if(dd<bd){bd=dd;bi=j}}return lut[q]=bi};
+ const out=[],w16=v=>out.push(v&255,v>>8&255);
+ for(const ch of 'GIF89a')out.push(ch.charCodeAt(0));
+ w16(W);w16(H);out.push(0xF7,0,0);
+ out.push(0,0,0);for(let j=0;j<255;j++){const e=pal[j]||[0,0,0];out.push(e[0],e[1],e[2])}
+ out.push(0x21,0xFF,11);for(const ch of 'NETSCAPE2.0')out.push(ch.charCodeAt(0));out.push(3,1,0,0,0);
+ for(let i=0;i<N;i++){
+  prog('Encoding frames… '+(i+1)+'/'+N);await wait();
+  const d=grab(i),idx=new Uint8Array(W*H);
+  for(let q=0,o=0;o<idx.length;q+=4,o++)idx[o]=d[q+3]<128?0:1+near((d[q]>>3)<<10|(d[q+1]>>3)<<5|d[q+2]>>3);
+  out.push(0x21,0xF9,4,0x09);w16(Math.max(2,Math.round(delays[i]/10)));out.push(0,0);
+  out.push(0x2C);w16(0);w16(0);w16(W);w16(H);out.push(0,8);
+  const data=lzwEnc(idx,8);
+  for(let q=0;q<data.length;q+=255){const s=data.slice(q,q+255);out.push(s.length);for(const v of s)out.push(v)}
+  out.push(0);
+ }
+ out.push(0x3B);
+ return new Blob([new Uint8Array(out)],{type:'image/gif'});
+}
+
+/* ---------- Overlay page ---------- */
+const OV={B:null,O:null,tr:{b:{items:[],off:0},o:{items:[],off:0}},L:1,skip:new Set(),sel:new Set(),anchor:null,t:0,play:true,timer:0,ox:0,oy:0,s:1,placed:false,cw:60,TH:56,th:{b:[],o:[]},shd:null,drag:null,blob:null};
+const ovc=$('#ovc'),octx=ovc.getContext('2d'),rows={b:$('#rb'),o:$('#ro')};
+const GIF=k=>k==='b'?OV.B:OV.O;
+const slotItem=(k,t)=>{const T=OV.tr[k],r=t-T.off;return r>=0&&r<T.items.length?T.items[r]:null};
+const endOf=k=>OV.tr[k].off+OV.tr[k].items.length;
+const fresh=k=>GIF(k).frames.map((_,i)=>({s:i,b:false,h:false}));
+function slotDelay(t){const b=slotItem('b',t),o=slotItem('o',t);return b?OV.B.frames[b.s].d:o?OV.O.frames[o.s].d:100}
+function tab(o){
+ $('#pgCrop').classList.toggle('hide',o);$('#pgOv').classList.toggle('hide',!o);$('#tabC').classList.toggle('on',!o);$('#tabO').classList.toggle('on',o);
+ clearTimeout(OV.timer);
+ if(o){if(OV.B&&OV.O){ovSize();ovTick()}}else if(G&&fitMode)setZoom();
+}
+$('#tabC').onclick=()=>tab(false);$('#tabO').onclick=()=>tab(true);
+function mk(r,name){return{W:r.W,H:r.H,name,frames:r.frames.map(f=>{const c=document.createElement('canvas');c.width=r.W;c.height=r.H;c.getContext('2d').putImageData(new ImageData(f.data,r.W,r.H),0,0);return{c,d:f.delay}})}}
+async function ovLoad(file,w){
+ try{
+  OV[w]=mk(parseGIF(await file.arrayBuffer()),file.name);OV.placed=false;OV.sel.clear();OV.anchor=null;
+  const k=w.toLowerCase();OV.tr[k].items=fresh(k);OV.tr.b.off=0;OV.tr.o.off=0;
+  if(w==='B'){OV.skip.clear();OV.t=0}
+  ovInit();
+ }catch(e){alert('Could not read that file: '+e.message)}
+}
+$('#bB').onclick=()=>$('#fB').click();$('#bO').onclick=()=>$('#fO').click();
+$('#fB').onchange=e=>{const f=e.target.files[0];e.target.value='';f&&ovLoad(f,'B')};
+$('#fO').onchange=e=>{const f=e.target.files[0];e.target.value='';f&&ovLoad(f,'O')};
+function thumb(c){const t=document.createElement('canvas');t.width=OV.cw;t.height=OV.TH;const x=t.getContext('2d'),s=Math.min(OV.cw/c.width,OV.TH/c.height),w=c.width*s,h=c.height*s;x.drawImage(c,(OV.cw-w)/2,(OV.TH-h)/2,w,h);return t}
+function cell(k,i,t,tag,cls){
+ const d=document.createElement('div');d.className='cell '+(cls||'');d.dataset.i=i;d.dataset.k=k;d.style.width=OV.cw+'px';d.style.height=OV.TH+'px';
+ if(t){const c=document.createElement('canvas');c.width=OV.cw;c.height=OV.TH;c.getContext('2d').drawImage(t,0,0);d.append(c)}
+ const n=document.createElement('span');n.className='idx';n.textContent=i+1;d.append(n);
+ if(tag){const g=document.createElement('span');g.className='tag';g.textContent=tag;d.append(g)}
+ return d;
+}
+function ovInit(){
+ const B=OV.B,O=OV.O;
+ $('#ovInfo').textContent=(B?'Base: '+B.name+' ('+B.W+'×'+B.H+', '+B.frames.length+' frames)':'No base yet')+'  ·  '+(O?'Overlay: '+O.name+' ('+O.W+'×'+O.H+', '+O.frames.length+' frames)':'No overlay yet');
+ if(!B||!O){$('#ovMain').classList.add('hide');return}
+ $('#ovMain').classList.remove('hide');
+ ovc.width=B.W;ovc.height=B.H;
+ if(!OV.placed){OV.s=Math.min(1,B.W/O.W,B.H/O.H);OV.ox=Math.round((B.W-O.W*OV.s)/2);OV.oy=Math.round((B.H-O.H*OV.s)/2);OV.placed=true}
+ OV.cw=Math.max(44,Math.min(140,Math.round(OV.TH*B.W/B.H)));
+ OV.th.b=B.frames.map(f=>thumb(f.c));OV.th.o=O.frames.map(f=>thumb(f.c));
+ ovRows();inputs();pausePlay(true);ovSize();ovTick();upd();
+}
+function ovRows(){
+ OV.L=Math.max(endOf('b'),endOf('o'),1);if(OV.t>=OV.L)OV.t=0;
+ for(const k of ['b','o']){
+  const row=rows[k];row.innerHTML='';
+  for(let t=0;t<OV.L;t++){
+   const it=slotItem(k,t),sk=OV.skip.has(t);let cls='',tag='',tc='';
+   if(!it)cls='empty';else if(it.b){cls='dim';tag='BLANK';tc='b'}else if(it.h){tag='HOLD';tc='h'}
+   if(sk){cls+=' skipd';tag='SKIP';tc='k'}
+   const c=cell(k,t,it?OV.th[k][it.s]:null,tag,cls);
+   const g=c.querySelector('.tag');if(g&&tc)g.classList.add(tc);
+   const ck=document.createElement('input');ck.type='checkbox';ck.className='ck';c.append(ck);
+   row.append(c);
+  }
+ }
+ mark();
+}
+function mark(){
+ document.querySelectorAll('#tl .cell').forEach(el=>{
+  const t=+el.dataset.i,s=OV.sel.has(el.dataset.k+t);
+  el.classList.toggle('cur',t===OV.t);el.classList.toggle('sel',s);
+  const c=el.querySelector('.ck');if(c)c.checked=s;
+ });
+}
+function paint(x,t){
+ const b=slotItem('b',t),o=slotItem('o',t);
+ if(b&&!b.b)x.drawImage(OV.B.frames[b.s].c,0,0);
+ if(o&&!o.b){const f=OV.O.frames[o.s].c;x.drawImage(f,OV.ox,OV.oy,f.width*OV.s,f.height*OV.s)}
+}
+function panel(){
+ const t=OV.t;
+ $('#ptl').textContent='Frame '+(t+1)+' of '+OV.L+(OV.skip.has(t)?' (skipped in export)':'');
+ for(const k of ['b','o']){
+  const it=slotItem(k,t),g=GIF(k),cv=$(k==='b'?'#pb':'#po'),x=cv.getContext('2d');
+  if(it){const f=g.frames[it.s].c;cv.width=f.width;cv.height=f.height;x.drawImage(f,0,0);cv.style.display='block';cv.style.opacity=it.b?.3:1}
+  else cv.style.display='none';
+  $('#e'+k).style.display=it?'none':'block';
+  const st=[];if(it&&it.b)st.push('blank');if(it&&it.h)st.push('held copy');
+  $('#c'+k).textContent=(k==='b'?'Base':'Overlay')+' · '+(it?'source frame '+(it.s+1)+' of '+g.frames.length:'empty slot')+(st.length?' · '+st.join(', '):'');
+ }
+}
+function ovDraw(){
+ const B=OV.B;octx.clearRect(0,0,B.W,B.H);paint(octx,OV.t);
+ $('#ofl').textContent=OV.skip.size?OV.skip.size+' frame'+(OV.skip.size>1?'s':'')+' skipped':'';
+ panel();mark();
+ const tl=$('#tl'),l=OV.t*OV.cw;
+ if(OV.play&&(l<tl.scrollLeft||l+OV.cw>tl.scrollLeft+tl.clientWidth))tl.scrollLeft=l-tl.clientWidth/2;
+}
+function nextT(t){for(let i=1;i<=OV.L;i++){const n=(t+i)%OV.L;if(!OV.skip.has(n))return n}return t}
+function ovTick(){
+ clearTimeout(OV.timer);if(!OV.B||!OV.O)return;ovDraw();
+ if(OV.play)OV.timer=setTimeout(()=>{OV.t=nextT(OV.t);ovTick()},slotDelay(OV.t));
+}
+function ovSize(){
+ const B=OV.B,st=$('#ovst'),w=Math.max(60,Math.min(st.clientWidth||600,innerHeight*.6*B.W/B.H,Math.max(B.W,480))),wr=$('#ovw');
+ wr.style.width=w+'px';wr.style.height=w*B.H/B.W+'px';
+}
+addEventListener('resize',()=>{if(OV.B&&OV.O&&!$('#pgOv').classList.contains('hide'))ovSize()});
+function pausePlay(p){
+ OV.play=p;$('#opp').textContent=p?'⏸ Pause':'▶ Play';
+ $('#tl').classList.toggle('paused',!p);$('#actions').classList.toggle('hide',p);$('#phint').classList.toggle('hide',!p);
+}
+$('#opp').onclick=()=>{pausePlay(!OV.play);ovTick()};
+function ostep(d){pausePlay(false);OV.t=(OV.t+d+OV.L)%OV.L;ovTick()}
+$('#opv').onclick=()=>ostep(-1);$('#onx').onclick=()=>ostep(1);
+function goTo(t){if(t==null||t>=OV.L)return;pausePlay(false);OV.t=t;ovTick()}
+
+/* selection + edit actions */
+function selArr(){return[...OV.sel].map(x=>({k:x[0],t:+x.slice(1)}))}
+function upd(){
+ const sel=selArr(),n=sel.length,its=sel.map(s=>slotItem(s.k,s.t)),all=n>0&&its.every(Boolean);
+ let hint='';
+ const bb=$('#aBlank'),sb=$('#aSkip');
+ bb.textContent='Blank';bb.disabled=true;sb.textContent='Skip';sb.disabled=true;
+ if(all&&its.every(i=>i.b)){bb.textContent='Unblank';bb.disabled=false}
+ else if(all&&its.every(i=>!i.b))bb.disabled=false;
+ else if(n&&!all)hint='Some ticked frames are empty slots, so Blank isn’t available.';
+ else if(n)hint='Ticked frames are a mix of blank and not blank. Tick only one kind to change them.';
+ const sk=sel.map(s=>OV.skip.has(s.t));
+ if(n&&sk.every(Boolean)){sb.textContent='Unskip';sb.disabled=false}
+ else if(n&&sk.every(x=>!x))sb.disabled=false;
+ else if(n)hint=(hint?hint+' ':'')+'Ticked frames are a mix of skipped and not skipped. Tick only one kind to change them.';
+ let canHold=false,fill=0;
+ if(n===1){const s=sel[0],last=endOf(s.k)-1;fill=OV.L-1-last;canHold=OV.tr[s.k].items.length>0&&s.t===last&&fill>0}
+ $('#aHold').classList.toggle('hide',!canHold);if(canHold)$('#aHold').textContent='Hold last frame (×'+fill+')';
+ $('#aUnhold').classList.toggle('hide',!(all&&its.every(i=>i.h)));
+ $('#osel').textContent=n?n+' selected':'None selected';$('#ohint').textContent=hint;
+}
+function refresh(){ovRows();ovDraw();upd()}
+function ckClick(e){
+ const k=e.target;if(!k.matches||!k.matches('input.ck'))return;
+ const c=k.closest('.cell'),tr=c.dataset.k,t=+c.dataset.i;
+ if(e.shiftKey&&OV.anchor&&OV.anchor.k===tr){for(let i=Math.min(OV.anchor.t,t);i<=Math.max(OV.anchor.t,t);i++)OV.sel.add(tr+i)}
+ else{if(k.checked)OV.sel.add(tr+t);else OV.sel.delete(tr+t);OV.anchor={k:tr,t}}
+ if(k.checked){OV.t=t;ovTick()}else mark();
+ upd();
+}
+$('#aAllB').onclick=()=>{for(let t=0;t<OV.L;t++)OV.sel.add('b'+t);mark();upd()};
+$('#aAllO').onclick=()=>{for(let t=0;t<OV.L;t++)OV.sel.add('o'+t);mark();upd()};
+$('#aNone').onclick=()=>{OV.sel.clear();mark();upd()};
+$('#aBlank').onclick=()=>{const un=$('#aBlank').textContent==='Unblank';selArr().forEach(s=>{const i=slotItem(s.k,s.t);if(i)i.b=!un});refresh()};
+$('#aSkip').onclick=()=>{const un=$('#aSkip').textContent==='Unskip';selArr().forEach(s=>un?OV.skip.delete(s.t):OV.skip.add(s.t));refresh()};
+$('#aHold').onclick=()=>{
+ const s=selArr()[0],T=OV.tr[s.k],L=T.items[T.items.length-1],last=endOf(s.k)-1;
+ for(let t=last+1;t<OV.L;t++)T.items.push({s:L.s,b:L.b,h:true});
+ OV.sel.clear();refresh();
+};
+$('#aUnhold').onclick=()=>{new Set(selArr().map(s=>s.k)).forEach(k=>{OV.tr[k].items=OV.tr[k].items.filter(i=>!i.h)});OV.sel.clear();refresh()};
+$('#orst').onclick=()=>{OV.tr.b.items=fresh('b');OV.tr.o.items=fresh('o');OV.tr.b.off=0;OV.tr.o.off=0;OV.skip.clear();OV.sel.clear();refresh()};
+
+/* drag either track to shift it */
+function bindRow(row,k){
+ row.onpointerdown=e=>{
+  if(e.button!==0||e.target.matches('input'))return;
+  const c=e.target.closest('.cell');OV.shd={k,x:e.clientX,off:OV.tr[k].off,moved:false,t:c?+c.dataset.i:null};row.setPointerCapture(e.pointerId);
+ };
+ row.onpointermove=e=>{
+  const s=OV.shd;if(!s||s.k!==k)return;const dx=e.clientX-s.x;if(Math.abs(dx)>5)s.moved=true;if(!s.moved)return;
+  const hi=Math.max(OV.B.frames.length,OV.O.frames.length)-1,no=Math.max(-(OV.tr[k].items.length-1),Math.min(hi,s.off+Math.round(dx/OV.cw)));
+  if(no!==OV.tr[k].off){OV.tr[k].off=no;OV.sel.clear();refresh()}
+ };
+ row.onpointerup=()=>{const s=OV.shd;OV.shd=null;if(s&&s.k===k&&!s.moved)goTo(s.t)};
+ row.onpointercancel=()=>{OV.shd=null};
+ row.addEventListener('click',ckClick);
+}
+bindRow(rows.b,'b');bindRow(rows.o,'o');
+
+/* overlay position */
+function inputs(){$('#ox').value=OV.ox;$('#oy').value=OV.oy;$('#os').value=Math.round(OV.s*100)}
+['ox','oy','os'].forEach(id=>$('#'+id).oninput=e=>{const v=+e.target.value;if(e.target.value===''||isNaN(v))return;if(id==='ox')OV.ox=v;else if(id==='oy')OV.oy=v;else OV.s=Math.max(.01,v/100);ovDraw()});
+$('#ocen').onclick=()=>{const f=OV.O.frames[0].c;OV.ox=Math.round((OV.B.W-f.width*OV.s)/2);OV.oy=Math.round((OV.B.H-f.height*OV.s)/2);inputs();ovDraw()};
+ovc.onpointerdown=e=>{OV.drag={x:e.clientX,y:e.clientY,ox:OV.ox,oy:OV.oy};ovc.setPointerCapture(e.pointerId)};
+ovc.onpointermove=e=>{if(!OV.drag)return;const k=OV.B.W/ovc.getBoundingClientRect().width;OV.ox=Math.round(OV.drag.ox+(e.clientX-OV.drag.x)*k);OV.oy=Math.round(OV.drag.oy+(e.clientY-OV.drag.y)*k);inputs();ovDraw()};
+ovc.onpointerup=()=>{OV.drag=null};
+
+/* export */
+$('#oex').onclick=async()=>{
+ const B=OV.B,W=B.W,H=B.H,slots=[];
+ for(let t=0;t<OV.L;t++)if(!OV.skip.has(t))slots.push(t);
+ if(!slots.length){$('#ost').textContent='Every frame is skipped, so there is nothing to export.';return}
+ const cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d',{willReadFrequently:true});
+ const grab=i=>{c.clearRect(0,0,W,H);paint(c,slots[i]);return c.getImageData(0,0,W,H).data};
+ $('#oex').disabled=true;
+ try{
+  OV.blob=await encodeGif(W,H,slots.length,grab,slots.map(slotDelay),s=>$('#ost').textContent=s);
+  const fr=new FileReader();fr.onload=()=>{$('#oout').src=fr.result};fr.readAsDataURL(OV.blob);
+  $('#ores').style.display='block';
+  $('#onote').textContent=W+' × '+H+' px · '+slots.length+' frames · '+(OV.blob.size/1024).toFixed(0)+' KB';
+  $('#ost').textContent='Done.';
+ }catch(e){$('#ost').textContent='Export failed: '+e.message}
+ $('#oex').disabled=false;
+};
+$('#odl').onclick=()=>{if(OV.blob)saveBlob(OV.blob,'overlay.gif')};
+</script></body></html>

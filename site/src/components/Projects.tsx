@@ -44,6 +44,7 @@ function ProjectCard({
   stack: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [tryOpen, setTryOpen] = useState(false);
   const panelId = useId();
   const hasDetail = p.built.length > 0 || p.decisions.length > 0;
   // As the next card slides over this one, this one settles back and dims.
@@ -61,7 +62,7 @@ function ProjectCard({
         className="stack-card origin-top rounded-2xl border hairline bg-ink-2 p-6 sm:p-8 md:p-12"
         style={stack ? { scale, filter } : undefined}
         aria-labelledby={`${panelId}-t`}
-        data-open={open}
+        data-open={open || tryOpen}
         onPointerMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           e.currentTarget.style.setProperty("--sx", `${e.clientX - r.left}px`);
@@ -104,10 +105,34 @@ function ProjectCard({
                 {open ? "Hide case study" : "Case study"}
               </button>
             )}
+            {p.embed && (
+              <button
+                type="button"
+                aria-expanded={tryOpen}
+                onClick={() => setTryOpen((o) => !o)}
+                className="tap gap-2 font-mono text-xs uppercase tracking-[0.14em] text-signal"
+              >
+                <span aria-hidden="true" className="inline-block w-3 text-center">
+                  {tryOpen ? "−" : "▶"}
+                </span>
+                {tryOpen ? "Close demo" : "Try it here"}
+              </button>
+            )}
             {p.repo && <ExtLink href={p.repo}>Source</ExtLink>}
             {p.demo && <ExtLink href={p.demo}>Live demo</ExtLink>}
             <span className="font-mono text-[0.72rem] text-paper-faint">{p.status}</span>
           </div>
+
+          {p.embed && tryOpen && (
+            <div className="mt-6 overflow-hidden rounded-xl border hairline">
+              <iframe
+                src={p.embed}
+                title={`${p.title} demo`}
+                loading="lazy"
+                className="block h-[72svh] min-h-[26rem] w-full bg-ink"
+              />
+            </div>
+          )}
 
           {hasDetail && (
             <div id={`${panelId}-p`} className="expander" data-open={open} role="region" aria-label={`${p.title} case study`}>
