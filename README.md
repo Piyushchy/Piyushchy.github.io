@@ -69,4 +69,4 @@ The token is read from the environment only and is never written to disk. A toke
 
 ## Contact
 
-[piyush.chaudhary@somaiya.edu](mailto:piyush.chaudhary@somaiya.edu) · [github.com/Piyushchy](https://github.com/Piyushchy)
+[piyushchy@is-a.dev](mailto:mail@piyushchy.is-a.dev) · [github.com/Piyushchy](https://github.com/Piyushchy)
