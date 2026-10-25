@@ -10,6 +10,8 @@ import { useEffect, useRef } from "react";
  */
 
 const IDS = ["about", "pipeline", "mouseshare", "projects", "activity", "skills", "experience", "contact"];
+// Sections that pin to the screen while you scroll through them.
+const PINNED = ["pipeline"];
 const NS = "http://www.w3.org/2000/svg";
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -18,6 +20,7 @@ export default function Thread() {
   const svg = useRef<SVGSVGElement>(null);
   const base = useRef<SVGPathElement>(null);
   const lit = useRef<SVGPathElement>(null);
+  const glow = useRef<SVGPathElement>(null);
   const token = useRef<SVGGElement>(null);
   const page = useRef<SVGGElement>(null);
   const tiles = useRef<SVGGElement>(null);
@@ -41,10 +44,11 @@ export default function Thread() {
       const h = main.offsetHeight;
       el.setAttribute("width", String(w));
       el.setAttribute("height", String(h));
-      const narrow = w < 768;
+      // Phones get no thread at all (hidden in CSS); skip the work too.
+      if (w < 768) return;
       const gx = Math.max(14, (w - 1216) / 4);
-      const L = narrow ? 14 : gx;
-      const R = narrow ? 14 : w - gx;
+      const L = gx;
+      const R = w - gx;
       const pts: [number, number][] = [];
       IDS.forEach((id, i) => {
         const s = document.getElementById(id);
@@ -64,8 +68,10 @@ export default function Thread() {
       }
       base.current!.setAttribute("d", d);
       lit.current!.setAttribute("d", d);
+      glow.current!.setAttribute("d", d);
       total = base.current!.getTotalLength();
       lit.current!.style.strokeDasharray = String(total);
+      glow.current!.style.strokeDasharray = String(total);
       // sample the path so scroll maps to a point cheaply
       const step = 20;
       xs = [];
@@ -113,10 +119,27 @@ export default function Thread() {
         if (ys[mid] < y) lo = mid + 1;
         else hi = mid;
       }
+      // Interpolate between the two nearest samples so the marker and the lit
+      // line move smoothly with scroll instead of snapping in 20px steps.
       const i = lo;
-      const len = reduced ? total : lens[i];
+      let t01 = 1;
+      if (i > 0 && ys[i] > ys[i - 1]) t01 = clamp((y - ys[i - 1]) / (ys[i] - ys[i - 1]));
+      const a = Math.max(0, i - 1);
+      const len = reduced ? total : lens[a] + (lens[i] - lens[a]) * t01;
+      const px = xs[a] + (xs[i] - xs[a]) * t01;
+      const py = ys[a] + (ys[i] - ys[a]) * t01;
       const f = len / total;
       lit.current!.style.strokeDashoffset = String(total - len);
+      glow.current!.style.strokeDashoffset = String(total - len);
+
+      // While a pinned scene holds the screen, the thread would slide past it
+      // at scroll speed. Fade it out there so nothing shimmers behind the film.
+      let pinned = false;
+      for (const id of PINNED) {
+        const r = document.getElementById(id)?.getBoundingClientRect();
+        if (r && r.top < 60 && r.bottom > window.innerHeight - 60) pinned = true;
+      }
+      el.style.opacity = pinned ? "0" : "1";
 
       const kids = nodes.current!.children;
       for (let k = 0; k < kids.length; k++) kids[k].classList.toggle("on", len >= nodeLen[k] - 1);
@@ -128,7 +151,7 @@ export default function Thread() {
       }
       const visible = y > ys[0] - 120 && y < ys[ys.length - 1] + 200;
       t.setAttribute("opacity", visible ? "1" : "0");
-      t.setAttribute("transform", `translate(${xs[i].toFixed(1)} ${ys[i].toFixed(1)})`);
+      t.setAttribute("transform", `translate(${px.toFixed(1)} ${py.toFixed(1)})`);
 
       // stages of the object
       const order = ease(clamp((f - 0.04) / 0.2));
@@ -179,6 +202,7 @@ export default function Thread() {
         </radialGradient>
       </defs>
       <path ref={base} fill="none" stroke="rgba(230,238,238,0.1)" strokeWidth="1.5" />
+      <path ref={glow} className="thread-lit" fill="none" stroke="#7fd6e6" strokeWidth="7" strokeLinecap="round" opacity="0.14" />
       <path ref={lit} className="thread-lit" fill="none" stroke="#7fd6e6" strokeWidth="1.8" strokeLinecap="round" opacity="0.8" />
       <g ref={nodes} />
       <g ref={token} opacity="0">

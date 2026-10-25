@@ -649,8 +649,8 @@ body.paused *::after {
 .stack-card:hover::after { opacity: 1; }
 
 /* ===================== The thread ===================== */
-.thread { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; overflow: visible; }
-.thread-lit { filter: drop-shadow(0 0 5px rgba(127, 214, 230, .55)); }
+.thread { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; overflow: visible; transition: opacity .35s ease; }
+@media (max-width: 767px) { .thread { display: none; } }
 .thread-node { fill: #0a1317; stroke: rgba(230, 238, 238, .3); stroke-width: 1.5; transition: fill .3s, stroke .3s, r .3s; }
 .thread-node.on { fill: #7fd6e6; stroke: #bdf1f9; r: 7; filter: drop-shadow(0 0 8px rgba(127, 214, 230, .9)); }
 .thread-page .thread-grid { transition: opacity .3s; }
