@@ -1,0 +1,56 @@
+PIYUSH CHAUDHARY
+piyush.chaudhary@somaiya.edu | github.com/Piyushchy | linkedin.com/in/piyush-chaudhary-9b5999187 | piyushchy.github.io
+
+SUMMARY
+-------
+Final-year B.Tech Computer Engineering student who builds document-processing, cloud and mobile software. Currently an intern at SBI Global IT Centre, previously an intern at Mazagon Dock Shipbuilders Limited.
+
+EDUCATION
+---------
+Bachelor of Technology, Computer Engineering, K.J. Somaiya College of Engineering (Final year)
+Coursework: Natural Language Processing, Cloud Computing, AR/VR, Network and Information Security
+
+EXPERIENCE
+----------
+Intern, State Bank of India, Global IT Centre (Present)
+- Building a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.
+- Compared three architectures on the same documents (Table Transformer, a pure vision-language model, and Docling) before choosing the hybrid design.
+- Added a fast pre-scan that locates key header fields and the conclusion-table page range before the per-page pass, and switched to lazy page generators after eager rendering exhausted memory.
+- Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard that rejects implausible vision-language model cell text.
+- Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a 16-page technical report written in LaTeX.
+
+Intern, Mazagon Dock Shipbuilders Limited
+
+PROJECTS
+--------
+The Tangled Path: Choice-Based Anti-Drug Game (HTML, CSS, JavaScript) - sudo-choices.vercel.app
+- 1st runner up at a hackathon. Team leader and front-end developer on a team of four.
+- A story game that follows one character through four life stages (ages 6, 15, 25 and 70), where each choice leads toward a good or a bad ending.
+- Includes a built-in story teller and a full-screen mode. Deployed on Vercel.
+
+MouseShare (Python, Kotlin, Android)
+- Shares a Windows PC's mouse and keyboard with an Android phone: a Python desktop app captures input and a Kotlin Android app receives and acts on it.
+- Comparing transports (HID keyboard and mouse, WiFi) to cut input lag.
+
+GIF Crop and Overlay Tool (JavaScript, HTML, Canvas) - piyushchy.github.io/gif-tool
+- Browser tool that crops a GIF to a freehand or polygon shape and overlays one GIF on another with per-frame controls (blank, skip, hold, and shifting one track against the other).
+- Wrote the GIF decoder and encoder from scratch (LZW and median-cut palette). Runs entirely in the browser, so nothing is uploaded.
+
+Cloud-Native App on AWS (Docker, AWS ECR, ECS Fargate, ALB, RDS MySQL, CodePipeline, SNS)
+- Containerized a Node.js app and deployed it on ECS Fargate behind an Application Load Balancer, with the image stored in ECR.
+- Connected to an RDS MySQL database through a bastion host over Session Manager, and added a CodePipeline CI/CD flow and an SNS alarm.
+
+RNN vs LSTM Text Classification (Python, PyTorch, Google Colab)
+- Trained and compared a plain RNN and an LSTM on the same text classification task in a runnable Google Colab notebook.
+
+TECHNICAL SKILLS
+----------------
+Languages: Python, Kotlin, JavaScript, HTML, CSS, LaTeX
+Computer vision and document AI: OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, Pillow, vision-language models
+Machine learning: PyTorch, RNN, LSTM
+Cloud and infrastructure: Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)
+Tools: Git, GitHub, Google Colab, openpyxl, Excel automation
+
+ACHIEVEMENTS
+------------
+- 1st runner up, hackathon, for The Tangled Path (team leader and front-end developer)

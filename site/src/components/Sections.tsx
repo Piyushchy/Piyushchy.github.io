@@ -108,6 +108,7 @@ export function Contact() {
   const rows: { label: string; href: string; text: string }[] = [];
   rows.push({ label: "GitHub", href: links.github, text: "github.com/Piyushchy" });
   if (links.linkedin) rows.push({ label: "LinkedIn", href: links.linkedin, text: "Connect on LinkedIn" });
+  if (links.resume) rows.push({ label: "Resume", href: links.resume, text: "View and download (PDF, Word, LaTeX)" });
 
   return (
     <section ref={ref} id="contact" className="px-2 py-10 sm:px-3 md:py-16" aria-labelledby="contact-title">
@@ -158,8 +159,7 @@ export function Contact() {
               <li key={r.label} className="border-b hairline">
                 <a
                   href={r.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  {...(r.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="group flex min-h-[56px] items-center justify-between gap-4 py-3 transition-colors hover:text-signal"
                 >
                   <span className="marker w-24 shrink-0">{r.label}</span>
@@ -167,7 +167,7 @@ export function Contact() {
                   <span aria-hidden="true" className="font-mono transition-transform duration-300 group-hover:translate-x-1">
                     →
                   </span>
-                  <span className="sr-only">(opens in a new tab)</span>
+                  {r.href.startsWith("http") && <span className="sr-only">(opens in a new tab)</span>}
                 </a>
               </li>
             ))}

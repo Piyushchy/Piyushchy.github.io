@@ -20,7 +20,7 @@ export const profile = {
     github: "https://github.com/Piyushchy",
     linkedin: "", // paste your LinkedIn profile URL
     email: "piyush.chaudhary@somaiya.edu",
-    resume: "", // e.g. "/resume.pdf" after adding the file to /public
+    resume: "/resume/", // built by resume/build.py
   },
   siteUrl: "https://piyushchy.github.io",
   description:

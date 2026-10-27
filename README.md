@@ -67,6 +67,15 @@ pnpm build && pnpm publish:pages
 
 The token is read from the environment only and is never written to disk. A token with no special scopes is enough for public contributions.
 
+## Resume
+
+The `/resume/` page and its downloads (PDF, Word, LaTeX, plain text) are all generated from one data block in `site/resume/build.py`. The layout is intentionally plain so applicant tracking systems can parse it. To update it, edit that file, then:
+
+```bash
+python3 site/resume/build.py     # needs pdflatex and python-docx
+cd site && pnpm build && pnpm publish:pages
+```
+
 ## Contact
 
 [piyushchy@is-a.dev](mailto:mail@piyushchy.is-a.dev) · [github.com/Piyushchy](https://github.com/Piyushchy)

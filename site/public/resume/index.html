@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume | Piyush Chaudhary</title>
+<meta name="description" content="Resume of Piyush Chaudhary, Computer Engineering student and software developer. Download as PDF, Word, LaTeX or plain text.">
+<link rel="canonical" href="https://piyushchy.github.io/resume/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0a1317">
+<style>
+:root{--ink:#0a1317;--ink2:#101c22;--paper:#e6eeee;--dim:#9db0b3;--sig:#7fd6e6;--line:rgba(230,238,238,.14)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--paper);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+a{color:inherit}
+.wrap{max-width:60rem;margin:0 auto;padding:1.25rem 1rem 4rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.5rem 0 2rem}
+.top a{font:12px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--dim)}
+.top a:hover,.top a:focus-visible{color:var(--sig)}
+h1.title{font-size:clamp(2.4rem,8vw,4.5rem);line-height:1;margin:0 0 .6rem;letter-spacing:-.02em}
+.lead{color:var(--dim);max-width:38rem;margin:0 0 2rem}
+.dl{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:.75rem}
+.btn{display:flex;flex-direction:column;gap:.25rem;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:.9rem;background:var(--ink2);text-decoration:none;transition:border-color .2s,transform .2s}
+.btn:hover,.btn:focus-visible{border-color:var(--sig);transform:translateY(-2px)}
+.btn strong{font-size:1.05rem}
+.btn span{color:var(--dim);font-size:.85rem}
+.btn.primary{background:var(--sig);color:#04181d;border-color:var(--sig)}
+.btn.primary span{color:#0b3a44}
+.note{color:var(--dim);font-size:.85rem;margin:0 0 2.5rem}
+.paper{background:#f7f7f4;color:#111;border-radius:.75rem;padding:clamp(1.25rem,4vw,2.75rem);font:15px/1.5 Arial,Helvetica,sans-serif;box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.paper h1{text-align:center;font-size:1.9rem;margin:0 0 .25rem}
+.paper .contact{text-align:center;margin:0 0 .5rem;font-size:.9rem;overflow-wrap:anywhere}
+.paper h2{font-size:1rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #111;margin:1.1rem 0 .4rem;padding-bottom:.15rem}
+.paper p{margin:.15rem 0}
+.paper ul{margin:.2rem 0 .6rem;padding-left:1.25rem}
+.paper li{margin:.1rem 0}
+.paper .row{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.paper a{color:#0b4f8a}
+@media print{body{background:#fff}.top,.lead,.dl,.note,.title{display:none}.paper{box-shadow:none;padding:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="top" aria-label="Site"><a href="/">&larr; Back to portfolio</a><a href="mailto:piyush.chaudhary@somaiya.edu">Email me</a></nav>
+<main>
+<h1 class="title">Resume</h1>
+<p class="lead">Plain on purpose: one column, standard headings and real text, so applicant tracking systems read it correctly. Pick the format a portal asks for.</p>
+<div class="dl">
+<a class="btn primary" href="Piyush-Chaudhary-Resume.pdf" download><strong>PDF</strong><span>Best for applying. Text is selectable and parses cleanly.</span></a>
+<a class="btn" href="Piyush-Chaudhary-Resume.docx" download><strong>Word (.docx)</strong><span>For portals that ask for Word, or to edit.</span></a>
+<a class="btn" href="Piyush-Chaudhary-Resume.tex" download><strong>LaTeX (.tex)</strong><span>Source file. Compile with pdflatex.</span></a>
+<a class="btn" href="Piyush-Chaudhary-Resume.txt" download><strong>Plain text (.txt)</strong><span>For pasting into application forms.</span></a>
+</div>
+<p class="note">All four files contain the same content.</p>
+<article class="paper" aria-label="Resume">
+<h1>Piyush Chaudhary</h1>
+<p class="contact"><a href="mailto:piyush.chaudhary@somaiya.edu">piyush.chaudhary@somaiya.edu</a> &middot; <a href="https://github.com/Piyushchy">github.com/Piyushchy</a> &middot; <a href="https://www.linkedin.com/in/piyush-chaudhary-9b5999187/">linkedin.com/in/piyush-chaudhary-9b5999187</a> &middot; <a href="https://piyushchy.github.io">piyushchy.github.io</a></p>
+<h2>Summary</h2>
+<p>Final-year B.Tech Computer Engineering student who builds document-processing, cloud and mobile software. Currently an intern at SBI Global IT Centre, previously an intern at Mazagon Dock Shipbuilders Limited.</p>
+<h2>Education</h2>
+<p class="row"><span><strong>Bachelor of Technology, Computer Engineering</strong>, K.J. Somaiya College of Engineering</span><span>Final year</span></p>
+<p>Coursework: Natural Language Processing, Cloud Computing, AR/VR, Network and Information Security</p>
+<h2>Experience</h2>
+<p class="row"><span><strong>Intern</strong>, State Bank of India, Global IT Centre</span><span>Present</span></p>
+<ul><li>Building a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.</li><li>Compared three architectures on the same documents (Table Transformer, a pure vision-language model, and Docling) before choosing the hybrid design.</li><li>Added a fast pre-scan that locates key header fields and the conclusion-table page range before the per-page pass, and switched to lazy page generators after eager rendering exhausted memory.</li><li>Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard that rejects implausible vision-language model cell text.</li><li>Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a 16-page technical report written in LaTeX.</li></ul>
+<p class="row"><span><strong>Intern</strong>, Mazagon Dock Shipbuilders Limited</span><span></span></p>
+<h2>Projects</h2>
+<p class="row"><span><strong>The Tangled Path: Choice-Based Anti-Drug Game</strong> (HTML, CSS, JavaScript)</span><span><a href="https://sudo-choices.vercel.app/">sudo-choices.vercel.app</a></span></p>
+<ul><li>1st runner up at a hackathon. Team leader and front-end developer on a team of four.</li><li>A story game that follows one character through four life stages (ages 6, 15, 25 and 70), where each choice leads toward a good or a bad ending.</li><li>Includes a built-in story teller and a full-screen mode. Deployed on Vercel.</li></ul>
+<p class="row"><span><strong>MouseShare</strong> (Python, Kotlin, Android)</span><span></span></p>
+<ul><li>Shares a Windows PC&#x27;s mouse and keyboard with an Android phone: a Python desktop app captures input and a Kotlin Android app receives and acts on it.</li><li>Comparing transports (HID keyboard and mouse, WiFi) to cut input lag.</li></ul>
+<p class="row"><span><strong>GIF Crop and Overlay Tool</strong> (JavaScript, HTML, Canvas)</span><span><a href="https://piyushchy.github.io/gif-tool/">piyushchy.github.io/gif-tool</a></span></p>
+<ul><li>Browser tool that crops a GIF to a freehand or polygon shape and overlays one GIF on another with per-frame controls (blank, skip, hold, and shifting one track against the other).</li><li>Wrote the GIF decoder and encoder from scratch (LZW and median-cut palette). Runs entirely in the browser, so nothing is uploaded.</li></ul>
+<p class="row"><span><strong>Cloud-Native App on AWS</strong> (Docker, AWS ECR, ECS Fargate, ALB, RDS MySQL, CodePipeline, SNS)</span><span></span></p>
+<ul><li>Containerized a Node.js app and deployed it on ECS Fargate behind an Application Load Balancer, with the image stored in ECR.</li><li>Connected to an RDS MySQL database through a bastion host over Session Manager, and added a CodePipeline CI/CD flow and an SNS alarm.</li></ul>
+<p class="row"><span><strong>RNN vs LSTM Text Classification</strong> (Python, PyTorch, Google Colab)</span><span></span></p>
+<ul><li>Trained and compared a plain RNN and an LSTM on the same text classification task in a runnable Google Colab notebook.</li></ul>
+<h2>Technical Skills</h2>
+<p><strong>Languages:</strong> Python, Kotlin, JavaScript, HTML, CSS, LaTeX</p>
+<p><strong>Computer vision and document AI:</strong> OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, Pillow, vision-language models</p>
+<p><strong>Machine learning:</strong> PyTorch, RNN, LSTM</p>
+<p><strong>Cloud and infrastructure:</strong> Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)</p>
+<p><strong>Tools:</strong> Git, GitHub, Google Colab, openpyxl, Excel automation</p>
+<h2>Achievements</h2><ul><li>1st runner up, hackathon, for The Tangled Path (team leader and front-end developer)</li></ul>
+</article>
+</main>
+</div>
+</body>
+</html>
