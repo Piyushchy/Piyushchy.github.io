@@ -3,7 +3,7 @@ piyush.chaudhary@somaiya.edu | mail@piyushchy.is-a.dev | piyushchy.is-a.dev | gi
 
 SUMMARY
 -------
-Final-year B.Tech Computer Engineering student who builds document-processing, cloud and mobile software. Currently an intern at SBI Global IT Centre, previously an intern at Mazagon Dock Shipbuilders Limited.
+Final-year B.Tech Computer Engineering student building document-processing, cloud and mobile software. Three internships: State Bank of India (two) and Mazagon Dock Shipbuilders.
 
 EDUCATION
 ---------
@@ -12,14 +12,17 @@ Coursework: Natural Language Processing, Cloud Computing, AR/VR, Network and Inf
 
 EXPERIENCE
 ----------
-Intern, State Bank of India, Global IT Centre (Present)
-- Building a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.
+Summer Intern, State Bank of India, Analytics Department (May 2026 - Jul 2026)
+- Project: image to structured dataset conversion and predictive model building. Built a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.
 - Compared three architectures on the same documents (Table Transformer, a pure vision-language model, and Docling) before choosing the hybrid design.
-- Added a fast pre-scan that locates key header fields and the conclusion-table page range before the per-page pass, and switched to lazy page generators after eager rendering exhausted memory.
+- Added a fast pre-scan for key header fields and the conclusion-table pages, and switched to lazy page generators after eager rendering exhausted memory.
 - Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard that rejects implausible vision-language model cell text.
 - Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a 16-page technical report.
 
-Intern, Mazagon Dock Shipbuilders Limited
+Industrial Training Intern, Mazagon Dock Shipbuilders Limited, CIT Department (Jun 2025)
+
+Summer Intern, State Bank of India, Business Intelligence Department (Jun 2024)
+- Project: Dashboard Access Management Tool. Completed the project and submitted a project report.
 
 PROJECTS
 --------

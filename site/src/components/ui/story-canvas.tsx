@@ -39,7 +39,7 @@ function rng(seed: number) {
 }
 
 const NODES = [
-  { name: "Table extractor", sub: "SBI Global IT Centre", fx: 0.14, fy: 0.5 },
+  { name: "Table extractor", sub: "SBI Analytics", fx: 0.14, fy: 0.5 },
   { name: "Mazagon Dock", sub: "Internship", fx: 0.32, fy: 0.34 },
   { name: "MouseShare", sub: "PC to phone", fx: 0.5, fy: 0.5 },
   { name: "RNN vs LSTM", sub: "NLP coursework", fx: 0.68, fy: 0.34 },

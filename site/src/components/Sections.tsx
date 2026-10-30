@@ -6,7 +6,7 @@ import { reveal } from "../presets";
 
 const FACTS = [
   ["Studying", "B.Tech Computer Engineering, 4th year, K.J. Somaiya"],
-  ["Internships", "Mazagon Dock, SBI Global IT Centre"],
+  ["Internships", "State Bank of India (two), Mazagon Dock"],
   ["Learning", "Cloud, NLP, and 3D for an anime project"],
 ];
 

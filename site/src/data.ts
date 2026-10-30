@@ -12,9 +12,9 @@ export const profile = {
   role: "Final-year Computer Engineering student & software developer",
   headline: "I build things, then write down what broke.",
   heroSub:
-    "Final-year computer engineering student at K.J. Somaiya. Internships at Mazagon Dock and SBI Global IT Centre. Document processing, cloud apps, and a few things that talk to real hardware.",
+    "Final-year computer engineering student at K.J. Somaiya. Three internships, at State Bank of India (twice) and Mazagon Dock. Document processing, cloud apps, and a few things that talk to real hardware.",
   intro:
-    "Final-year B.Tech Computer Engineering student at K.J. Somaiya College of Engineering. I've interned at Mazagon Dock and I'm currently an intern at SBI Global IT Centre, building a production pipeline that pulls tables out of scanned telecom audit PDFs.",
+    "Final-year B.Tech Computer Engineering student at K.J. Somaiya College of Engineering. I've done three internships, two at State Bank of India and one at Mazagon Dock. The latest, in SBI's Analytics Department, produced a pipeline that pulls tables out of scanned telecom audit PDFs.",
   location: "", // e.g. "Mumbai, India" (optional)
   links: {
     github: "https://github.com/Piyushchy",
@@ -49,7 +49,7 @@ export const projects: Project[] = [
     id: "table-extractor",
     index: "01",
     title: "Scanned-PDF Table Extractor",
-    kind: "Internship · SBI Global IT Centre",
+    kind: "Internship · SBI Analytics Department",
     summary:
       "A hybrid computer-vision and vision-language-model pipeline that reads tables from scanned telecom audit PDFs and writes them to structured Excel sheets.",
     problem:
@@ -67,7 +67,7 @@ export const projects: Project[] = [
       "Generated synthetic scanned PDFs with noise and skew to test against.",
     ],
     stack: ["Python", "PyMuPDF", "OpenCV", "Vision-language models", "openpyxl", "Google Colab", "LaTeX"],
-    status: "In active development. Documented in a 16-page technical report.",
+    status: "Built during the 2026 internship. Documented in a 16-page technical report.",
     repo: "",
     demo: "",
     featured: true,
@@ -192,16 +192,22 @@ export const skillGroups: { label: string; items: string[] }[] = [
 
 export const timeline: { when: string; title: string; org: string; note: string }[] = [
   {
-    when: "Now",
-    title: "Intern",
-    org: "State Bank of India, Global IT Centre",
-    note: "Building a production pipeline to extract structured tables from scanned telecom audit PDFs.",
+    when: "May – Jul 2026",
+    title: "Summer Intern",
+    org: "State Bank of India, Analytics Department",
+    note: "Project: image to structured dataset conversion and predictive model building. Built a pipeline that extracts tables from scanned telecom audit PDFs.",
   },
   {
-    when: "Internship",
-    title: "Intern",
-    org: "Mazagon Dock Shipbuilders Limited",
+    when: "Jun 2025",
+    title: "Industrial Training Intern",
+    org: "Mazagon Dock Shipbuilders Limited, CIT Department",
     note: "",
+  },
+  {
+    when: "Jun 2024",
+    title: "Summer Intern",
+    org: "State Bank of India, Business Intelligence Department",
+    note: "Project: Dashboard Access Management Tool.",
   },
   {
     when: "4th year",
@@ -218,6 +224,6 @@ export const learning = {
 
 export const about = [
   "I'm a final-year computer engineering student at K.J. Somaiya College of Engineering. I like building a thing all the way through, from a rough first version to one that holds up on real input.",
-  "Lately that has meant two internships, Mazagon Dock and SBI Global IT Centre (where I'm building a document-extraction pipeline), plus a tool that shares a PC's mouse and keyboard with an Android phone, a GIF crop and overlay tool, an RNN vs LSTM comparison, a containerized app on AWS, and an anti-drug game that placed 1st runner up at a hackathon.",
+  "Lately that has meant three internships (two at State Bank of India, one at Mazagon Dock), including a document-extraction pipeline at SBI, plus a tool that shares a PC's mouse and keyboard with an Android phone, a GIF crop and overlay tool, an RNN vs LSTM comparison, a containerized app on AWS, and an anti-drug game that placed 1st runner up at a hackathon.",
   "I keep notes on what went wrong in each project, because that's where most of what I've learned came from. Outside code, I'm learning 3D to make an anime project.",
 ];

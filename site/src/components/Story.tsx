@@ -16,7 +16,7 @@ const CAPS: { a: number; b: number; t: string }[] = [
   { a: 0.13, b: 0.32, t: "It starts with input that doesn't behave." },
   { a: 0.36, b: 0.59, t: "I find the structure in it." },
   { a: 0.63, b: 0.84, t: "Then build whatever carries it: pipelines, apps, tools." },
-  { a: 0.88, b: 1, t: "Two internships. Final year. A few of the things I've built." },
+  { a: 0.88, b: 1, t: "Three internships. Final year. A few of the things I've built." },
 ];
 
 function Cap({ p, i }: { p: MotionValue<number>; i: number }) {

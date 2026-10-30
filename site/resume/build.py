@@ -36,8 +36,8 @@ DATA = {
         ("linkedin.com/in/piyush-chaudhary-9b5999187", "https://www.linkedin.com/in/piyush-chaudhary-9b5999187/"),
     ],
     "summary": (
-        "Final-year B.Tech Computer Engineering student who builds document-processing, cloud and mobile software. "
-        "Currently an intern at SBI Global IT Centre, previously an intern at Mazagon Dock Shipbuilders Limited."
+        "Final-year B.Tech Computer Engineering student building document-processing, cloud and mobile software. "
+        "Three internships: State Bank of India (two) and Mazagon Dock Shipbuilders."
     ),
     "education": [
         {
@@ -49,16 +49,16 @@ DATA = {
     ],
     "experience": [
         {
-            "title": "Intern",
-            "org": "State Bank of India, Global IT Centre",
-            "when": "Present",
+            "title": "Summer Intern",
+            "org": "State Bank of India, Analytics Department",
+            "when": "May 2026 - Jul 2026",
             "bullets": [
-                "Building a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, "
+                "Project: image to structured dataset conversion and predictive model building. Built a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, "
                 "using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.",
                 "Compared three architectures on the same documents (Table Transformer, a pure vision-language model, "
                 "and Docling) before choosing the hybrid design.",
-                "Added a fast pre-scan that locates key header fields and the conclusion-table page range before the "
-                "per-page pass, and switched to lazy page generators after eager rendering exhausted memory.",
+                "Added a fast pre-scan for key header fields and the conclusion-table pages, and switched to lazy page "
+                "generators after eager rendering exhausted memory.",
                 "Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard "
                 "that rejects implausible vision-language model cell text.",
                 "Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a "
@@ -66,10 +66,18 @@ DATA = {
             ],
         },
         {
-            "title": "Intern",
-            "org": "Mazagon Dock Shipbuilders Limited",
-            "when": "",
+            "title": "Industrial Training Intern",
+            "org": "Mazagon Dock Shipbuilders Limited, CIT Department",
+            "when": "Jun 2025",
             "bullets": [],
+        },
+        {
+            "title": "Summer Intern",
+            "org": "State Bank of India, Business Intelligence Department",
+            "when": "Jun 2024",
+            "bullets": [
+                "Project: Dashboard Access Management Tool. Completed the project and submitted a project report.",
+            ],
         },
     ],
     "projects": [
