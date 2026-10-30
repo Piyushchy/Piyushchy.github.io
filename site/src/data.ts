@@ -80,7 +80,7 @@ export const projects: Project[] = [
     summary:
       "Use a Windows PC's mouse and keyboard to control an Android phone, with a Python app on the PC and a Kotlin app on the phone.",
     problem:
-      "Existing options add noticeable input lag. The goal is to get latency low enough that the phone feels like it has a real attached mouse and keyboard.",
+      "I could not find an existing tool that did this well, and the options I tried add noticeable input lag. The goal is latency low enough that the phone feels like it has a real attached mouse and keyboard.",
     built: [
       "Windows desktop app in Python that captures input.",
       "Android app in Kotlin that receives and acts on it.",
@@ -157,7 +157,7 @@ export const projects: Project[] = [
     summary:
       "Cut a GIF out in any shape, or lay one GIF over another and control it frame by frame. It runs entirely in the browser, so nothing is uploaded.",
     problem:
-      "Cropping a GIF is usually a rectangle, and stacking two GIFs rarely lets you line up their frames. I wanted a freehand cut-out and an overlay I could time by hand.",
+      "I could not find an existing tool that crops a GIF to a freehand shape or overlays one GIF on another with frame-level control, so I built one.",
     built: [
       "Freehand and polygon cropping, with an option to trim the canvas down to the shape.",
       "Overlay mode: drag and scale one GIF over another, with two frame tracks you can slide against each other.",
@@ -174,7 +174,7 @@ export const projects: Project[] = [
 ];
 
 export const skillGroups: { label: string; items: string[] }[] = [
-  { label: "Languages", items: ["Python", "Kotlin", "LaTeX"] },
+  { label: "Languages", items: ["Python", "Java", "Kotlin", "LaTeX"] },
   {
     label: "Computer vision & document AI",
     items: ["OpenCV", "PyMuPDF", "EasyOCR", "Table Transformer", "Docling", "Vision-language models", "Pillow"],
@@ -186,7 +186,8 @@ export const skillGroups: { label: string; items: string[] }[] = [
   },
   { label: "Data & output", items: ["openpyxl", "Excel automation"] },
   { label: "Mobile", items: ["Android (Kotlin)"] },
-  { label: "Web", items: ["HTML", "CSS", "JavaScript", "Canvas"] },
+  { label: "Web", items: ["React", "HTML", "CSS", "JavaScript", "Canvas"] },
+  { label: "Systems", items: ["Linux (command line)", "SSH"] },
 ];
 
 export const timeline: { when: string; title: string; org: string; note: string }[] = [

@@ -29,10 +29,10 @@ BASE = "Piyush-Chaudhary-Resume"
 DATA = {
     "name": "Piyush Chaudhary",
     "contact": [
-        ("piyush.chaudhary@somaiya.edu", "mailto:piyush.chaudhary@somaiya.edu"),
+        ("mail@piyushchy.is-a.dev", "mailto:mail@piyushchy.is-a.dev"),
+        ("piyushchy.is-a.dev", "https://piyushchy.is-a.dev/"),
         ("github.com/Piyushchy", "https://github.com/Piyushchy"),
         ("linkedin.com/in/piyush-chaudhary-9b5999187", "https://www.linkedin.com/in/piyush-chaudhary-9b5999187/"),
-        ("piyushchy.github.io", "https://piyushchy.github.io"),
     ],
     "summary": (
         "Final-year B.Tech Computer Engineering student who builds document-processing, cloud and mobile software. "
@@ -61,7 +61,7 @@ DATA = {
                 "Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard "
                 "that rejects implausible vision-language model cell text.",
                 "Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a "
-                "16-page technical report written in LaTeX.",
+                "16-page technical report.",
             ],
         },
         {
@@ -88,8 +88,8 @@ DATA = {
             "stack": "Python, Kotlin, Android",
             "link": None,
             "bullets": [
-                "Shares a Windows PC's mouse and keyboard with an Android phone: a Python desktop app captures input and "
-                "a Kotlin Android app receives and acts on it.",
+                "Built because I could not find an existing tool that shares a Windows PC's mouse and keyboard with an "
+                "Android phone: a Python desktop app captures input and a Kotlin Android app receives and acts on it.",
                 "Comparing transports (HID keyboard and mouse, WiFi) to cut input lag.",
             ],
         },
@@ -98,10 +98,10 @@ DATA = {
             "stack": "JavaScript, HTML, Canvas",
             "link": ("piyushchy.github.io/gif-tool", "https://piyushchy.github.io/gif-tool/"),
             "bullets": [
-                "Browser tool that crops a GIF to a freehand or polygon shape and overlays one GIF on another with "
-                "per-frame controls (blank, skip, hold, and shifting one track against the other).",
-                "Wrote the GIF decoder and encoder from scratch (LZW and median-cut palette). Runs entirely in the "
-                "browser, so nothing is uploaded.",
+                "Built because I could not find an existing tool that crops a GIF to a freehand or polygon shape or "
+                "overlays one GIF on another with frame-level control.",
+                "Overlay mode has two frame tracks to slide against each other, plus per-frame blank, skip and hold. "
+                "Wrote the GIF decoder and encoder from scratch (LZW, median-cut palette). Runs entirely in the browser.",
             ],
         },
         {
@@ -126,13 +126,13 @@ DATA = {
         },
     ],
     "skills": [
-        ("Languages", "Python, Kotlin, JavaScript, HTML, CSS, LaTeX"),
+        ("Languages", "Python, Java, Kotlin, JavaScript, HTML, CSS"),
+        ("Web", "React, HTML5, CSS3"),
         ("Computer vision and document AI", "OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, Pillow, vision-language models"),
         ("Machine learning", "PyTorch, RNN, LSTM"),
         ("Cloud and infrastructure", "Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)"),
-        ("Tools", "Git, GitHub, Google Colab, openpyxl, Excel automation"),
+        ("Tools and systems", "Linux (command line), SSH, Git, GitHub, Google Colab, openpyxl"),
     ],
-    "awards": ["1st runner up, hackathon, for The Tangled Path (team leader and front-end developer)"],
 }
 
 
@@ -204,8 +204,6 @@ def build_tex(d) -> str:
     L.append("\\section*{TECHNICAL SKILLS}")
     for k, v in d["skills"]:
         L.append(rf"\textbf{{{tex_esc(k)}:}} {tex_esc(v)}\par")
-    L.append("\n\\section*{ACHIEVEMENTS}")
-    L.append(bullets(d["awards"]))
     L.append("\\end{document}\n")
     return "\n".join(L)
 
@@ -233,9 +231,6 @@ def build_txt(d) -> str:
         out.append("")
     sec("Technical Skills")
     out += [f"{k}: {v}" for k, v in d["skills"]]
-    out.append("")
-    sec("Achievements")
-    out += [f"- {a}" for a in d["awards"]]
     return "\n".join(out) + "\n"
 
 
@@ -327,9 +322,6 @@ def build_docx(d, path: Path):
         p = doc.add_paragraph()
         p.add_run(k + ": ").bold = True
         p.add_run(v)
-    heading("Achievements")
-    for a in d["awards"]:
-        doc.add_paragraph(a, style="List Bullet")
     doc.core_properties.author = d["name"]
     doc.core_properties.title = f"{d['name']} Resume"
     doc.save(path)
@@ -357,7 +349,7 @@ def build_html(d) -> str:
         body.append("<ul>" + "".join(f"<li>{e(b)}</li>" for b in p["bullets"]) + "</ul>")
     body.append("<h2>Technical Skills</h2>")
     body += [f"<p><strong>{e(k)}:</strong> {e(v)}</p>" for k, v in d["skills"]]
-    body.append("<h2>Achievements</h2><ul>" + "".join(f"<li>{e(x)}</li>" for x in d["awards"]) + "</ul>")
+    body.append("")
     paper = "\n".join(body)
 
     dl = [

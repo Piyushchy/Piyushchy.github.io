@@ -54,7 +54,7 @@ h1.title{font-size:clamp(2.4rem,8vw,4.5rem);line-height:1;margin:0 0 .6rem;lette
 <p class="note">All four files contain the same content.</p>
 <article class="paper" aria-label="Resume">
 <h1>Piyush Chaudhary</h1>
-<p class="contact"><a href="mailto:piyush.chaudhary@somaiya.edu">piyush.chaudhary@somaiya.edu</a> &middot; <a href="https://github.com/Piyushchy">github.com/Piyushchy</a> &middot; <a href="https://www.linkedin.com/in/piyush-chaudhary-9b5999187/">linkedin.com/in/piyush-chaudhary-9b5999187</a> &middot; <a href="https://piyushchy.github.io">piyushchy.github.io</a></p>
+<p class="contact"><a href="mailto:mail@piyushchy.is-a.dev">mail@piyushchy.is-a.dev</a> &middot; <a href="https://piyushchy.is-a.dev/">piyushchy.is-a.dev</a> &middot; <a href="https://github.com/Piyushchy">github.com/Piyushchy</a> &middot; <a href="https://www.linkedin.com/in/piyush-chaudhary-9b5999187/">linkedin.com/in/piyush-chaudhary-9b5999187</a></p>
 <h2>Summary</h2>
 <p>Final-year B.Tech Computer Engineering student who builds document-processing, cloud and mobile software. Currently an intern at SBI Global IT Centre, previously an intern at Mazagon Dock Shipbuilders Limited.</p>
 <h2>Education</h2>
@@ -62,26 +62,27 @@ h1.title{font-size:clamp(2.4rem,8vw,4.5rem);line-height:1;margin:0 0 .6rem;lette
 <p>Coursework: Natural Language Processing, Cloud Computing, AR/VR, Network and Information Security</p>
 <h2>Experience</h2>
 <p class="row"><span><strong>Intern</strong>, State Bank of India, Global IT Centre</span><span>Present</span></p>
-<ul><li>Building a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.</li><li>Compared three architectures on the same documents (Table Transformer, a pure vision-language model, and Docling) before choosing the hybrid design.</li><li>Added a fast pre-scan that locates key header fields and the conclusion-table page range before the per-page pass, and switched to lazy page generators after eager rendering exhausted memory.</li><li>Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard that rejects implausible vision-language model cell text.</li><li>Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a 16-page technical report written in LaTeX.</li></ul>
+<ul><li>Building a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.</li><li>Compared three architectures on the same documents (Table Transformer, a pure vision-language model, and Docling) before choosing the hybrid design.</li><li>Added a fast pre-scan that locates key header fields and the conclusion-table page range before the per-page pass, and switched to lazy page generators after eager rendering exhausted memory.</li><li>Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard that rejects implausible vision-language model cell text.</li><li>Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a 16-page technical report.</li></ul>
 <p class="row"><span><strong>Intern</strong>, Mazagon Dock Shipbuilders Limited</span><span></span></p>
 <h2>Projects</h2>
 <p class="row"><span><strong>The Tangled Path: Choice-Based Anti-Drug Game</strong> (HTML, CSS, JavaScript)</span><span><a href="https://sudo-choices.vercel.app/">sudo-choices.vercel.app</a></span></p>
 <ul><li>1st runner up at a hackathon. Team leader and front-end developer on a team of four.</li><li>A story game that follows one character through four life stages (ages 6, 15, 25 and 70), where each choice leads toward a good or a bad ending.</li><li>Includes a built-in story teller and a full-screen mode. Deployed on Vercel.</li></ul>
 <p class="row"><span><strong>MouseShare</strong> (Python, Kotlin, Android)</span><span></span></p>
-<ul><li>Shares a Windows PC&#x27;s mouse and keyboard with an Android phone: a Python desktop app captures input and a Kotlin Android app receives and acts on it.</li><li>Comparing transports (HID keyboard and mouse, WiFi) to cut input lag.</li></ul>
+<ul><li>Built because I could not find an existing tool that shares a Windows PC&#x27;s mouse and keyboard with an Android phone: a Python desktop app captures input and a Kotlin Android app receives and acts on it.</li><li>Comparing transports (HID keyboard and mouse, WiFi) to cut input lag.</li></ul>
 <p class="row"><span><strong>GIF Crop and Overlay Tool</strong> (JavaScript, HTML, Canvas)</span><span><a href="https://piyushchy.github.io/gif-tool/">piyushchy.github.io/gif-tool</a></span></p>
-<ul><li>Browser tool that crops a GIF to a freehand or polygon shape and overlays one GIF on another with per-frame controls (blank, skip, hold, and shifting one track against the other).</li><li>Wrote the GIF decoder and encoder from scratch (LZW and median-cut palette). Runs entirely in the browser, so nothing is uploaded.</li></ul>
+<ul><li>Built because I could not find an existing tool that crops a GIF to a freehand or polygon shape or overlays one GIF on another with frame-level control.</li><li>Overlay mode has two frame tracks to slide against each other, plus per-frame blank, skip and hold. Wrote the GIF decoder and encoder from scratch (LZW, median-cut palette). Runs entirely in the browser.</li></ul>
 <p class="row"><span><strong>Cloud-Native App on AWS</strong> (Docker, AWS ECR, ECS Fargate, ALB, RDS MySQL, CodePipeline, SNS)</span><span></span></p>
 <ul><li>Containerized a Node.js app and deployed it on ECS Fargate behind an Application Load Balancer, with the image stored in ECR.</li><li>Connected to an RDS MySQL database through a bastion host over Session Manager, and added a CodePipeline CI/CD flow and an SNS alarm.</li></ul>
 <p class="row"><span><strong>RNN vs LSTM Text Classification</strong> (Python, PyTorch, Google Colab)</span><span></span></p>
 <ul><li>Trained and compared a plain RNN and an LSTM on the same text classification task in a runnable Google Colab notebook.</li></ul>
 <h2>Technical Skills</h2>
-<p><strong>Languages:</strong> Python, Kotlin, JavaScript, HTML, CSS, LaTeX</p>
+<p><strong>Languages:</strong> Python, Java, Kotlin, JavaScript, HTML, CSS</p>
+<p><strong>Web:</strong> React, HTML5, CSS3</p>
 <p><strong>Computer vision and document AI:</strong> OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, Pillow, vision-language models</p>
 <p><strong>Machine learning:</strong> PyTorch, RNN, LSTM</p>
 <p><strong>Cloud and infrastructure:</strong> Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)</p>
-<p><strong>Tools:</strong> Git, GitHub, Google Colab, openpyxl, Excel automation</p>
-<h2>Achievements</h2><ul><li>1st runner up, hackathon, for The Tangled Path (team leader and front-end developer)</li></ul>
+<p><strong>Tools and systems:</strong> Linux (command line), SSH, Git, GitHub, Google Colab, openpyxl</p>
+
 </article>
 </main>
 </div>
