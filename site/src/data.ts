@@ -186,8 +186,8 @@ export const skillGroups: { label: string; items: string[] }[] = [
   },
   { label: "Data & output", items: ["openpyxl", "Excel automation"] },
   { label: "Mobile", items: ["Android (Kotlin)"] },
-  { label: "Web", items: ["React", "HTML", "CSS", "JavaScript", "Canvas"] },
-  { label: "Systems", items: ["Linux (command line)", "SSH"] },
+  { label: "Web", items: ["React.js", "HTML", "CSS", "JavaScript", "Canvas"] },
+  { label: "Systems", items: ["Linux", "Command Line (CLI)", "SSH"] },
 ];
 
 export const timeline: { when: string; title: string; org: string; note: string }[] = [

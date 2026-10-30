@@ -1,5 +1,5 @@
 PIYUSH CHAUDHARY
-mail@piyushchy.is-a.dev | piyushchy.is-a.dev | github.com/Piyushchy | linkedin.com/in/piyush-chaudhary-9b5999187
+piyush.chaudhary@somaiya.edu | mail@piyushchy.is-a.dev | piyushchy.is-a.dev | github.com/Piyushchy | linkedin.com/in/piyush-chaudhary-9b5999187
 
 SUMMARY
 -------
@@ -46,8 +46,8 @@ RNN vs LSTM Text Classification (Python, PyTorch, Google Colab)
 TECHNICAL SKILLS
 ----------------
 Languages: Python, Java, Kotlin, JavaScript, HTML, CSS
-Web: React, HTML5, CSS3
+Web: React.js, HTML5, CSS3
 Computer vision and document AI: OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, Pillow, vision-language models
 Machine learning: PyTorch, RNN, LSTM
 Cloud and infrastructure: Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)
-Tools and systems: Linux (command line), SSH, Git, GitHub, Google Colab, openpyxl
+Tools and systems: Linux, Command Line (CLI), SSH, Git, GitHub, Google Colab, openpyxl

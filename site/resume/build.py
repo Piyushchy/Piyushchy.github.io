@@ -29,6 +29,7 @@ BASE = "Piyush-Chaudhary-Resume"
 DATA = {
     "name": "Piyush Chaudhary",
     "contact": [
+        ("piyush.chaudhary@somaiya.edu", "mailto:piyush.chaudhary@somaiya.edu"),
         ("mail@piyushchy.is-a.dev", "mailto:mail@piyushchy.is-a.dev"),
         ("piyushchy.is-a.dev", "https://piyushchy.is-a.dev/"),
         ("github.com/Piyushchy", "https://github.com/Piyushchy"),
@@ -127,11 +128,11 @@ DATA = {
     ],
     "skills": [
         ("Languages", "Python, Java, Kotlin, JavaScript, HTML, CSS"),
-        ("Web", "React, HTML5, CSS3"),
+        ("Web", "React.js, HTML5, CSS3"),
         ("Computer vision and document AI", "OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, Pillow, vision-language models"),
         ("Machine learning", "PyTorch, RNN, LSTM"),
         ("Cloud and infrastructure", "Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)"),
-        ("Tools and systems", "Linux (command line), SSH, Git, GitHub, Google Colab, openpyxl"),
+        ("Tools and systems", "Linux, Command Line (CLI), SSH, Git, GitHub, Google Colab, openpyxl"),
     ],
 }
 
