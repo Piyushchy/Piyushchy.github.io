@@ -150,8 +150,38 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    id: "gif-tool",
+    id: "namestorage",
     index: "06",
+    title: "namestorage",
+    kind: "Personal project",
+    summary:
+      "A personal web drive. Open a website, sign in with Google, and upload or download files that live on my own Ubuntu laptop. Files go straight from the browser to the laptop over an encrypted WebRTC channel, so no server ever holds them.",
+    problem:
+      "Cloud drives keep your files on someone else's servers, and relaying files through a server brings size limits and cost. I wanted a free drive on hardware I own, with no open ports at home, no card and no VPS.",
+    built: [
+      "A static site on GitHub Pages with Google sign-in, a sortable file list, upload, delete, dark mode and a phone layout.",
+      "A Python signaling server that checks the Google token on the server against an email allow-list, applies an origin check and rate limit, and only relays connection setup messages, never file data.",
+      "A laptop agent that serves one folder over a WebRTC data channel in 16 KB chunks with backpressure, and only makes outbound connections.",
+      "Short-lived HMAC tickets bound to the browser's DTLS fingerprint, so a stolen ticket is useless, plus path checks that keep every request inside the root folder.",
+      "Uploads written to a temporary file and renamed only when complete (never overwriting), and a hidden record of who uploaded what and when.",
+      "A one-command installer and a namestorage command (setup wizard, email and origin changes, health check, update) that generate the config and systemd services from one settings file and publish the server through Tailscale Funnel.",
+      "79 automated tests, including a real WebRTC session on localhost.",
+    ],
+    decisions: [
+      "Chose peer-to-peer WebRTC over relaying files, so no middleman sets a size limit. The trade-off is that strict NATs can block the direct connection, and a TURN relay is the documented fix.",
+      "Put the same checks on both the signaling server and the agent, each with its own email allow-list.",
+      "Planned each feature as a numbered issue and shipped it as its own small commit.",
+      "Wrote the limitations down plainly: the signaling server is trusted, the laptop must be on, and transfers do not resume.",
+    ],
+    stack: ["Python", "WebRTC", "WebSockets", "JavaScript", "HTML", "CSS", "systemd", "Tailscale", "Linux", "pytest"],
+    status: "Working and documented. Runs on my own laptop, so it is live when the laptop is on.",
+    repo: "https://github.com/Piyushchy/namestorage",
+    demo: "https://piyushchy.is-a.dev/namestorage/",
+    featured: true,
+  },
+  {
+    id: "gif-tool",
+    index: "07",
     title: "GIF Crop & Overlay",
     kind: "Personal project",
     summary:
@@ -186,8 +216,8 @@ export const skillGroups: { label: string; items: string[] }[] = [
   },
   { label: "Data & output", items: ["openpyxl", "Excel automation"] },
   { label: "Mobile", items: ["Android (Kotlin)"] },
-  { label: "Web", items: ["React.js", "HTML", "CSS", "JavaScript", "Canvas"] },
-  { label: "Systems", items: ["Linux", "Command Line (CLI)", "SSH"] },
+  { label: "Web", items: ["React.js", "HTML", "CSS", "JavaScript", "Canvas", "WebRTC", "WebSockets"] },
+  { label: "Systems & tooling", items: ["Linux", "Command Line (CLI)", "SSH", "systemd", "Tailscale", "pytest"] },
 ];
 
 export const timeline: { when: string; title: string; org: string; note: string }[] = [
@@ -224,6 +254,6 @@ export const learning = {
 
 export const about = [
   "I'm a final-year computer engineering student at K.J. Somaiya College of Engineering. I like building a thing all the way through, from a rough first version to one that holds up on real input.",
-  "Lately that has meant three internships (two at State Bank of India, one at Mazagon Dock), including a document-extraction pipeline at SBI, plus a tool that shares a PC's mouse and keyboard with an Android phone, a GIF crop and overlay tool, an RNN vs LSTM comparison, a containerized app on AWS, and an anti-drug game that placed 1st runner up at a hackathon.",
+  "Lately that has meant three internships (two at State Bank of India, one at Mazagon Dock), including a document-extraction pipeline at SBI, plus a tool that shares a PC's mouse and keyboard with an Android phone, a GIF crop and overlay tool, a personal web drive that serves files from my own laptop over WebRTC, an RNN vs LSTM comparison, a containerized app on AWS, and an anti-drug game that placed 1st runner up at a hackathon.",
   "I keep notes on what went wrong in each project, because that's where most of what I've learned came from. Outside code, I'm learning 3D to make an anime project.",
 ];

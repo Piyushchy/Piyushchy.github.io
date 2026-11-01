@@ -54,15 +54,11 @@ DATA = {
             "when": "May 2026 - Jul 2026",
             "bullets": [
                 "Project: image to structured dataset conversion and predictive model building. Built a production pipeline that extracts structured tables from scanned telecom audit PDFs into Excel, "
-                "using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model.",
-                "Compared three architectures on the same documents (Table Transformer, a pure vision-language model, "
-                "and Docling) before choosing the hybrid design.",
+                "using a hybrid of computer vision (PyMuPDF, OpenCV) and a vision-language model, chosen after comparing three architectures.",
                 "Added a fast pre-scan for key header fields and the conclusion-table pages, and switched to lazy page "
                 "generators after eager rendering exhausted memory.",
-                "Fixed a column-splicing bug that turned an 11-column table into 24 phantom columns, and added a guard "
-                "that rejects implausible vision-language model cell text.",
-                "Generated synthetic scanned PDFs with noise and skew for testing, and documented the system in a "
-                "16-page technical report.",
+                "Fixed a bug that turned an 11-column table into 24 phantom columns, added a guard against implausible "
+                "model output, tested on synthetic noisy scans, and wrote a 16-page technical report.",
             ],
         },
         {
@@ -82,14 +78,26 @@ DATA = {
     ],
     "projects": [
         {
+            "title": "namestorage: Personal Web Drive",
+            "stack": "Python, WebRTC, JavaScript, Linux",
+            "link": ("github.com/Piyushchy/namestorage", "https://github.com/Piyushchy/namestorage"),
+            "bullets": [
+                "Sign in with Google and upload or download files stored on my own Ubuntu laptop. Files move directly "
+                "between the browser and the laptop over an encrypted WebRTC data channel, so no server holds them.",
+                "Built a Python signaling server (server-side Google token check, email allow-list, origin check, rate "
+                "limiting) and a laptop agent. Tickets are HMAC-signed and bound to the browser's DTLS fingerprint.",
+                "Wrote a one-command installer and a CLI with a setup wizard that generate the config and systemd "
+                "services, published through Tailscale Funnel. 79 automated tests (pytest).",
+            ],
+        },
+        {
             "title": "The Tangled Path: Choice-Based Anti-Drug Game",
             "stack": "HTML, CSS, JavaScript",
             "link": ("sudo-choices.vercel.app", "https://sudo-choices.vercel.app/"),
             "bullets": [
                 "1st runner up at a hackathon. Team leader and front-end developer on a team of four.",
-                "A story game that follows one character through four life stages (ages 6, 15, 25 and 70), where each "
-                "choice leads toward a good or a bad ending.",
-                "Includes a built-in story teller and a full-screen mode. Deployed on Vercel.",
+                "A story game that follows one character through four life stages (ages 6 to 70), where each choice leads "
+                "toward a good or bad ending. Includes a story teller and full-screen mode. Deployed on Vercel.",
             ],
         },
         {
@@ -98,8 +106,8 @@ DATA = {
             "link": None,
             "bullets": [
                 "Built because I could not find an existing tool that shares a Windows PC's mouse and keyboard with an "
-                "Android phone: a Python desktop app captures input and a Kotlin Android app receives and acts on it.",
-                "Comparing transports (HID keyboard and mouse, WiFi) to cut input lag.",
+                "Android phone: a Python desktop app captures input and a Kotlin app receives it. Comparing transports "
+                "(HID, WiFi) to cut input lag.",
             ],
         },
         {
@@ -119,9 +127,7 @@ DATA = {
             "link": None,
             "bullets": [
                 "Containerized a Node.js app and deployed it on ECS Fargate behind an Application Load Balancer, with "
-                "the image stored in ECR.",
-                "Connected to an RDS MySQL database through a bastion host over Session Manager, and added a "
-                "CodePipeline CI/CD flow and an SNS alarm.",
+                "ECR, RDS MySQL (reached through a bastion host), a CodePipeline CI/CD flow and an SNS alarm.",
             ],
         },
         {
@@ -129,18 +135,16 @@ DATA = {
             "stack": "Python, PyTorch, Google Colab",
             "link": None,
             "bullets": [
-                "Trained and compared a plain RNN and an LSTM on the same text classification task in a runnable "
-                "Google Colab notebook.",
+                "Trained and compared a plain RNN and an LSTM on text classification in a Google Colab notebook.",
             ],
         },
     ],
     "skills": [
         ("Languages", "Python, Java, Kotlin, JavaScript, HTML, CSS"),
-        ("Web", "React.js, HTML5, CSS3"),
-        ("Computer vision and document AI", "OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, Pillow, vision-language models"),
-        ("Machine learning", "PyTorch, RNN, LSTM"),
-        ("Cloud and infrastructure", "Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)"),
-        ("Tools and systems", "Linux, Command Line (CLI), SSH, Git, GitHub, Google Colab, openpyxl"),
+        ("Web", "React.js, HTML5, CSS3, WebRTC, WebSockets"),
+        ("Computer vision and ML", "OpenCV, PyMuPDF, EasyOCR, Table Transformer, Docling, vision-language models, PyTorch, RNN, LSTM"),
+        ("Cloud", "Docker, AWS (ECR, ECS Fargate, ALB, RDS MySQL, EC2, CodePipeline, SNS)"),
+        ("Tools and systems", "Linux, Command Line (CLI), SSH, Bash, systemd, Tailscale, Git, GitHub, pytest, Google Colab, openpyxl"),
     ],
 }
 
