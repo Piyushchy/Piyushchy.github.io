@@ -78,16 +78,20 @@ DATA = {
     ],
     "projects": [
         {
-            "title": "namestorage: Personal Web Drive",
-            "stack": "Python, WebRTC, JavaScript, Linux",
+            "title": "namestorage: Self-Hosted Cloud Drive",
+            "stack": "Python, WebRTC, WebSockets, STUN/ICE, Tailscale Funnel, OIDC, systemd, Linux, pytest",
             "link": ("github.com/Piyushchy/namestorage", "https://github.com/Piyushchy/namestorage"),
             "bullets": [
-                "Sign in with Google and upload or download files stored on my own Ubuntu laptop. Files move directly "
-                "between the browser and the laptop over an encrypted WebRTC data channel, so no server holds them.",
-                "Built a Python signaling server (server-side Google token check, email allow-list, origin check, rate "
-                "limiting) and a laptop agent. Tickets are HMAC-signed and bound to the browser's DTLS fingerprint.",
-                "Wrote a one-command installer and a CLI with a setup wizard that generate the config and systemd "
-                "services, published through Tailscale Funnel. 79 automated tests (pytest).",
+                "Private drive on my own Ubuntu laptop behind CGNAT: the agent makes only outbound connections (no port "
+                "forwarding), and the browser connects peer-to-peer over an encrypted WebRTC data channel, so no server "
+                "stores or relays files.",
+                "NAT traversal with ICE and Google's public STUN server. Published the Python WebSocket signaling server "
+                "as a public wss:// endpoint with Tailscale Funnel (no VPS, static IP or open port); it relays only SDP "
+                "setup messages.",
+                "Security: server-side verification of Google OIDC ID tokens (signature, issuer, audience, expiry) against "
+                "an email allow-list on both server and agent; origin check; rate limiting; single-use HMAC tickets "
+                "(120 s, replay-rejected) bound to the DTLS fingerprint; path-traversal confinement; systemd hardening.",
+                "One-command installer and management CLI. 79 automated tests (pytest), including a real WebRTC session.",
             ],
         },
         {
@@ -95,9 +99,8 @@ DATA = {
             "stack": "HTML, CSS, JavaScript",
             "link": ("sudo-choices.vercel.app", "https://sudo-choices.vercel.app/"),
             "bullets": [
-                "1st runner up at a hackathon. Team leader and front-end developer on a team of four.",
-                "A story game that follows one character through four life stages (ages 6 to 70), where each choice leads "
-                "toward a good or bad ending. Includes a story teller and full-screen mode. Deployed on Vercel.",
+                "1st runner up at a hackathon (team of four; I was team leader and front-end developer). A story game "
+                "across four life stages (ages 6 to 70) where each choice leads to a good or bad ending. Deployed on Vercel.",
             ],
         },
         {
@@ -115,10 +118,8 @@ DATA = {
             "stack": "JavaScript, HTML, Canvas",
             "link": ("piyushchy.github.io/gif-tool", "https://piyushchy.github.io/gif-tool/"),
             "bullets": [
-                "Built because I could not find an existing tool that crops a GIF to a freehand or polygon shape or "
-                "overlays one GIF on another with frame-level control.",
-                "Overlay mode has two frame tracks to slide against each other, plus per-frame blank, skip and hold. "
-                "Wrote the GIF decoder and encoder from scratch (LZW, median-cut palette). Runs entirely in the browser.",
+                "Built because no tool cropped a GIF to a freehand shape or overlaid one GIF on another with frame-level "
+                "control. Wrote the GIF decoder and encoder from scratch (LZW, median-cut palette); runs in the browser.",
             ],
         },
         {
@@ -128,14 +129,6 @@ DATA = {
             "bullets": [
                 "Containerized a Node.js app and deployed it on ECS Fargate behind an Application Load Balancer, with "
                 "ECR, RDS MySQL (reached through a bastion host), a CodePipeline CI/CD flow and an SNS alarm.",
-            ],
-        },
-        {
-            "title": "RNN vs LSTM Text Classification",
-            "stack": "Python, PyTorch, Google Colab",
-            "link": None,
-            "bullets": [
-                "Trained and compared a plain RNN and an LSTM on text classification in a Google Colab notebook.",
             ],
         },
     ],

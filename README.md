@@ -7,7 +7,7 @@ A mobile-first, dark-first developer portfolio. The page is a scroll-driven stor
 ## What's on the page
 
 - **Intro** — a pinned scroll story computed in code (no video file). Crooked scanned marks straighten, get boxed, and gather into clusters.
-- **Up close** — a pinned scene with four acts: a table extractor on a laptop, MouseShare between a Windows PC and an Android phone, an AWS deployment diagram, and RNN vs LSTM training curves.
+- **Up close** — a pinned scene with five acts: a table extractor on a laptop, MouseShare between a Windows PC and an Android phone, namestorage (outbound-only agent behind CGNAT, Google sign-in, STUN and Tailscale Funnel, then a direct encrypted transfer), an AWS deployment diagram, and RNN vs LSTM training curves.
 - **MouseShare demo** — a working mock of a Windows PC and an Android phone. One mouse and keyboard move freely between the two screens, and typing lands on the screen you're on.
 - **Projects** — stacking case-study cards.
   - *The Tangled Path*, a choice-based anti-drug game that placed 1st runner up at a hackathon.

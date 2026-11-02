@@ -51,18 +51,18 @@ Coursework: Natural Language Processing, Cloud Computing, AR/VR, Network and Inf
 \end{itemize}
 
 \section*{PROJECTS}
-\noindent\textbf{namestorage: Personal Web Drive} (Python, WebRTC, JavaScript, Linux)\hfill \href{https://github.com/Piyushchy/namestorage}{github.com/Piyushchy/namestorage}\par
+\noindent\textbf{namestorage: Self-Hosted Cloud Drive} (Python, WebRTC, WebSockets, STUN/ICE, Tailscale Funnel, OIDC, systemd, Linux, pytest)\hfill \href{https://github.com/Piyushchy/namestorage}{github.com/Piyushchy/namestorage}\par
 \begin{itemize}
-  \item Sign in with Google and upload or download files stored on my own Ubuntu laptop. Files move directly between the browser and the laptop over an encrypted WebRTC data channel, so no server holds them.
-  \item Built a Python signaling server (server-side Google token check, email allow-list, origin check, rate limiting) and a laptop agent. Tickets are HMAC-signed and bound to the browser's DTLS fingerprint.
-  \item Wrote a one-command installer and a CLI with a setup wizard that generate the config and systemd services, published through Tailscale Funnel. 79 automated tests (pytest).
+  \item Private drive on my own Ubuntu laptop behind CGNAT: the agent makes only outbound connections (no port forwarding), and the browser connects peer-to-peer over an encrypted WebRTC data channel, so no server stores or relays files.
+  \item NAT traversal with ICE and Google's public STUN server. Published the Python WebSocket signaling server as a public wss:// endpoint with Tailscale Funnel (no VPS, static IP or open port); it relays only SDP setup messages.
+  \item Security: server-side verification of Google OIDC ID tokens (signature, issuer, audience, expiry) against an email allow-list on both server and agent; origin check; rate limiting; single-use HMAC tickets (120 s, replay-rejected) bound to the DTLS fingerprint; path-traversal confinement; systemd hardening.
+  \item One-command installer and management CLI. 79 automated tests (pytest), including a real WebRTC session.
 \end{itemize}
 
 \vspace{1pt}
 \noindent\textbf{The Tangled Path: Choice-Based Anti-Drug Game} (HTML, CSS, JavaScript)\hfill \href{https://sudo-choices.vercel.app/}{sudo-choices.vercel.app}\par
 \begin{itemize}
-  \item 1st runner up at a hackathon. Team leader and front-end developer on a team of four.
-  \item A story game that follows one character through four life stages (ages 6 to 70), where each choice leads toward a good or bad ending. Includes a story teller and full-screen mode. Deployed on Vercel.
+  \item 1st runner up at a hackathon (team of four; I was team leader and front-end developer). A story game across four life stages (ages 6 to 70) where each choice leads to a good or bad ending. Deployed on Vercel.
 \end{itemize}
 
 \vspace{1pt}
@@ -74,20 +74,13 @@ Coursework: Natural Language Processing, Cloud Computing, AR/VR, Network and Inf
 \vspace{1pt}
 \noindent\textbf{GIF Crop and Overlay Tool} (JavaScript, HTML, Canvas)\hfill \href{https://piyushchy.github.io/gif-tool/}{piyushchy.github.io/gif-tool}\par
 \begin{itemize}
-  \item Built because I could not find an existing tool that crops a GIF to a freehand or polygon shape or overlays one GIF on another with frame-level control.
-  \item Overlay mode has two frame tracks to slide against each other, plus per-frame blank, skip and hold. Wrote the GIF decoder and encoder from scratch (LZW, median-cut palette). Runs entirely in the browser.
+  \item Built because no tool cropped a GIF to a freehand shape or overlaid one GIF on another with frame-level control. Wrote the GIF decoder and encoder from scratch (LZW, median-cut palette); runs in the browser.
 \end{itemize}
 
 \vspace{1pt}
 \noindent\textbf{Cloud-Native App on AWS} (Docker, AWS ECR, ECS Fargate, ALB, RDS MySQL, CodePipeline, SNS)\par
 \begin{itemize}
   \item Containerized a Node.js app and deployed it on ECS Fargate behind an Application Load Balancer, with ECR, RDS MySQL (reached through a bastion host), a CodePipeline CI/CD flow and an SNS alarm.
-\end{itemize}
-
-\vspace{1pt}
-\noindent\textbf{RNN vs LSTM Text Classification} (Python, PyTorch, Google Colab)\par
-\begin{itemize}
-  \item Trained and compared a plain RNN and an LSTM on text classification in a Google Colab notebook.
 \end{itemize}
 
 \section*{TECHNICAL SKILLS}

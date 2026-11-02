@@ -6,15 +6,24 @@ import MacShowcase from "./MacShowcase";
 import { AndroidPtr, PhoneScreenInner, WinArrow, WinScreenInner } from "./ui/devices";
 
 /**
- * One continuous scroll film, four projects, one pinned screen.
- *   0.00 to 0.30  the laptop opens and walks the table extractor
- *   0.30 to 0.62  the laptop becomes a Windows PC, a phone slides in, one
- *                 cursor crosses between them and the typing follows it
- *   0.62 to 0.82  the AWS app: request flow, deploy path, alarm
- *   0.82 to 1.00  the RNN vs LSTM lab as two training curves
- * Everything is a function of one smoothed scroll value, so it reverses
- * instantly. Reduced motion gets the static laptop section instead.
+ * One continuous scroll film, five projects, one pinned screen.
+ *   the laptop opens and walks the table extractor
+ *   the laptop becomes a Windows PC, a phone slides in, one cursor crosses
+ *     between them and the typing follows it
+ *   namestorage: a laptop behind CGNAT, Google sign-in, STUN, then a direct
+ *     encrypted channel to the browser
+ *   the AWS app: request flow, deploy path, alarm
+ *   the RNN vs LSTM lab as two training curves
+ * Everything is a function of one smoothed scroll value (q), so it reverses
+ * instantly. Acts one and two keep their original timing in "p" space, a
+ * remap of q; the AWS and NLP acts use "L", the old 0.62..1 range, remapped
+ * onto the end of q. Reduced motion gets the static laptop section instead.
  */
+
+const Q2 = 0.4363; // q where the PC and phone act ends
+const Q3 = 0.7326; // q where the namestorage act ends
+const qs = (x: number) => (x / 0.62) * Q2; // old p (acts 1-2) to q
+const qL = (x: number) => Q3 + ((x - 0.62) / 0.38) * (1 - Q3); // old p (acts 4-5) to q
 
 const PC_TEXT = "Typed on the PC.";
 const PHONE_TEXT = "Now it lands here.";
@@ -23,21 +32,26 @@ const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const slice = (s: string, t: number) => s.slice(0, Math.round(clamp(t) * s.length));
 
 const CAPS: { a: number; b: number; t: string }[] = [
-  { a: 0.03, b: 0.1, t: "A scanned page arrives. Skewed, speckled." },
-  { a: 0.1, b: 0.17, t: "OpenCV finds the boxes and grid lines." },
-  { a: 0.17, b: 0.24, t: "A vision-language model reads each cell. Guards reject text that can't be right." },
-  { a: 0.24, b: 0.32, t: "Out comes Excel, merged cells and all." },
-  { a: 0.33, b: 0.44, t: "Next: one mouse and keyboard, shared between a PC and a phone." },
-  { a: 0.44, b: 0.55, t: "The cursor leaves the PC at the screen edge." },
-  { a: 0.55, b: 0.63, t: "And the keys follow it onto the phone." },
-  { a: 0.65, b: 0.82, t: "A containerized app on AWS, from push to alarm." },
-  { a: 0.85, b: 1.0, t: "And a lab comparing an RNN with an LSTM on text classification." },
+  { a: qs(0.03), b: qs(0.1), t: "A scanned page arrives. Skewed, speckled." },
+  { a: qs(0.1), b: qs(0.17), t: "OpenCV finds the boxes and grid lines." },
+  { a: qs(0.17), b: qs(0.24), t: "A vision-language model reads each cell. Guards reject text that can't be right." },
+  { a: qs(0.24), b: qs(0.32), t: "Out comes Excel, merged cells and all." },
+  { a: qs(0.33), b: qs(0.44), t: "Next: one mouse and keyboard, shared between a PC and a phone." },
+  { a: qs(0.44), b: qs(0.55), t: "The cursor leaves the PC at the screen edge." },
+  { a: qs(0.55), b: qs(0.63), t: "And the keys follow it onto the phone." },
+  { a: 0.445, b: 0.515, t: "Next: a personal web drive on my own laptop, behind CGNAT, with no open port." },
+  { a: 0.515, b: 0.585, t: "The laptop only dials out. Google signs me in, and the server checks my allow-list." },
+  { a: 0.585, b: 0.655, t: "STUN finds a path through both NATs. Tailscale Funnel gives the server a public address." },
+  { a: 0.655, b: 0.725, t: "Then files go straight from browser to laptop, encrypted. No server holds them." },
+  { a: qL(0.65), b: qL(0.82), t: "A containerized app on AWS, from push to alarm." },
+  { a: qL(0.85), b: 1.0, t: "And a lab comparing an RNN with an LSTM on text classification." },
 ];
 const ACTS = [
-  { n: "01", label: "Table extractor", a: 0, b: 0.32 },
-  { n: "02", label: "MouseShare", a: 0.32, b: 0.64 },
-  { n: "03", label: "AWS app", a: 0.64, b: 0.84 },
-  { n: "04", label: "RNN vs LSTM", a: 0.84, b: 1.01 },
+  { n: "01", label: "Table extractor", a: 0, b: qs(0.32) },
+  { n: "02", label: "MouseShare", a: qs(0.32), b: Q2 },
+  { n: "03", label: "namestorage", a: Q2, b: Q3 },
+  { n: "06", label: "AWS app", a: Q3, b: qL(0.84) },
+  { n: "07", label: "RNN vs LSTM", a: qL(0.84), b: 1.01 },
 ];
 
 function Cap({ p, i }: { p: MotionValue<number>; i: number }) {
@@ -197,24 +211,116 @@ function Nlp({ p }: { p: MotionValue<number> }) {
   );
 }
 
-function Panel({ p }: { p: MotionValue<number> }) {
-  const opacity = useTransform(p, [0.6, 0.67], [0, 1]);
-  const y = useTransform(p, [0.6, 0.67], [60, 0]);
-  const scale = useTransform(p, [0.6, 0.67], [0.92, 1]);
-  const t1 = useTransform(p, [0.8, 0.84], [1, 0]);
-  const t2 = useTransform(p, [0.82, 0.86], [0, 1]);
+/* ------------------------------ act 3: namestorage ------------------------------ */
+
+type Bz = [Pt, Pt, Pt, Pt];
+function bez(b: Bz, n = 24): Pt[] {
+  const out: Pt[] = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const u = 1 - t;
+    out.push([
+      u * u * u * b[0][0] + 3 * u * u * t * b[1][0] + 3 * u * t * t * b[2][0] + t * t * t * b[3][0],
+      u * u * u * b[0][1] + 3 * u * u * t * b[1][1] + 3 * u * t * t * b[2][1] + t * t * t * b[3][1],
+    ]);
+  }
+  return out;
+}
+const DIRECT: Bz = [[150, 215], [250, 95], [560, 95], [660, 215]];
+const DIRECT_PTS = bez(DIRECT);
+const DIRECT_BACK = [...DIRECT_PTS].reverse();
+const DIRECT_D = "M150 215 C250 95 560 95 660 215";
+
+function Dot({ a, pts, from, to }: { a: MotionValue<number>; pts: Pt[]; from: number; to: number }) {
+  const cx = useTransform(a, (v) => along(pts, clamp((v - from) / (to - from)))[0]);
+  const cy = useTransform(a, (v) => along(pts, clamp((v - from) / (to - from)))[1]);
+  const o = useTransform(a, [from - 0.001, from, to, to + 0.001], [0, 1, 1, 0]);
+  return <m.circle r="7" fill="#7fd6e6" style={{ cx, cy, opacity: o }} />;
+}
+
+function Flow({ a, pts, phase }: { a: MotionValue<number>; pts: Pt[]; phase: number }) {
+  const f = (v: number) => along(pts, (v * 6 + phase) % 1);
+  const cx = useTransform(a, (v) => f(v)[0]);
+  const cy = useTransform(a, (v) => f(v)[1]);
+  const o = useTransform(a, [0.82, 0.88, 1], [0, 1, 1]);
+  return <m.circle r="5" fill="#bdf1f9" style={{ cx, cy, opacity: o }} />;
+}
+
+function Label({ a, x, y, at, children }: { a: MotionValue<number>; x: number; y: number; at: number; children: React.ReactNode }) {
+  const o = useTransform(a, [at, at + 0.05], [0, 1]);
+  return (
+    <m.text x={x} y={y} textAnchor="middle" fill="#a3b3b8" fontFamily="IBM Plex Mono, monospace" fontSize="14" letterSpacing="1.5" style={{ opacity: o }}>
+      {children}
+    </m.text>
+  );
+}
+
+function Ns({ q }: { q: MotionValue<number> }) {
+  const a = useTransform(q, [0.465, 0.7], [0, 1]);
+  const vis = useTransform(q, [Q2 + 0.01, Q2 + 0.04, Q3 - 0.04, Q3], [0, 1, 1, 0]);
+  const dim = useTransform(a, [0.8, 0.9], [1, 0.22]);
+  const direct = useTransform(a, [0.7, 0.82], [0, 1]);
+  const directTxt = useTransform(a, [0.86, 0.92], [0, 1]);
+  return (
+    <m.svg viewBox="0 0 800 500" className="absolute inset-0 h-full w-full" style={{ opacity: vis }} aria-hidden="true">
+      <m.rect x="598" y="150" width="196" height="190" rx="12" fill="rgba(127,214,230,0.04)" stroke="rgba(127,214,230,0.3)" strokeDasharray="4 5" style={{ opacity: useTransform(a, [0, 0.08], [0, 1]) }} />
+      <Label a={a} x={696} y={140} at={0.02}>HOME NETWORK, CGNAT</Label>
+      <m.g style={{ opacity: dim }}>
+        <rect x="318" y="150" width="174" height="190" rx="12" fill="rgba(127,214,230,0.04)" stroke="rgba(127,214,230,0.3)" strokeDasharray="4 5" />
+        <Label a={a} x={405} y={140} at={0.04}>TAILSCALE FUNNEL</Label>
+        <Line a3={a} d="M640 245 H480" at={0.1} dash />
+        <Line a3={a} d="M170 225 L335 78" at={0.24} />
+        <Line a3={a} d="M170 245 H330" at={0.38} />
+        <Line a3={a} d="M130 275 L345 425" at={0.56} dash />
+        <Line a3={a} d="M700 275 L470 425" at={0.56} dash />
+        <Node a3={a} x={335} y={36} w={140} h={50} label="Google" at={0.04} />
+        <Node a3={a} x={330} y={215} w={150} h={60} label="Signaling" at={0.06} accent />
+        <Node a3={a} x={335} y={410} w={140} h={50} label="STUN" at={0.08} />
+        <Label a={a} x={560} y={232} at={0.16}>OUTBOUND ONLY</Label>
+        <Label a={a} x={405} y={322} at={0.46}>ALLOW-LIST CHECKED</Label>
+      </m.g>
+      <Node a3={a} x={30} y={215} w={140} h={60} label="Browser" at={0} accent />
+      <Node a3={a} x={640} y={215} w={140} h={60} label="Laptop" at={0.02} accent />
+      <m.path d={DIRECT_D} fill="none" stroke="#7fd6e6" strokeWidth="3.2" strokeLinecap="round" style={{ pathLength: direct, filter: "drop-shadow(0 0 6px rgba(127,214,230,0.8))" }} />
+      <m.text x="405" y="108" textAnchor="middle" fill="#bdf1f9" fontFamily="IBM Plex Mono, monospace" fontSize="14" letterSpacing="1.5" style={{ opacity: directTxt }}>
+        DIRECT, ENCRYPTED
+      </m.text>
+      <Dot a={a} pts={[[100, 215], [405, 68]]} from={0.26} to={0.33} />
+      <Dot a={a} pts={[[405, 68], [100, 215]]} from={0.33} to={0.4} />
+      <Dot a={a} pts={[[170, 245], [405, 245]]} from={0.4} to={0.46} />
+      <Dot a={a} pts={[[480, 245], [705, 245]]} from={0.48} to={0.52} />
+      <Dot a={a} pts={[[705, 245], [100, 245]]} from={0.52} to={0.58} />
+      <Dot a={a} pts={[[100, 275], [405, 435]]} from={0.6} to={0.67} />
+      <Dot a={a} pts={[[705, 275], [405, 435]]} from={0.6} to={0.67} />
+      <Flow a={a} pts={DIRECT_PTS} phase={0} />
+      <Flow a={a} pts={DIRECT_PTS} phase={0.5} />
+      <Flow a={a} pts={DIRECT_BACK} phase={0.25} />
+      <Flow a={a} pts={DIRECT_BACK} phase={0.75} />
+    </m.svg>
+  );
+}
+
+function Panel({ q, L }: { q: MotionValue<number>; L: MotionValue<number> }) {
+  const opacity = useTransform(q, [Q2 + 0.005, Q2 + 0.04], [0, 1]);
+  const y = useTransform(q, [Q2 + 0.005, Q2 + 0.04], [60, 0]);
+  const scale = useTransform(q, [Q2 + 0.005, Q2 + 0.04], [0.92, 1]);
+  const tN = useTransform(q, [Q3 - 0.04, Q3 - 0.01], [1, 0]);
+  const tA = useTransform(q, [Q3 - 0.03, Q3, qL(0.8), qL(0.84)], [0, 1, 1, 0]);
+  const tL = useTransform(q, [qL(0.82), qL(0.86)], [0, 1]);
   return (
     <m.div className="sc-panel" style={{ opacity, y, scale }} aria-hidden="true">
       <div className="sc-panel-bar">
         <span /><span /><span />
         <div className="sc-panel-title">
-          <m.b style={{ opacity: t1 }}>aws-lab7 / architecture</m.b>
-          <m.b style={{ opacity: t2 }}>nlp-exp6 / training loss</m.b>
+          <m.b style={{ opacity: tN }}>namestorage / connection</m.b>
+          <m.b style={{ opacity: tA }}>aws-lab7 / architecture</m.b>
+          <m.b style={{ opacity: tL }}>nlp-exp6 / training loss</m.b>
         </div>
       </div>
       <div className="sc-panel-body">
-        <Aws p={p} />
-        <Nlp p={p} />
+        <Ns q={q} />
+        <Aws p={L} />
+        <Nlp p={L} />
       </div>
     </m.div>
   );
@@ -237,7 +343,10 @@ function Film() {
   const narrow = useNarrow();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const p = useSpring(scrollYProgress, { stiffness: 140, damping: 32, mass: 0.4 });
+  const q = useSpring(scrollYProgress, { stiffness: 140, damping: 32, mass: 0.4 });
+  // acts one and two keep their original timing in p; the AWS and NLP acts read L
+  const p = useTransform(q, [0, Q2, Q2 + 0.035], [0, 0.62, 0.66]);
+  const L = useTransform(q, [Q3, 1], [0.62, 1]);
   const pa = useTransform(p, [0, 0.3], [0, 1]);
 
   // the pair of devices
@@ -271,7 +380,7 @@ function Film() {
   const phCaret = useTransform(p, [0.57, 0.575], [0, 1]);
   const pcCaret = useTransform(p, [0.42, 0.43, 0.53, 0.54], [0, 1, 1, 0]);
 
-  const skip = useTransform(p, [0.02, 0.06, 0.96, 1], [0, 1, 1, 0]);
+  const skip = useTransform(q, [0.015, 0.04, 0.96, 1], [0, 1, 1, 0]);
 
   const winScreen = (
     <m.div className="sc-win" style={{ opacity: winO }}>
@@ -294,12 +403,12 @@ function Film() {
   );
 
   return (
-    <section ref={ref} id="pipeline" className="relative h-[760vh]" aria-label="Projects, up close">
+    <section ref={ref} id="pipeline" className="relative h-[1080vh]" aria-label="Projects, up close">
       <div className="sticky top-0 flex h-[100svh] flex-col items-center overflow-hidden px-4 pt-16">
         <p className="marker">02 / Projects, up close</p>
         <div className="relative mt-3 h-[clamp(5.5rem,16svh,8rem)] w-full max-w-4xl">
           {CAPS.map((_, i) => (
-            <Cap key={i} p={p} i={i} />
+            <Cap key={i} p={q} i={i} />
           ))}
         </div>
 
@@ -334,12 +443,12 @@ function Film() {
               <m.span className="sc-orb" style={{ left: orbL, top: orbT, opacity: orbO }} />
             </m.div>
           </m.div>
-          <Panel p={p} />
+          <Panel q={q} L={L} />
         </div>
 
         <ol className="mt-auto flex flex-wrap justify-center gap-x-6 gap-y-1 pb-3" aria-label="Projects in this section">
           {ACTS.map((_, i) => (
-            <ActDot key={i} p={p} i={i} />
+            <ActDot key={i} p={q} i={i} />
           ))}
         </ol>
         <p className="marker pb-5 text-center text-paper-faint">Illustrations of the projects, not real data</p>
