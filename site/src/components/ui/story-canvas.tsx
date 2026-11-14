@@ -95,7 +95,7 @@ export default function StoryCanvas({ progress }: { progress: MotionValue<number
       const r = canvas.getBoundingClientRect();
       w = r.width;
       h = r.height;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       narrow = w < 700;
@@ -131,6 +131,7 @@ export default function StoryCanvas({ progress }: { progress: MotionValue<number
       }
     };
 
+    const styleCache = new Map<number, string>();
     const draw = () => {
       const p = clamp(progress.get());
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -214,7 +215,8 @@ export default function StoryCanvas({ progress }: { progress: MotionValue<number
         ctx.stroke();
       }
 
-      // marks
+      // marks (colours are quantised and cached, so the ~1000 marks reuse a few dozen style strings)
+      let lastStyle = "";
       const boxT = clamp((p - 0.4) / 0.1) * (1 - ciG);
       const flat = Math.abs(ax) < 0.2 && Math.abs(ay) < 0.2;
       for (const pt of pts) {
@@ -238,9 +240,6 @@ export default function StoryCanvas({ progress }: { progress: MotionValue<number
         if (q.x < -30 || q.x > w + 30 || q.y < -30 || q.y > h + 30) continue;
         const near = p < 0.62 && barVisible ? Math.exp(-Math.pow((pt.hx - xAt(pt.hy)) / 40, 2)) : 0;
         const mix = clamp(near + (pt.k >= 0 ? ci * 0.9 : 0));
-        const r = Math.round(lerp(INK[0], ACC[0], mix));
-        const g = Math.round(lerp(INK[1], ACC[1], mix));
-        const b = Math.round(lerp(INK[2], ACC[2], mix));
         let alpha = (0.3 + 0.28 * oi + 0.4 * near) * clamp(Math.pow(q.sc, 1.6), 0.25, 1);
         if (pt.k < 0) alpha *= 1 - ci;
         else alpha = lerp(alpha, 0.85, ci * 0.6);
@@ -250,7 +249,19 @@ export default function StoryCanvas({ progress }: { progress: MotionValue<number
         const c0 = Math.cos(ang);
         const s0 = Math.sin(ang);
         ctx.setTransform(dpr * c0, dpr * s0, -dpr * s0, dpr * c0, dpr * q.x, dpr * q.y);
-        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        const mi = Math.round(mix * 12);
+        const ai = Math.round(alpha * 40);
+        const key = mi * 64 + ai;
+        let style = styleCache.get(key);
+        if (!style) {
+          const mm = mi / 12;
+          style = `rgba(${Math.round(lerp(INK[0], ACC[0], mm))},${Math.round(lerp(INK[1], ACC[1], mm))},${Math.round(lerp(INK[2], ACC[2], mm))},${ai / 40})`;
+          styleCache.set(key, style);
+        }
+        if (style !== lastStyle) {
+          ctx.fillStyle = style;
+          lastStyle = style;
+        }
         ctx.fillRect(-len / 2, -1, len, 2.2 * q.sc);
         if (pt.l > 0.55 && ci < 0.5) ctx.fillRect(-len / 2, 5, len * 0.55, 2 * q.sc);
         if (boxT > 0.02 && oi > 0.95 && flat) {

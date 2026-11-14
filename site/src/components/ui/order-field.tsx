@@ -50,7 +50,7 @@ export default function OrderField({ className = "" }: { className?: string }) {
       const r = canvas.getBoundingClientRect();
       w = r.width;
       h = r.height;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
