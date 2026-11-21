@@ -1,6 +1,7 @@
 import { m, useInView, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import OrderField from "./ui/order-field";
+import Hologram from "./ui/hologram";
 import { about, profile, timeline } from "../data";
 import { reveal } from "../presets";
 
@@ -11,6 +12,7 @@ const FACTS = [
 ];
 
 export function About() {
+  const reduced = useReducedMotion();
   return (
     <section id="about" className="py-16 md:py-24" aria-labelledby="about-title">
       <div className="wrap grid gap-8 md:grid-cols-12 md:gap-8">
@@ -29,6 +31,9 @@ export function About() {
               </div>
             ))}
           </m.dl>
+          <m.div className="mt-10" {...reveal(0.18, 20)}>
+            <Hologram reduced={!!reduced} />
+          </m.div>
         </div>
         <div className="space-y-6 text-paper-dim sm:text-lg md:col-span-6 md:col-start-7">
           {about.map((para, i) => (

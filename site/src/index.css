@@ -655,3 +655,12 @@ body.paused *::after {
 .thread-node.on { fill: #7fd6e6; stroke: #bdf1f9; r: 7; filter: drop-shadow(0 0 8px rgba(127, 214, 230, .9)); }
 .thread-page .thread-grid { transition: opacity .3s; }
 .thread-page.ordered .thread-grid { opacity: 1; }
+
+/* holographic portrait panel */
+.holo-box {
+  background:
+    radial-gradient(60% 50% at 50% 38%, rgba(127, 214, 230, 0.16), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(127, 214, 230, 0.05) 0 1px, transparent 1px 4px),
+    #08121a;
+  box-shadow: inset 0 0 40px rgba(127, 214, 230, 0.08);
+}
