@@ -1,249 +1,341 @@
 import { useEffect, useRef, useState } from "react";
+import type * as THREE from "three";
 
 /**
- * A holographic portrait. Not a mesh: every point of a grid cut from the photo is a
- * glowing particle pushed out by a hand-built depth map, drawn in one WebGL call.
- * The GPU does all the animation (breathing, scan band, glitch, burst), so the page
- * only pays for one draw per frame, and only while the panel is on screen.
- * Pointer tilts it, dragging spins it, a tap glitches it. Reduced motion gets one still frame.
+ * A stylised holographic bust, built from primitives (no photo, no model file).
+ * Faceted low-poly surfaces with a hologram shader (rim light, scan lines, a sweeping band,
+ * dithered dissolve at the base) plus wireframe edges. It blinks, breathes, looks at the pointer,
+ * and spins when dragged. Skill tags orbit it. Three.js loads only when the panel nears the screen,
+ * and the render loop stops while it is off screen. Reduced motion gets one still frame.
  */
-const BASE = import.meta.env.BASE_URL + "hologram/";
-const GW = 250;
-const GH = 225;
 
-const VERT = `
-precision highp float;
-attribute vec3 a_p;
-attribute float a_k;
-uniform sampler2D u_color;
-uniform sampler2D u_data;
-uniform float u_t, u_burst, u_glitch, u_px, u_aspect;
-uniform vec2 u_rot;
-varying vec4 v_col;
-float h(float n){ return fract(sin(n * 127.1) * 43758.5453); }
-void main(){
-  float t = u_t;
-  float r = a_p.z;
-  vec3 pos;
-  vec3 col;
-  float alpha;
-  float size;
-  if (a_k < 0.5) {
-    vec2 uv = a_p.xy;
-    vec4 d = texture2D(u_data, uv);
-    vec3 c = texture2D(u_color, uv).rgb;
-    float depth = d.r;
-    float edge = d.b;
-    pos = vec3((uv.x - 0.5) * ${((GW / GH) * 2).toFixed(3)}, (0.5 - uv.y) * 2.0, (depth - 0.4) * 0.55);
-    pos.y += sin(t * 1.2) * 0.006 * (1.0 - uv.y * 0.6);
-    pos += (vec3(h(r * 3.1), h(r * 5.7), h(r * 9.3)) - 0.5) * 0.006 * (1.0 + edge * 2.0) * sin(t * 3.0 + r * 50.0);
-    float band = fract(t * 0.16);
-    float scan = smoothstep(0.05, 0.0, abs(uv.y - band));
-    pos.x += scan * 0.02 * sin(r * 30.0 + t * 10.0);
-    float row = floor(uv.y * 28.0);
-    float gl = u_glitch * step(0.5, h(row + floor(t * 14.0)));
-    pos.x += gl * (h(row * 1.3) - 0.5) * 0.35;
-    vec3 dir = normalize(vec3(h(r * 7.3) - 0.5, h(r * 2.9) - 0.5, h(r * 5.1) - 0.2) + 0.001);
-    pos += dir * u_burst * (0.6 + h(r * 11.0) * 1.4);
-    float lum = dot(c, vec3(0.299, 0.587, 0.114));
-    vec3 base = mix(vec3(0.04, 0.42, 0.62), vec3(0.55, 0.96, 1.0), smoothstep(0.05, 0.85, lum));
-    vec3 tint = mix(base, c * 1.3, 0.22);
-    float bright = 0.55 + 0.6 * lum + depth * 0.3 + edge * 0.9 + scan * 1.2;
-    float sl = 0.78 + 0.22 * sin(pos.y * 260.0 - t * 4.0);
-    col = tint * bright * sl;
-    alpha = (0.55 + 0.45 * lum) * (1.0 - smoothstep(0.80, 1.0, uv.y)) * (0.94 + 0.06 * sin(t * 23.0));
-    size = u_px * (0.95 + depth * 0.5);
-  } else if (a_k < 1.5) {
-    float a = a_p.x * 6.2831853 + t * 0.3 * (1.0 + a_p.y);
-    float rad = 0.78 + a_p.y * 0.55;
-    pos = vec3(cos(a) * rad, -1.02 + sin(t * 2.0 + a_p.x * 40.0) * 0.005, sin(a) * rad);
-    col = vec3(0.2, 0.8, 1.0) * (0.55 + 0.45 * sin(a * 3.0 + t * 2.0));
-    alpha = 0.7;
-    size = u_px * 1.1;
-  } else {
-    float y = mod(h(r * 5.0) * 2.8 + t * (0.05 + 0.08 * h(r * 8.0)), 2.8) - 1.4;
-    pos = vec3((h(r * 3.0) - 0.5) * 2.6, y, (h(r * 7.0) - 0.5) * 1.2);
-    col = vec3(0.4, 0.9, 1.0);
-    alpha = 0.5 * (1.0 - abs(y) / 1.4);
-    size = u_px * 0.7;
-  }
-  float cy = cos(u_rot.x), sy = sin(u_rot.x);
-  pos = vec3(cy * pos.x + sy * pos.z, pos.y, -sy * pos.x + cy * pos.z);
-  float cx = cos(u_rot.y), sx = sin(u_rot.y);
-  pos = vec3(pos.x, cx * pos.y - sx * pos.z, sx * pos.y + cx * pos.z);
-  float s = 3.4 / (3.4 - pos.z);
-  gl_Position = vec4(pos.x * s / (1.25 * u_aspect), pos.y * s / 1.25, -pos.z * 0.1, 1.0);
-  gl_PointSize = max(size * s, 1.0);
-  v_col = vec4(col * alpha, alpha);
+const TAGS = ["Python", "AWS", "WebRTC", "React", "NLP", "Kotlin", "Linux"];
+
+const VERT = /* glsl */ `
+uniform float uTime;
+uniform float uGlitch;
+varying vec3 vW;
+void main() {
+  vec4 w = modelMatrix * vec4(position, 1.0);
+  float row = floor(w.y * 14.0);
+  float g = step(0.55, fract(sin(row * 12.9 + floor(uTime * 18.0)) * 4375.5)) * uGlitch;
+  w.x += g * 0.14 * (fract(sin(row * 3.1) * 999.0) - 0.5) * 2.0;
+  vW = w.xyz;
+  gl_Position = projectionMatrix * viewMatrix * w;
 }
 `;
 
-const FRAG = `
-precision mediump float;
-varying vec4 v_col;
-void main(){
-  vec2 q = gl_PointCoord - 0.5;
-  float a = smoothstep(1.0, 0.2, dot(q, q) * 4.0);
-  gl_FragColor = vec4(v_col.rgb * a, v_col.a * a);
+const FRAG_BODY = /* glsl */ `
+uniform vec3 uColor;
+uniform float uTime;
+uniform float uGlow;
+uniform float uOpacity;
+varying vec3 vW;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+void main() {
+  vec3 n = normalize(cross(dFdx(vW), dFdy(vW)));
+  vec3 V = normalize(cameraPosition - vW);
+  float nd = abs(dot(n, V));
+  float fres = pow(1.0 - nd, 2.2);
+  float lam = 0.25 + 0.75 * max(dot(n, normalize(vec3(-0.5, 0.8, 0.7))), 0.0);
+  float scanl = 0.82 + 0.18 * sin(vW.y * 110.0 - uTime * 2.5);
+  float y0 = mix(1.0, -2.0, fract(uTime * 0.12));
+  float band = smoothstep(0.09, 0.0, abs(vW.y - y0));
+  float fade = smoothstep(-2.0, -1.15, vW.y);
+  if (fade < hash(gl_FragCoord.xy)) discard;
+  vec3 c = uColor * (0.16 + lam * 0.55) + uColor * fres * 1.1 + vec3(0.6, 1.0, 1.0) * band * 0.45 + uColor * uGlow;
+  c *= scanl * (0.97 + 0.03 * sin(uTime * 40.0));
+  gl_FragColor = vec4(c, 0.9 * uOpacity);
 }
 `;
 
-const load = (src: string) =>
-  new Promise<HTMLImageElement>((res, rej) => {
-    const i = new Image();
-    i.onload = () => res(i);
-    i.onerror = rej;
-    i.src = src;
-  });
+const FRAG_LINE = /* glsl */ `
+uniform vec3 uColor;
+uniform float uTime;
+uniform float uOpacity;
+varying vec3 vW;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+void main() {
+  float fade = smoothstep(-2.0, -1.15, vW.y);
+  if (fade < hash(gl_FragCoord.xy)) discard;
+  float y0 = mix(1.0, -2.0, fract(uTime * 0.12));
+  float band = smoothstep(0.14, 0.0, abs(vW.y - y0));
+  gl_FragColor = vec4(uColor * (0.8 + band * 1.2), (0.3 + band * 0.5) * uOpacity);
+}
+`;
+
+const FRAG_GLOW = /* glsl */ `
+uniform vec3 uColor;
+uniform float uTime;
+varying vec3 vW;
+void main() {
+  float a = smoothstep(2.2, -1.9, vW.y) * smoothstep(-2.1, -1.6, vW.y) * 0.10;
+  a *= 0.8 + 0.2 * sin(uTime * 2.0 + vW.y * 6.0);
+  gl_FragColor = vec4(uColor, a);
+}
+`;
 
 export default function Hologram({ reduced = false }: { reduced?: boolean }) {
   const box = useRef<HTMLDivElement>(null);
-  const cv = useRef<HTMLCanvasElement>(null);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const el = box.current!;
-    const canvas = cv.current!;
-    const gl = canvas.getContext("webgl", { alpha: true, antialias: false, powerPreference: "low-power" });
-    if (!gl) {
-      setFailed(true);
-      return;
-    }
     let dead = false;
-    let raf = 0;
-    let visible = false;
     let started = false;
+    let visible = false;
+    let raf = 0;
     let cleanup = () => {};
-
-    const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return s;
-    };
+    let kick = () => {};
 
     const start = async () => {
       if (started) return;
       started = true;
       try {
-        const [colorImg, dataImg] = await Promise.all([load(BASE + "color.png"), load(BASE + "data.png")]);
+        const T = await import("three");
         if (dead) return;
+        const renderer = new T.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
+        renderer.setClearColor(0x000000, 0);
+        el.appendChild(renderer.domElement);
+        renderer.domElement.style.cssText = "position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;";
 
-        // points: every masked cell of the grid, a projector ring, a little dust
-        const c2 = document.createElement("canvas");
-        c2.width = GW;
-        c2.height = GH;
-        const x2 = c2.getContext("2d", { willReadFrequently: true })!;
-        x2.drawImage(dataImg, 0, 0);
-        const px = x2.getImageData(0, 0, GW, GH).data;
-        const small = window.innerWidth < 700;
-        const pts: number[] = [];
-        let seed = 7;
-        const rnd = () => ((seed = (seed * 16807) % 2147483647), seed / 2147483647);
-        for (let y = 0; y < GH; y++) {
-          for (let x = 0; x < GW; x++) {
-            if (px[(y * GW + x) * 4 + 1] > 127) {
-              if (small && (x + y) % 2 === 1 && px[(y * GW + x) * 4 + 2] < 60) continue;
-              pts.push((x + 0.5) / GW, (y + 0.5) / GH, rnd(), 0);
-            }
-          }
-        }
-        for (let ring = 0; ring < 3; ring++) {
-          const n = 150 + ring * 70;
-          for (let i = 0; i < n; i++) pts.push(i / n, ring / 2, rnd(), 1);
-        }
-        for (let i = 0; i < 140; i++) pts.push(0, 0, rnd() * 50 + 1, 2);
-        const data = new Float32Array(pts);
-        const count = data.length / 4;
+        const scene = new T.Scene();
+        const camera = new T.PerspectiveCamera(28, 1, 0.1, 50);
+        camera.position.set(0, -0.15, 5.7);
+        camera.lookAt(0, -0.8, 0);
 
-        const prog = gl.createProgram()!;
-        gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
-        gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
-        gl.linkProgram(prog);
-        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error("link");
-        gl.useProgram(prog);
+        const shared = { uTime: { value: 0 }, uGlitch: { value: 0 } };
+        const body = (color: number, glow = 0, opacity = 1) =>
+          new T.ShaderMaterial({
+            vertexShader: VERT,
+            fragmentShader: FRAG_BODY,
+            transparent: true,
+            uniforms: { ...shared, uColor: { value: new T.Color(color) }, uGlow: { value: glow }, uOpacity: { value: opacity } },
+            polygonOffset: true,
+            polygonOffsetFactor: 1,
+            polygonOffsetUnits: 1,
+          });
+        const lineMat = new T.ShaderMaterial({
+          vertexShader: VERT,
+          fragmentShader: FRAG_LINE,
+          transparent: true,
+          depthWrite: false,
+          blending: T.AdditiveBlending,
+          uniforms: { ...shared, uColor: { value: new T.Color(0x7fe6ff) }, uOpacity: { value: 1 } },
+        });
+        const mSkin = body(0x3fb6d4);
+        const mHair = body(0x2b57b8);
+        const mJacket = body(0x1d6aa8);
+        const mShirt = body(0x6fd0e6);
+        const mLapel = body(0x2a86c4);
+        const mFeature = body(0xbff6ff, 0.9);
+        const mEye = body(0xe8fdff, 1.6);
 
-        const buf = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-        const aP = gl.getAttribLocation(prog, "a_p");
-        const aK = gl.getAttribLocation(prog, "a_k");
-        gl.enableVertexAttribArray(aP);
-        gl.vertexAttribPointer(aP, 3, gl.FLOAT, false, 16, 0);
-        gl.enableVertexAttribArray(aK);
-        gl.vertexAttribPointer(aK, 1, gl.FLOAT, false, 16, 12);
-
-        const tex = (img: HTMLImageElement, unit: number) => {
-          const t = gl.createTexture();
-          gl.activeTexture(gl.TEXTURE0 + unit);
-          gl.bindTexture(gl.TEXTURE_2D, t);
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        const add = (parent: THREE.Object3D, geo: THREE.BufferGeometry, mat: THREE.Material, edges = true, thr = 18) => {
+          const mesh = new T.Mesh(geo, mat);
+          parent.add(mesh);
+          if (edges) mesh.add(new T.LineSegments(new T.EdgesGeometry(geo, thr), lineMat));
+          return mesh;
         };
-        tex(colorImg, 0);
-        tex(dataImg, 1);
-        gl.uniform1i(gl.getUniformLocation(prog, "u_color"), 0);
-        gl.uniform1i(gl.getUniformLocation(prog, "u_data"), 1);
-        const U = (n: string) => gl.getUniformLocation(prog, n);
-        const uT = U("u_t"), uBurst = U("u_burst"), uGlitch = U("u_glitch"), uPx = U("u_px"), uAsp = U("u_aspect"), uRot = U("u_rot");
 
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.ONE, gl.ONE);
-        gl.clearColor(0, 0, 0, 0);
+        const root = new T.Group();
+        scene.add(root);
+        const figure = new T.Group();
+        root.add(figure);
 
-        let W = 0, H = 0, dpr = 1;
+        // torso and shoulders
+        const torsoGeo = new T.SphereGeometry(1, 22, 14);
+        torsoGeo.scale(1.12, 0.66, 0.52);
+        const torso = add(figure, torsoGeo, mJacket, true, 22);
+        torso.position.set(0, -1.38, 0);
+        // shirt V and lapels
+        const shirtShape = new T.Shape();
+        shirtShape.moveTo(-0.2, 0);
+        shirtShape.lineTo(0.2, 0);
+        shirtShape.lineTo(0, -0.62);
+        shirtShape.closePath();
+        const shirt = add(figure, new T.ShapeGeometry(shirtShape), mShirt, false);
+        shirt.position.set(0, -0.78, 0.37);
+        shirt.rotation.x = -0.28;
+        const lapel = (s: number) => {
+          const sh = new T.Shape();
+          sh.moveTo(0, 0);
+          sh.lineTo(0.3 * s, 0.02);
+          sh.lineTo(0.12 * s, -0.78);
+          sh.lineTo(0.02 * s, -0.7);
+          sh.closePath();
+          const l = add(figure, new T.ShapeGeometry(sh), mLapel, true, 5);
+          l.position.set(s * 0.1, -0.78, 0.375);
+          l.rotation.set(-0.28, s * -0.2, s * 0.04);
+        };
+        lapel(1);
+        lapel(-1);
+        // neck
+        const neck = add(figure, new T.CylinderGeometry(0.16, 0.2, 0.42, 10, 1), mSkin, true, 25);
+        neck.position.set(0, -0.78, 0);
+
+        // head pivots at the neck so it can look around
+        const headPivot = new T.Group();
+        headPivot.position.set(0, -0.62, 0);
+        figure.add(headPivot);
+        const H = new T.Group();
+        H.position.set(0, 0.62, 0);
+        headPivot.add(H);
+
+        const headGeo = new T.IcosahedronGeometry(0.5, 2);
+        const pos = headGeo.attributes.position as THREE.BufferAttribute;
+        for (let i = 0; i < pos.count; i++) {
+          let x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+          x *= 0.82;
+          z *= 0.9;
+          y *= 1.12;
+          if (y < 0) {
+            const t = Math.min(1, -y / 0.56);
+            const k = 1 - 0.3 * t * t;
+            x *= k;
+            z *= 1 - 0.12 * t;
+          }
+          pos.setXYZ(i, x, y, z);
+        }
+        headGeo.computeVertexNormals();
+        add(H, headGeo, mSkin, true, 14);
+
+        // hair: back cap and a swept quiff
+        const capGeo = new T.SphereGeometry(0.545, 18, 12, 0, Math.PI * 2, 0, 1.28);
+        capGeo.scale(0.86, 1.1, 0.94);
+        const cap = add(H, capGeo, mHair, true, 20);
+        cap.position.set(0, 0.04, -0.03);
+        cap.rotation.x = -0.22;
+        const quiffGeo = new T.IcosahedronGeometry(0.27, 1);
+        quiffGeo.scale(1.45, 0.62, 1.25);
+        const quiff = add(H, quiffGeo, mHair, true, 25);
+        quiff.position.set(0.03, 0.56, 0.2);
+        quiff.rotation.set(-0.5, 0, -0.08);
+        const sideGeo = new T.BoxGeometry(0.06, 0.17, 0.26);
+        for (const s of [-1, 1]) {
+          const side = add(H, sideGeo, mHair, true, 25);
+          side.position.set(s * 0.385, 0.27, -0.04);
+        }
+
+        // face
+        const eyes: THREE.Mesh[] = [];
+        for (const s of [-1, 1]) {
+          const eye = add(H, new T.SphereGeometry(0.05, 10, 8), mEye, false);
+          eye.position.set(s * 0.17, 0.06, 0.425);
+          eyes.push(eye);
+          const brow = add(H, new T.BoxGeometry(0.14, 0.024, 0.03), mFeature, false);
+          brow.position.set(s * 0.17, 0.155, 0.43);
+          brow.rotation.z = -s * 0.12;
+          const ear = add(H, new T.IcosahedronGeometry(0.075, 0), mSkin, true, 20);
+          ear.position.set(s * 0.405, 0.0, -0.02);
+          ear.scale.set(0.5, 1.1, 0.8);
+        }
+        const nose = add(H, new T.ConeGeometry(0.05, 0.17, 4), mSkin, true, 20);
+        nose.position.set(0, -0.04, 0.455);
+        nose.rotation.x = -0.25;
+        const mouth = add(H, new T.BoxGeometry(0.15, 0.02, 0.03), mFeature, false);
+        mouth.position.set(0, -0.23, 0.41);
+
+        // projector base, rings, beam
+        const baseMat = new T.MeshBasicMaterial({ color: 0x7fe6ff, transparent: true, opacity: 0.5, blending: T.AdditiveBlending, depthWrite: false });
+        const rings: THREE.Mesh[] = [];
+        [[0.95, 0.007], [1.25, 0.005], [1.55, 0.004]].forEach(([r, w], i) => {
+          const ring = new T.Mesh(new T.TorusGeometry(r, w, 6, 140), baseMat.clone());
+          ring.rotation.x = Math.PI / 2;
+          ring.position.y = -1.95;
+          (ring.material as THREE.MeshBasicMaterial).opacity = 0.55 - i * 0.14;
+          root.add(ring);
+          rings.push(ring);
+        });
+        const beam = new T.Mesh(
+          new T.CylinderGeometry(1.0, 1.25, 4.1, 40, 1, true),
+          new T.ShaderMaterial({
+            vertexShader: VERT,
+            fragmentShader: FRAG_GLOW,
+            transparent: true,
+            depthWrite: false,
+            blending: T.AdditiveBlending,
+            side: T.DoubleSide,
+            uniforms: { ...shared, uColor: { value: new T.Color(0x4fd0ee) } },
+          }),
+        );
+        beam.position.y = 0.0;
+        root.add(beam);
+
+        // orbiting skill tags
+        const tagGroup = new T.Group();
+        root.add(tagGroup);
+        const tags = TAGS.map((label, i) => {
+          const c = document.createElement("canvas");
+          c.width = 256;
+          c.height = 72;
+          const x = c.getContext("2d")!;
+          x.fillStyle = "rgba(10,25,32,0.72)";
+          x.strokeStyle = "rgba(127,214,230,0.85)";
+          x.lineWidth = 3;
+          x.beginPath();
+          x.roundRect(4, 4, 248, 64, 32);
+          x.fill();
+          x.stroke();
+          x.fillStyle = "#bff6ff";
+          x.font = "600 30px 'IBM Plex Mono', ui-monospace, monospace";
+          x.textAlign = "center";
+          x.textBaseline = "middle";
+          x.fillText(label, 128, 37);
+          const tex = new T.CanvasTexture(c);
+          tex.colorSpace = T.SRGBColorSpace;
+          const spr = new T.Sprite(new T.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+          spr.scale.set(0.66, 0.186, 1);
+          tagGroup.add(spr);
+          return { spr, a0: (i / TAGS.length) * Math.PI * 2, y: -1.55 + ((i * 0.61) % 1.0) * 1.25, r: 1.2 + (i % 2) * 0.18 };
+        });
+
         const resize = () => {
           const r = el.getBoundingClientRect();
-          dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-          W = Math.max(1, Math.round(r.width * dpr));
-          H = Math.max(1, Math.round(r.height * dpr));
-          if (canvas.width !== W || canvas.height !== H) {
-            canvas.width = W;
-            canvas.height = H;
-          }
-          gl.viewport(0, 0, W, H);
-          gl.uniform1f(uAsp, W / H);
-          gl.uniform1f(uPx, (H / 2.5) * (2 / GH) * 1.4);
+          const w = Math.max(1, r.width), h = Math.max(1, r.height);
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.fov = w / h < 1 ? 37 : 30;
+          camera.updateProjectionMatrix();
         };
         resize();
         const ro = new ResizeObserver(() => {
           resize();
-          if (!raf) frame(last);
+          if (!raf) render(last);
         });
         ro.observe(el);
 
-        // interaction state
-        let tyaw = 0, tpitch = 0, yaw = 0, pitch = 0;
-        let drag = false, dragYaw = 0, lastX = 0, hover = false;
-        let burst = 0, glitch = 0, nextGlitch = 2.5;
-        const rect = () => el.getBoundingClientRect();
+        // interaction
+        let nx = 0, ny = 0, hx = 0, hy = 0, yaw = 0, dragYaw = 0, vel = 0;
+        let drag = false, lastX = 0, hover = false, pulse = 0, glitch = 0, nextGlitch = 3;
+        let blink = 0, nextBlink = 2;
         const onMove = (e: PointerEvent) => {
-          const r = rect();
+          const r = el.getBoundingClientRect();
           if (drag) {
-            dragYaw += (e.clientX - lastX) * 0.012;
+            const d = (e.clientX - lastX) * 0.012;
+            dragYaw += d;
+            vel = d;
             lastX = e.clientX;
           } else if (e.pointerType !== "touch") {
             hover = true;
-            tyaw = ((e.clientX - r.left) / r.width - 0.5) * 1.1;
-            tpitch = ((e.clientY - r.top) / r.height - 0.5) * 0.5;
+            nx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+            ny = ((e.clientY - r.top) / r.height - 0.5) * 2;
           }
         };
         const onDown = (e: PointerEvent) => {
           drag = true;
           lastX = e.clientX;
           el.setPointerCapture(e.pointerId);
-          burst = 1;
+          pulse = 1;
           glitch = 1;
         };
         const onUp = () => (drag = false);
         const onLeave = () => {
           hover = false;
-          tyaw = 0;
-          tpitch = 0;
+          nx = 0;
+          ny = 0;
         };
         el.addEventListener("pointermove", onMove);
         el.addEventListener("pointerdown", onDown);
@@ -253,47 +345,73 @@ export default function Hologram({ reduced = false }: { reduced?: boolean }) {
 
         let last = performance.now();
         let time = 0;
-        const frame = (now: number) => {
+        const render = (now: number) => {
           raf = 0;
           const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
           last = now;
-          time += dt;
           if (!reduced) {
+            time += dt;
             if (!hover && !drag) {
-              tyaw = Math.sin(time * 0.45) * 0.3;
-              tpitch = Math.sin(time * 0.31) * 0.06;
+              nx = Math.sin(time * 0.5) * 0.55;
+              ny = Math.sin(time * 0.33) * 0.2;
             }
-            if (!drag) dragYaw += (0 - dragYaw) * Math.min(1, dt * 2.2);
-            const k = Math.min(1, dt * 5);
-            yaw += (tyaw + dragYaw - yaw) * k;
-            pitch += (tpitch - pitch) * k;
-            burst = Math.max(0, burst - dt * 1.6);
+            if (!drag) {
+              dragYaw += vel;
+              vel *= 0.94;
+              dragYaw *= 1 - Math.min(1, dt * 0.9);
+            }
+            const k = Math.min(1, dt * 4);
+            hx += (nx - hx) * k;
+            hy += (ny - hy) * k;
+            pulse = Math.max(0, pulse - dt * 1.5);
             glitch = Math.max(0, glitch - dt * 5);
             if (time > nextGlitch) {
               glitch = 1;
-              nextGlitch = time + 4 + Math.random() * 5;
+              nextGlitch = time + 5 + Math.random() * 5;
             }
+            if (time > nextBlink) {
+              blink = 0.14;
+              nextBlink = time + 2.2 + Math.random() * 3;
+            }
+            blink = Math.max(0, blink - dt);
           }
-          gl.uniform1f(uT, reduced ? 1.7 : time);
-          gl.uniform1f(uBurst, burst * burst * 0.9);
-          gl.uniform1f(uGlitch, glitch);
-          gl.uniform2f(uRot, yaw, pitch);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-          gl.drawArrays(gl.POINTS, 0, count);
-          if (visible && !document.hidden && !reduced) raf = requestAnimationFrame(frame);
+          const t = reduced ? 1.2 : time;
+          shared.uTime.value = t;
+          shared.uGlitch.value = glitch;
+          yaw = hx * 0.5 + dragYaw;
+          figure.rotation.y = yaw;
+          headPivot.rotation.y = hx * 0.45;
+          headPivot.rotation.x = hy * 0.22;
+          figure.position.y = Math.sin(t * 1.3) * 0.012;
+          figure.scale.setScalar(1 + Math.sin(t * 1.3) * 0.004);
+          const eyeY = blink > 0 ? 0.08 : 1;
+          eyes.forEach((e) => e.scale.set(1, eyeY, 1));
+          rings.forEach((r, i) => {
+            r.rotation.z = t * (0.18 + i * 0.07) * (i % 2 ? -1 : 1);
+            const s = 1 + pulse * (0.35 + i * 0.12);
+            r.scale.set(s, s, 1);
+            (r.material as THREE.MeshBasicMaterial).opacity = (0.55 - i * 0.14) * (0.8 + 0.2 * Math.sin(t * 2 + i)) + pulse * 0.4;
+          });
+          tags.forEach((g, i) => {
+            const a = g.a0 + t * (0.28 + (i % 3) * 0.05);
+            g.spr.position.set(Math.cos(a) * g.r, g.y + Math.sin(t * 0.8 + i) * 0.06, Math.sin(a) * g.r);
+            const front = (Math.sin(a) + 1) / 2;
+            g.spr.material.opacity = 0.35 + front * 0.65;
+          });
+          renderer.render(scene, camera);
+          if (visible && !document.hidden && !reduced) raf = requestAnimationFrame(render);
         };
-        const schedule = () => {
+        kick = () => {
           if (!raf && visible && !document.hidden) {
             last = performance.now();
-            raf = requestAnimationFrame(frame);
+            raf = requestAnimationFrame(render);
           }
         };
-        scheduleRef = schedule;
-        const onVis = () => schedule();
+        const onVis = () => kick();
         document.addEventListener("visibilitychange", onVis);
         setReady(true);
-        frame(performance.now());
-        schedule();
+        render(performance.now());
+        kick();
 
         cleanup = () => {
           cancelAnimationFrame(raf);
@@ -304,19 +422,26 @@ export default function Hologram({ reduced = false }: { reduced?: boolean }) {
           el.removeEventListener("pointerup", onUp);
           el.removeEventListener("pointercancel", onUp);
           el.removeEventListener("pointerleave", onLeave);
+          scene.traverse((o) => {
+            const m = o as THREE.Mesh;
+            m.geometry?.dispose?.();
+            const mat = m.material as THREE.Material | THREE.Material[] | undefined;
+            (Array.isArray(mat) ? mat : mat ? [mat] : []).forEach((x) => x.dispose());
+          });
+          renderer.dispose();
+          renderer.domElement.remove();
         };
       } catch {
         if (!dead) setFailed(true);
       }
     };
 
-    let scheduleRef: () => void = () => {};
     const io = new IntersectionObserver(
       ([e]) => {
         visible = e.isIntersecting;
         if (visible) {
           start();
-          scheduleRef();
+          kick();
         }
       },
       { rootMargin: "300px 0px" },
@@ -330,26 +455,21 @@ export default function Hologram({ reduced = false }: { reduced?: boolean }) {
   }, [reduced]);
 
   return (
-    <div
-      ref={box}
+    <figure
       role="img"
-      aria-label="Interactive holographic portrait of Piyush. Move the pointer to tilt it, drag to spin it, tap to glitch it."
-      className="holo-box relative aspect-[250/225] w-full max-w-[26rem] touch-pan-y select-none overflow-hidden rounded-2xl border hairline"
+      aria-label="Interactive holographic bust. Move the pointer to make it look around, drag to spin it, tap to glitch it."
+      className="m-0"
     >
-      {failed ? (
-        <img src={BASE + "color.png"} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80 [filter:grayscale(1)_sepia(1)_hue-rotate(150deg)_saturate(3)]" />
-      ) : (
-        <canvas ref={cv} className="absolute inset-0 h-full w-full" />
-      )}
-      <span className="pointer-events-none absolute left-3 top-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-signal">
-        <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-signal align-middle motion-safe:animate-pulse" />
-        {ready || failed ? "Live hologram" : "Booting"}
-      </span>
-      <span className="pointer-events-none absolute bottom-3 left-3 right-3 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-paper-dim">
-        {typeof window !== "undefined" && window.matchMedia("(hover: none)").matches
-          ? "Drag to spin · tap to glitch"
-          : "Move to tilt · drag to spin · tap to glitch"}
-      </span>
-    </div>
+      <div ref={box} className="holo relative h-[22rem] w-full select-none sm:h-[28rem] md:h-[32rem]">
+        {failed && <p className="absolute inset-0 grid place-items-center font-mono text-xs uppercase tracking-[0.16em] text-paper-dim">3D unavailable</p>}
+        <span className="pointer-events-none absolute left-0 top-0 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-signal">
+          <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-signal align-middle motion-safe:animate-pulse" />
+          {ready || failed ? "Live hologram" : "Booting"}
+        </span>
+      </div>
+      <figcaption className="mt-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-paper-dim">
+        {typeof window !== "undefined" && window.matchMedia("(hover: none)").matches ? "Drag to spin · tap to glitch" : "Move to look · drag to spin · tap to glitch"}
+      </figcaption>
+    </figure>
   );
 }

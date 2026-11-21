@@ -15,15 +15,27 @@ export function About() {
   const reduced = useReducedMotion();
   return (
     <section id="about" className="py-16 md:py-24" aria-labelledby="about-title">
-      <div className="wrap grid gap-8 md:grid-cols-12 md:gap-8">
-        <div className="md:col-span-5">
+      <div className="wrap grid gap-x-8 gap-y-8 md:grid-cols-12">
+        <div className="md:col-span-6 md:row-start-1">
           <m.p className="marker" {...reveal(0)}>
             01 / About
           </m.p>
           <m.h2 id="about-title" className="mt-3 text-5xl sm:text-6xl md:text-7xl" {...reveal(0.06)}>
             Hi, I'm <span className="text-signal">Piyush</span>.
           </m.h2>
-          <m.dl className="mt-10 max-w-[22rem] border-t hairline" {...reveal(0.12, 20)}>
+        </div>
+        <m.div className="md:col-span-5 md:col-start-8 md:row-span-2 md:row-start-1" {...reveal(0.1, 20)}>
+          <Hologram reduced={!!reduced} />
+        </m.div>
+        <div className="md:col-span-6 md:row-start-2">
+          <div className="space-y-6 text-paper-dim sm:text-lg">
+            {about.map((para, i) => (
+              <m.p key={i} {...reveal(i * 0.08)}>
+                {para}
+              </m.p>
+            ))}
+          </div>
+          <m.dl className="mt-10 max-w-[26rem] border-t hairline" {...reveal(0.12, 20)}>
             {FACTS.map(([k, v]) => (
               <div key={k} className="grid grid-cols-[6rem_1fr] gap-3 border-b hairline py-3">
                 <dt className="marker pt-0.5">{k}</dt>
@@ -31,16 +43,6 @@ export function About() {
               </div>
             ))}
           </m.dl>
-          <m.div className="mt-10" {...reveal(0.18, 20)}>
-            <Hologram reduced={!!reduced} />
-          </m.div>
-        </div>
-        <div className="space-y-6 text-paper-dim sm:text-lg md:col-span-6 md:col-start-7">
-          {about.map((para, i) => (
-            <m.p key={i} {...reveal(i * 0.08)}>
-              {para}
-            </m.p>
-          ))}
         </div>
       </div>
     </section>
